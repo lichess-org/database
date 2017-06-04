@@ -22,13 +22,13 @@ object Main extends App {
 
   override def main(args: Array[String]) {
 
-    val fromStr = args.lift(0).getOrElse("2016-05")
+    val fromStr = args.lift(0).getOrElse("2015-01")
     val from = new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
     val to = from plusMonths 1
 
-    val path = args.lift(1).getOrElse(s"$fromStr.pgn")
+    val path = args.lift(1).getOrElse("lichess_db_%.pgn").replace("%", fromStr)
 
-    println(s"Export $from -> $to to $path")
+    println(s"Export $from to $path")
 
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
