@@ -16,24 +16,18 @@ case class Game(
     id: String,
     whitePlayer: Player,
     blackPlayer: Player,
-    binaryPieces: ByteArray,
     binaryPgn: ByteArray,
     status: Status,
     turns: Int, // = ply
     startedAtTurn: Int,
     clock: Option[Clock] = None,
-    castleLastMoveTime: CastleLastMoveTime,
-    unmovedRooks: UnmovedRooks,
     daysPerTurn: Option[Int],
-    positionHashes: PositionHash = Array(),
     checkCount: CheckCount = CheckCount(0, 0),
     binaryMoveTimes: Option[ByteArray] = None,
     clockHistory: Option[ClockHistory] = Option(ClockHistory()),
     mode: Mode = Mode.default,
     variant: Variant = Variant.default,
     crazyData: Option[Crazyhouse.Data] = None,
-    next: Option[String] = None,
-    bookmarks: Int = 0,
     createdAt: DateTime = DateTime.now,
     movedAt: DateTime = DateTime.now,
     metadata: Metadata
@@ -72,6 +66,8 @@ case class Game(
   def turnOf(c: Color): Boolean = c == turnColor
 
   def playedTurns = turns - startedAtTurn
+
+  def flagged = if (status == Status.Outoftime) Some(turnColor) else None
 
   def tournamentId = metadata.tournamentId
   def simulId = metadata.simulId
@@ -140,42 +136,6 @@ case class Game(
     }
   }
 
-  lazy val toChess: ChessGame = {
-
-    val pieces = BinaryFormat.piece.read(binaryPieces, variant)
-
-    ChessGame(
-      board = Board(pieces, toChessHistory, variant, crazyData),
-      player = Color(0 == turns % 2),
-      clock = clock,
-      turns = turns,
-      startedAtTurn = startedAtTurn,
-      pgnMoves = pgnMoves
-    )
-  }
-
-  lazy val toChessHistory = ChessHistory(
-    lastMove = castleLastMoveTime.lastMove map {
-    case (orig, dest) => Uci.Move(orig, dest)
-  },
-    castles = castleLastMoveTime.castles,
-    positionHashes = positionHashes,
-    checkCount = checkCount,
-    unmovedRooks = unmovedRooks
-  )
-
-  def check = castleLastMoveTime.check
-
-  def updatePlayer(color: Color, f: Player => Player) = color.fold(
-    copy(whitePlayer = f(whitePlayer)),
-    copy(blackPlayer = f(blackPlayer))
-  )
-
-  def updatePlayers(f: Player => Player) = copy(
-    whitePlayer = f(whitePlayer),
-    blackPlayer = f(blackPlayer)
-  )
-
   def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map { days =>
     val increment = days * 24 * 60 * 60
     val secondsLeft = (movedAt.getMillis / 1000 + increment - System.currentTimeMillis() / 1000).toInt max 0
@@ -240,7 +200,7 @@ case class Game(
 
   def accountable = playedTurns >= 2 || isTournament
 
-  def replayable = isPgnImport || finished || (aborted && bothPlayersHaveMoved)
+  def replayable = finished || (aborted && bothPlayersHaveMoved)
 
   def analysable =
     replayable && playedTurns > 4 &&
@@ -300,15 +260,13 @@ case class Game(
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
-  def isBeingPlayed = !isPgnImport && !finishedOrAborted
+  def isBeingPlayed = !finishedOrAborted
 
   def olderThan(seconds: Int) = movedAt isBefore DateTime.now.minusSeconds(seconds)
 
   def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
 
   def forecastable = started && playable && isCorrespondence && !hasAi
-
-  def hasBookmarks = bookmarks > 0
 
   def userIds = playerMaps(_.userId)
 
@@ -321,9 +279,6 @@ case class Game(
   }
 
   def source = metadata.source
-
-  def pgnImport = metadata.pgnImport
-  def isPgnImport = pgnImport.isDefined
 
   def resetTurns = copy(turns = 0, startedAtTurn = 0)
 
@@ -408,16 +363,12 @@ object Game {
     val playerIds = "is"
     val playerUids = "us"
     val playingUids = "pl"
-    val binaryPieces = "ps"
     val binaryPgn = "pg"
     val status = "s"
     val turns = "t"
     val startedAtTurn = "st"
     val clock = "c"
-    val positionHashes = "ph"
     val checkCount = "cc"
-    val castleLastMoveTime = "cl"
-    val unmovedRooks = "ur"
     val daysPerTurn = "cd"
     val moveTimes = "mt"
     val whiteClockHistory = "cw"
@@ -426,19 +377,14 @@ object Game {
     val analysed = "an"
     val variant = "v"
     val crazyData = "chd"
-    val next = "ne"
-    val bookmarks = "bm"
     val createdAt = "ca"
     val movedAt = "ua" // ua = updatedAt (bc)
     val source = "so"
-    val pgnImport = "pgni"
     val tournamentId = "tid"
     val simulId = "sid"
-    val tvAt = "tv"
     val winnerColor = "w"
     val winnerId = "wid"
     val initialFen = "if"
-    val checkAt = "ck"
   }
 }
 

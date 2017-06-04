@@ -1,26 +1,34 @@
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import akka.stream.Materializer
-import akka.stream.scaladsl.{Sink, Source}
 
 import reactivemongo.bson._
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Materializer, IOResult}
 import akka.stream.scaladsl._
+import akka.util.ByteString
 import reactivemongo.akkastream.{State, cursorProducer}
+import java.nio.file.Paths
 
 import org.joda.time.DateTime
 
+import chess.format.pgn.Pgn
 import db.BSONDateTimeHandler
+import lila.game.BSONHandlers._
+import lila.game.{Game, PgnDump, Source => S}
 
 object Main extends App {
 
   override def main(args: Array[String]) {
-    val from = new DateTime(args.lift(0).getOrElse("2016-01")).withDayOfMonth(1).withTimeAtStartOfDay()
+
+    val fromStr = args.lift(0).getOrElse("2016-05")
+    val from = new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
     val to = from plusMonths 1
-    println(s"Export $from -> $to")
+
+    val path = args.lift(1).getOrElse(s"$fromStr.pgn")
+
+    println(s"Export $from -> $to to $path")
 
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
@@ -28,18 +36,29 @@ object Main extends App {
     db.getColl foreach {
       case (coll, close) =>
 
-        val query = BSONDocument("ca" -> BSONDocument("$gte" -> from, "$lt" -> to))
+        val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
+
+        val query = BSONDocument(
+          "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
+          "ra" -> true,
+          "so" -> BSONDocument("$in" -> sources.map(_.id)),
+          "v" -> BSONDocument("$exists" -> false))
 
         def printSink = Sink.foreach[String](s => println(s))
 
-        def toPgn(doc: BSONDocument) = db.debug(doc)
+        def toPgn(g: Game) = g.toString
+
+        def pgnSink: Sink[Pgn, Future[IOResult]] =
+          Flow[Pgn]
+            .map(pgn => ByteString(s"$pgn\n\n"))
+            .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
         coll
           .find(query)
-          .cursor[BSONDocument]
-          .documentSource(maxDocs = Int.MaxValue)
-          .map(toPgn)
-          .runWith(printSink) andThen {
+          .cursor[Game]
+          .documentSource(maxDocs = 100000) // Int.MaxValue)
+          .map(g => PgnDump(g, None))
+          .runWith(pgnSink) andThen {
             case state =>
               close()
               system.terminate()
