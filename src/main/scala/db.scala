@@ -1,10 +1,12 @@
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.config.ConfigFactory
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api.MongoConnection
 import reactivemongo.bson._
+
+import org.joda.time._
 
 object db {
 
@@ -24,6 +26,11 @@ object db {
         driver.close()
       })
     }
+
+  implicit object BSONDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {
+    def read(time: BSONDateTime) = new DateTime(time.value, DateTimeZone.UTC)
+    def write(jdtime: DateTime) = BSONDateTime(jdtime.getMillis)
+  }
 
   def debug(v: BSONValue): String = v match {
     case d: BSONDocument => debugDoc(d)

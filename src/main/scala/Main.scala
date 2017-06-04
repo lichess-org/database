@@ -1,45 +1,49 @@
-import com.typesafe.config.ConfigFactory
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Sink, Source}
 
-import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.api.MongoConnection
-import reactivemongo.bson.BSONDocument
+import reactivemongo.bson._
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl._
 import reactivemongo.akkastream.{State, cursorProducer}
 
+import org.joda.time.DateTime
+
+import db.BSONDateTimeHandler
+
 object Main extends App {
-  println("Hello, World!")
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  override def main(args: Array[String]) {
+    val from = new DateTime(args.lift(0).getOrElse("2016-01")).withDayOfMonth(1).withTimeAtStartOfDay()
+    val to = from plusMonths 1
+    println(s"Export $from -> $to")
 
-  db.getColl foreach {
-    case (coll, close) =>
+    implicit val system = ActorSystem()
+    implicit val materializer = ActorMaterializer()
 
-      def printSink = Sink.foreach[BSONDocument] { d =>
-        println(db.debug(d))
-      }
+    db.getColl foreach {
+      case (coll, close) =>
 
-      def processGames(query: BSONDocument, limit: Int)(implicit m: Materializer) = {
+        val query = BSONDocument("ca" -> BSONDocument("$gte" -> from, "$lt" -> to))
 
-        val gameSource: Source[BSONDocument, Future[State]] =
-          coll.find(query).cursor[BSONDocument].documentSource(maxDocs = limit)
+        def printSink = Sink.foreach[String](s => println(s))
 
-        gameSource
-      }
+        def toPgn(doc: BSONDocument) = db.debug(doc)
 
-      processGames(BSONDocument(), 1000).runWith(printSink) andThen {
-        case state =>
-          println(state)
-          close()
-          system.terminate()
-      }
+        coll
+          .find(query)
+          .cursor[BSONDocument]
+          .documentSource(maxDocs = Int.MaxValue)
+          .map(toPgn)
+          .runWith(printSink) andThen {
+            case state =>
+              close()
+              system.terminate()
+          }
+    }
   }
 }
