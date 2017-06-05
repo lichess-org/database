@@ -46,7 +46,6 @@ object PgnDump {
     Tag(_.Result, result(game)),
     Tag(_.WhiteElo, rating(game.whitePlayer)),
     Tag(_.BlackElo, rating(game.blackPlayer)),
-    Tag("PlyCount", game.turns),
     Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
     Tag(_.Termination, {
       import chess.Status._
