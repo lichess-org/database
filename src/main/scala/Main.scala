@@ -27,7 +27,7 @@ object Main extends App {
     val from = new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
     val to = from plusMonths 1
 
-    val path = args.lift(1).getOrElse("lichess_db_%.pgn").replace("%", fromStr)
+    val path = args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
 
     println(s"Export $from to $path")
 
