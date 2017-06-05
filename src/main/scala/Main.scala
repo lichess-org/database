@@ -1,15 +1,16 @@
+import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
+import reactivemongo.api.ReadPreference
 import reactivemongo.bson._
 
 import akka.actor.ActorSystem
-import akka.stream.{ActorMaterializer, Materializer, IOResult}
+import akka.stream._
 import akka.stream.scaladsl._
 import akka.util.ByteString
-import reactivemongo.akkastream.{State, cursorProducer}
 import java.nio.file.Paths
+import reactivemongo.akkastream.{State, cursorProducer}
 
 import org.joda.time.DateTime
 
@@ -44,19 +45,25 @@ object Main extends App {
           "so" -> BSONDocument("$in" -> sources.map(_.id)),
           "v" -> BSONDocument("$exists" -> false))
 
-        def printSink = Sink.foreach[String](s => println(s))
+        type GameOrDate = Either[Game, DateTime]
 
-        def toPgn(g: Game) = g.toString
+        val gameSource = coll
+          .find(query)
+          .cursor[Game]()
+          .documentSource(maxDocs = Int.MaxValue)
+
+        val tickSource =
+          Source.tick(1.second, 1.second, None)
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
           Flow[Pgn]
             .map(pgn => ByteString(s"$pgn\n\n"))
             .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
-        coll
-          .find(query)
-          .cursor[Game]
-          .documentSource(maxDocs = 100000) // Int.MaxValue)
+        gameSource
+          .map(g => Some(g))
+          .merge(tickSource, eagerComplete = true)
+          .via(new Reporter)
           .map(g => PgnDump(g, None))
           .runWith(pgnSink) andThen {
             case state =>
