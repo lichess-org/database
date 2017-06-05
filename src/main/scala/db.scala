@@ -19,12 +19,15 @@ object db {
   val driver = new reactivemongo.api.MongoDriver
   val conn = driver connection MongoConnection.parseURI(dbUri).get
 
-  def getColl: Future[(BSONCollection, () => Unit)] =
-    conn.database(dbName).map(_.collection(collName)).map { coll =>
-      coll -> (() => {
-        conn.close()
-        driver.close()
-      })
+  def getColls: Future[(BSONCollection, BSONCollection, () => Unit)] =
+    conn.database(dbName).map { db =>
+      (
+        db collection "game5",
+        db collection "analysis2",
+        (() => {
+          conn.close()
+          driver.close()
+        }))
     }
 
   implicit object BSONDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {

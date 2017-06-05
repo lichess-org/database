@@ -16,6 +16,9 @@ import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
 import db.BSONDateTimeHandler
+import lila.analyse.Analysis
+import lila.analyse.Analysis.analysisBSONHandler
+import lila.game.BSONHandlers._
 import lila.game.BSONHandlers._
 import lila.game.{Game, PgnDump, Source => S}
 
@@ -34,8 +37,8 @@ object Main extends App {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
 
-    db.getColl foreach {
-      case (coll, close) =>
+    db.getColls foreach {
+      case (gameColl, analysisColl, close) =>
 
         val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
 
@@ -45,9 +48,7 @@ object Main extends App {
           "so" -> BSONDocument("$in" -> sources.map(_.id)),
           "v" -> BSONDocument("$exists" -> false))
 
-        type GameOrDate = Either[Game, DateTime]
-
-        val gameSource = coll
+        val gameSource = gameColl
           .find(query)
           .sort(BSONDocument("ca" -> 1))
           .cursor[Game]()
@@ -55,6 +56,19 @@ object Main extends App {
 
         val tickSource =
           Source.tick(1.second, 1.second, None)
+
+        type Analysed = (Game, Option[Analysis])
+
+        def withAnalysis(g: Game): Future[Analysed] =
+          if (g.metadata.analysed)
+            analysisColl.find(BSONDocument("_id" -> g.id)).one[Analysis] map { g -> _ }
+          else Future.successful(g -> None)
+
+        def toPgn(a: Analysed): Pgn = a match {
+          case (game, analysis) =>
+            val pgn = PgnDump(game, None)
+            lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
+        }
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
           Flow[Pgn]
@@ -65,7 +79,8 @@ object Main extends App {
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(new Reporter)
-          .map(g => PgnDump(g, None))
+          .mapAsync(4)(withAnalysis)
+          .map(toPgn)
           .runWith(pgnSink) andThen {
             case state =>
               close()
