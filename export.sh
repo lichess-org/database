@@ -1,7 +1,8 @@
 #!/bin/bash
 
 month=${1}
-file="out/lichess_db_$month.pgn"
+dir=${2}
+file="$dir/lichess_db_standard_rated_$month.pgn"
 
 echo "Export $month to $file"
 
