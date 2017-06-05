@@ -1,3 +1,5 @@
+package lichess
+
 import akka.stream._
 import akka.stream.scaladsl._
 import akka.stream.stage._

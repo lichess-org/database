@@ -1,3 +1,5 @@
+package lichess
+
 import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -15,7 +17,7 @@ import reactivemongo.akkastream.{State, cursorProducer}
 import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
-import db.BSONDateTimeHandler
+import lichess.DB.BSONDateTimeHandler
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
 import lila.game.BSONHandlers._
@@ -37,8 +39,8 @@ object Main extends App {
     implicit val system = ActorSystem()
     implicit val materializer = ActorMaterializer()
 
-    db.getColls foreach {
-      case (gameColl, analysisColl, close) =>
+    DB.get foreach {
+      case (db, close) =>
 
         val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
 
@@ -48,7 +50,7 @@ object Main extends App {
           "so" -> BSONDocument("$in" -> sources.map(_.id)),
           "v" -> BSONDocument("$exists" -> false))
 
-        val gameSource = gameColl
+        val gameSource = db.gameColl
           .find(query)
           .sort(BSONDocument("ca" -> 1))
           .cursor[Game]()
@@ -61,12 +63,16 @@ object Main extends App {
 
         def withAnalysis(g: Game): Future[Analysed] =
           if (g.metadata.analysed)
-            analysisColl.find(BSONDocument("_id" -> g.id)).one[Analysis] map { g -> _ }
+            db.analysisColl.find(BSONDocument("_id" -> g.id)).one[Analysis] map { g -> _ }
           else Future.successful(g -> None)
 
-        def toPgn(a: Analysed): Pgn = a match {
-          case (game, analysis) =>
-            val pgn = PgnDump(game, None)
+        type WithUsers = (Analysed, Users)
+        def withUsers(a: Analysed): Future[WithUsers] =
+          db.users(a._1).map { a -> _ }
+
+        def toPgn(w: WithUsers): Pgn = w match {
+          case ((game, analysis), users) =>
+            val pgn = PgnDump(game, users, None)
             lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
         }
 
@@ -79,7 +85,8 @@ object Main extends App {
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(new Reporter)
-          .mapAsync(4)(withAnalysis)
+          .mapAsync(16)(withAnalysis)
+          .mapAsync(16)(withUsers)
           .map(toPgn)
           .runWith(pgnSink) andThen {
             case state =>

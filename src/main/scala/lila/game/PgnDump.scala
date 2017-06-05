@@ -3,13 +3,14 @@ package lila.game
 import chess.format.Forsyth
 import chess.format.pgn.{Pgn, Tag, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
-import chess.{Centis, Color}
+import chess.{Centis, Color, White, Black}
+import lichess.Users
 import org.joda.time.format.DateTimeFormat
 
 object PgnDump {
 
-  def apply(game: Game, initialFen: Option[String]): Pgn = {
-    val ts = tags(game, initialFen)
+  def apply(game: Game, users: Users, initialFen: Option[String]): Pgn = {
+    val ts = tags(game, users, initialFen)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
     val moves2 =
       if (fenSituation.fold(false)(_.situation.color.black)) ".." :: game.pgnMoves
@@ -32,38 +33,42 @@ object PgnDump {
 
   private def rating(p: Player) = p.rating.fold("?")(_.toString)
 
-  private def player(p: Player) =
-    p.aiLevel.fold(p.userId.getOrElse(p.name getOrElse "Anon"))("lichess AI level " + _)
+  private def player(g: Game, color: Color, users: Users) = {
+    val player = g.player(color)
+    player.aiLevel.fold(users(color).name)("lichess AI level " + _)
+  }
 
   private val customStartPosition: Set[chess.variant.Variant] =
     Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
 
-  def tags(game: Game, initialFen: Option[String]): List[Tag] = List(
+  def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
     Tag(_.Site, gameUrl(game.id)),
     Tag(_.Date, dateFormat.print(game.createdAt)),
-    Tag(_.White, player(game.whitePlayer)),
-    Tag(_.Black, player(game.blackPlayer)),
-    Tag(_.Result, result(game)),
+    Tag(_.White, player(game, White, users)),
+    Tag(_.Black, player(game, Black, users)),
     Tag(_.WhiteElo, rating(game.whitePlayer)),
-    Tag(_.BlackElo, rating(game.blackPlayer)),
-    Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
-    Tag(_.Termination, {
-      import chess.Status._
-      game.status match {
-        case Created | Started => "Unterminated"
-        case Aborted | NoStart => "Abandoned"
-        case Timeout | Outoftime => "Time forfeit"
-        case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
-        case Cheat => "Rules infraction"
-        case UnknownFinish => "Unknown"
-      }
-    })) ::: {
-      if (customStartPosition(game.variant)) List(Tag(_.FEN, initialFen getOrElse "?"), Tag("SetUp", "1"))
-      else Nil
-    } ::: {
-      if (game.variant.exotic) List(Tag(_.Variant, game.variant.name.capitalize))
-      else Nil
-    }
+    Tag(_.BlackElo, rating(game.blackPlayer))) ::: List(
+      users.white.title.map { t => Tag(_.WhiteTitle, t) },
+      users.black.title.map { t => Tag(_.BlackTitle, t) }).flatten ::: List(
+        Tag(_.Result, result(game)),
+        Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
+        Tag(_.Termination, {
+          import chess.Status._
+          game.status match {
+            case Created | Started => "Unterminated"
+            case Aborted | NoStart => "Abandoned"
+            case Timeout | Outoftime => "Time forfeit"
+            case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
+            case Cheat => "Rules infraction"
+            case UnknownFinish => "Unknown"
+          }
+        })) ::: {
+          if (customStartPosition(game.variant)) List(Tag(_.FEN, initialFen getOrElse "?"), Tag("SetUp", "1"))
+          else Nil
+        } ::: {
+          if (game.variant.exotic) List(Tag(_.Variant, game.variant.name.capitalize))
+          else Nil
+        }
 
   private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
