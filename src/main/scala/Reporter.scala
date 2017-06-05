@@ -20,9 +20,9 @@ class Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
 
     setHandler(in, new InHandler {
       override def onPush() = {
-        counter += 1
         grab(in) match {
           case Some(g) => {
+            counter += 1
             date = Some(g.createdAt)
             push(out, g)
           }

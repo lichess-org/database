@@ -49,6 +49,7 @@ object Main extends App {
 
         val gameSource = coll
           .find(query)
+          .sort(BSONDocument("ca" -> 1))
           .cursor[Game]()
           .documentSource(maxDocs = Int.MaxValue)
 
