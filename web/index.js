@@ -54,7 +54,6 @@ function renderTable(files) {
     <td>${f.date.format('MMMM YYYY')}</td>
     <td>${prettyBytes(f.size)}</td>
     <td>~${numberFormat(f.games)}</td>
-    <td class="center">✔</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
     <td><a href="${f.name}">${f.shortName}</a></td>
     </tr>`;

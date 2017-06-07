@@ -25,7 +25,6 @@
                 <th>Date</th>
                 <th>Size</th>
                 <th>Games</th>
-                <th class="center">Eval</th>
                 <th class="center">Clock</th>
                 <th>Download</th>
               </tr>
@@ -41,8 +40,8 @@
         <br /><br />
         <section>
           <p>
-            Some games include stockfish 8 analysis evaluations, in the format <code>[%eval +2.35]</code>.<br />
-            In files with <strong>✔ Clock</strong>, real-time games include clock states, as <code>[%clk 0:01:00]</code>.<br />
+            Some games include Stockfish analysis evaluations in the format <code>[%eval +2.35]</code>.<br />
+            In files with <strong>✔ Clock</strong> real-time games include clock states, like <code>[%clk 0:01:00]</code>.<br />
             The number of games per file is estimated, with 98% accuracy.
           </p>
         </section>
@@ -51,7 +50,7 @@
         <section>
           <h3>Extract bz2 files</h3>
           <ul>
-            <li>Linux: <code>bzip -k filename.pgn.bz2</code></li>
+            <li>Linux: <code>bunzip2 filename.pgn.bz2</code></li>
             <li>Windows: use <a href="http://www.7-zip.org/download.html">7zip</a></li>
             <li>OSX: just click it</li>
           </ul>
