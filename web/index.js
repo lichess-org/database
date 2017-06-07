@@ -25,7 +25,7 @@ function fileInfo(n) {
 
 function getFiles() {
   return fs.readdir(sourceDir).then(items => {
-    return Promise.all(items.filter(n => n.includes('.pgn.bz2')).map(fileInfo));
+    return Promise.all(items.reverse().filter(n => n.includes('.pgn.bz2')).map(fileInfo));
   });
 }
 
