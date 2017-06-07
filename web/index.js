@@ -9,21 +9,17 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 160;
-const sizePerGameAfterClock = 230;
-
 function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
 }
 
-function fileInfo(n) {
+function fileInfo(gameCounts, n) {
   const path = sourceDir + '/' + n;
   return fs.stat(path).then(s => {
     const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.bz2/, '$1');
     const m = moment(dateStr);
     const shortName = n.replace(/.+(\d{4}-\d{2}.+)$/, '$1');
     const hasClock = m.unix() >= clockSince.unix();
-    const sizePerGame = hasClock ? sizePerGameAfterClock : sizePerGameBeforeClock;
     return {
       name: n,
       shortName: shortName,
@@ -31,15 +27,25 @@ function fileInfo(n) {
       size: s.size,
       date: m,
       clock: hasClock,
-      games: Math.round(s.size / sizePerGame / 10000) * 10000
+      games: gameCounts[n],
     };
   });
 }
 
-function getFiles() {
+function getGameCounts() {
+  return fs.readFile(sourceDir + '/counts.txt', { encoding: 'utf8' }).then(c => {
+    let gameCounts = {};
+    c.split('\n').map(l => l.trim()).forEach(line => {
+      if (line !== '') gameCounts[line.split(' ')[0]] = line.split(' ')[1];
+    });
+    return gameCounts;
+  });
+}
+
+function getFiles(gameCounts) {
   return fs.readdir(sourceDir).then(items => {
     return Promise.all(
-      items.filter(n => n.includes('.pgn.bz2')).map(fileInfo)
+      items.filter(n => n.includes('.pgn.bz2')).map(n => fileInfo(gameCounts, n))
     );
   }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
 }
@@ -52,8 +58,8 @@ function renderTable(files) {
   return files.map(f => {
     return `<tr>
     <td>${f.date.format('MMMM YYYY')}</td>
-    <td>${prettyBytes(f.size)}</td>
-    <td>~${numberFormat(f.games)}</td>
+    <td class="right">${prettyBytes(f.size)}</td>
+    <td class="right">${numberFormat(f.games)}</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
     <td><a href="${f.name}">${f.shortName}</a></td>
     </tr>`;
@@ -63,8 +69,8 @@ function renderTable(files) {
 function renderTotal(files) {
   return `<tr class="total">
   <td>Total: ${files.length} files</td>
-  <td>${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
-  <td>~${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>
+  <td class="right">${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
+  <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>
   <td></td>
   <td></td>
   <td></td>
@@ -78,7 +84,7 @@ function renderList(files) {
 }
 
 Promise.all([
-  getFiles(),
+  getGameCounts().then(counts => getFiles(counts)),
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
 ]).then(arr => {

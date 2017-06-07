@@ -119,6 +119,9 @@ table td {
 table .center {
   text-align: center;
 }
+table .right {
+  text-align: right;
+}
 table .total td {
   font-weight: bold;
 }
