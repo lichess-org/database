@@ -62,7 +62,7 @@ function renderTable(files) {
 }
 
 function renderTotal(files) {
-  return `<tr>
+  return `<tr class="total">
   <td>Total: ${files.length} files</td>
   <td>${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
   <td>~${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>

@@ -119,6 +119,9 @@ table td {
 table .center {
   text-align: center;
 }
+table .total td {
+  font-weight: bold;
+}
 table td a:hover {
   text-decoration: underline;
 }
