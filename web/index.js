@@ -51,5 +51,5 @@ Promise.all([
   const rendered = tpl
     .replace(/<!-- files -->/, renderTable(files))
     .replace(/<!-- style -->/, style);
-  fs.writeFile(indexFile, rendered);
+  fs.writeFile(sourceDir + '/' + indexFile, rendered);
 });
