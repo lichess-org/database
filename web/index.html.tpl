@@ -25,7 +25,6 @@
                 <th>Date</th>
                 <th>Size</th>
                 <th>Games</th>
-                <th class="center">Eval</th>
                 <th class="center">Clock</th>
                 <th>Download</th>
               </tr>
