@@ -40,6 +40,14 @@
 
         <br /><br />
         <section>
+          <p>
+            Some games include stockfish 8 analysis evaluations, in the format <code>[%eval +2.35]</code>.<br />
+            In files with <strong>✔ Clock</strong>, all games include clock states, in the format <code>[%clk 0:01:00]</code>.
+          </p>
+        </section>
+
+        <br /><br />
+        <section>
           <h3>Extract bz2 files</h3>
           <ul>
             <li>Linux: <code>bzip -k filename.pgn.bz2</code></li>
