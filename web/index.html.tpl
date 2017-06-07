@@ -60,6 +60,7 @@
         <section>
           <h3>Plain text download list</h3>
           <pre><!-- list --></pre>
+          <p>Checksums: <a href="sha256sums.txt">SHA256</a></p>
         </section>
 
         <footer>
