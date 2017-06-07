@@ -42,7 +42,8 @@
         <section>
           <p>
             Some games include stockfish 8 analysis evaluations, in the format <code>[%eval +2.35]</code>.<br />
-            In files with <strong>✔ Clock</strong>, real-time games include clock states, as <code>[%clk 0:01:00]</code>.
+            In files with <strong>✔ Clock</strong>, real-time games include clock states, as <code>[%clk 0:01:00]</code>.<br />
+            The number of games per file is roughly estimated, with 99% accuracy.
           </p>
         </section>
 
