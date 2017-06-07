@@ -9,7 +9,7 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 124;
+const sizePerGameBeforeClock = 180;
 const sizePerGameAfterClock = 260;
 
 function numberFormat(n) {
@@ -72,6 +72,12 @@ function renderTotal(files) {
   </tr>`;
 }
 
+function renderList(files) {
+  return files.map(f => {
+    return `https://database.lichess.org/${f.name}`;
+  }).join('\n');
+}
+
 Promise.all([
   getFiles(),
   fs.readFile(indexTpl, { encoding: 'utf8' }),
@@ -80,6 +86,7 @@ Promise.all([
   const rendered = arr[1]
     .replace(/<!-- files -->/, renderTable(arr[0]))
     .replace(/<!-- total -->/, renderTotal(arr[0]))
+    .replace(/<!-- list -->/, renderList(arr[0]))
     .replace(/<!-- style -->/, arr[2]);
   fs.writeFile(sourceDir + '/' + indexFile, rendered);
 });

@@ -48,6 +48,12 @@
           </ul>
         </section>
 
+        <br /><br />
+        <section>
+          <h3>Plain text download list</h3>
+          <pre><!-- list --></pre>
+        </section>
+
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain. Enjoy!
         </footer>
