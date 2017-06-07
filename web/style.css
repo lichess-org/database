@@ -122,3 +122,6 @@ table .center {
 table td a:hover {
   text-decoration: underline;
 }
+pre {
+  font-size: 0.8em;
+}
