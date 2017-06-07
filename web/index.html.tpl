@@ -37,6 +37,16 @@
 
         </section>
 
+        <br /><br />
+        <section>
+          <h3>Extract bz2 files</h3>
+          <ul>
+            <li>Linux: <code>bzip -k filename.pgn.bz2</code></li>
+            <li>Windows: use <a href="http://www.7-zip.org/download.html">7zip</a></li>
+            <li>OSX: just click it</li>
+          </ul>
+        </section>
+
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain. Enjoy!
         </footer>
