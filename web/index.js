@@ -28,7 +28,7 @@ function getFiles() {
     return Promise.all(
       items.filter(n => n.includes('.pgn.bz2')).map(fileInfo)
     );
-  }).then(items => items.sort((a, b) => a.date < b.date));
+  }).then(items => items.sort((a, b) => a.name < b.name));
 }
 
 function getIndex() {
@@ -50,7 +50,6 @@ Promise.all([
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
 ]).then(arr => {
-  console.log(arr[0]);
   const rendered = arr[1]
     .replace(/<!-- files -->/, renderTable(arr[0]))
     .replace(/<!-- style -->/, arr[2]);
