@@ -17,15 +17,15 @@
         </header>
         <hr>
         <section id="main_content">
-          <p>All standard rated games, in PGN, with stockfish evaluations and move times included.</p>
+          <p>All standard rated games, in PGN format.</p>
 
           <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Size</th>
-                <th>Analysis</th>
-                <th>Move times</th>
+                <th class="center">Eval</th>
+                <th class="center">Clock</th>
                 <th>Download</th>
               </tr>
             </thead>
