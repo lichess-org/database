@@ -47,9 +47,9 @@ Promise.all([
   getFiles(),
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
-]).then(([files, tpl, style]) => {
-  const rendered = tpl
-    .replace(/<!-- files -->/, renderTable(files))
-    .replace(/<!-- style -->/, style);
+]).then(arr => {
+  const rendered = arr[1]
+    .replace(/<!-- files -->/, renderTable(arr[0]))
+    .replace(/<!-- style -->/, arr[2]);
   fs.writeFile(sourceDir + '/' + indexFile, rendered);
 });
