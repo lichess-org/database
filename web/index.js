@@ -9,8 +9,8 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 180;
-const sizePerGameAfterClock = 260;
+const sizePerGameBeforeClock = 160;
+const sizePerGameAfterClock = 230;
 
 function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
@@ -31,7 +31,7 @@ function fileInfo(n) {
       size: s.size,
       date: m,
       clock: hasClock,
-      games: Math.round(s.size / sizePerGame / 1000) * 1000
+      games: Math.round(s.size / sizePerGame / 10000) * 10000
     };
   });
 }
