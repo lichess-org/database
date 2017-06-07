@@ -17,13 +17,14 @@
         </header>
         <hr>
         <section id="main_content">
-          <p>All standard rated games, in PGN format.</p>
+          <p>All standard rated games played on <a href="https://lichess.org">lichess.org</a>, in PGN format.</p>
 
           <table>
             <thead>
               <tr>
                 <th>Date</th>
                 <th>Size</th>
+                <th>Games</th>
                 <th class="center">Eval</th>
                 <th class="center">Clock</th>
                 <th>Download</th>

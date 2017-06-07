@@ -7,7 +7,14 @@ const indexFile = 'index.html';
 const indexTpl = indexFile + '.tpl';
 const styleFile = 'style.css';
 
-const movetimesSince = moment('2017-04');
+const clockSince = moment('2017-04');
+
+const sizePerGameBeforeClock = 124;
+const sizePerGameAfterClock = 2400;
+
+function numberFormat(n) {
+  return new Intl.NumberFormat().format(n);
+}
 
 function fileInfo(n) {
   const path = sourceDir + '/' + n;
@@ -15,13 +22,16 @@ function fileInfo(n) {
     const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.bz2/, '$1');
     const m = moment(dateStr);
     const shortName = n.replace(/.+(\d{4}-\d{2}.+)$/, '$1');
+    const hasClock = m.unix() >= clockSince.unix();
+    const sizePerGame = hasClock ? sizePerGameAfterClock : sizePerGameBeforeClock;
     return {
       name: n,
       shortName: shortName,
       path: path,
       size: s.size,
       date: m,
-      movetimes: m.unix() >= movetimesSince.unix()
+      clock: hasClock,
+      games: Math.round(s.size / sizePerGame / 1000) * 1000
     };
   });
 }
@@ -43,8 +53,9 @@ function renderTable(files) {
     return `<tr>
     <td>${f.date.format('MMMM YYYY')}</td>
     <td>${prettyBytes(f.size)}</td>
+    <td>~${numberFormat(f.games)}</td>
     <td class="center">✔</td>
-    <td class="center">${f.movetimes ? '✔' : ''}</td>
+    <td class="center">${f.clock ? '✔' : ''}</td>
     <td><a href="${f.name}">${f.shortName}</a></td>
     </tr>`;
   }).join('\n');
@@ -54,6 +65,7 @@ function renderTotal(files) {
   return `<tr>
   <td>Total: ${files.length} files</td>
   <td>${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
+  <td>${files.map(f => f.games).reduce((a, b) => a + b)}</td>
   <td></td>
   <td></td>
   <td></td>
