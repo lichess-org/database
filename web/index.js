@@ -9,8 +9,8 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 260;
-const sizePerGameAfterClock = 2400;
+const sizePerGameBeforeClock = 124;
+const sizePerGameAfterClock = 260;
 
 function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
