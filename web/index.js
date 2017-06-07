@@ -9,7 +9,7 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 124;
+const sizePerGameBeforeClock = 260;
 const sizePerGameAfterClock = 2400;
 
 function numberFormat(n) {
@@ -65,7 +65,7 @@ function renderTotal(files) {
   return `<tr>
   <td>Total: ${files.length} files</td>
   <td>${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
-  <td>${files.map(f => f.games).reduce((a, b) => a + b)}</td>
+  <td>${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>
   <td></td>
   <td></td>
   <td></td>
