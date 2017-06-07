@@ -24,11 +24,14 @@
               <tr>
                 <th>Date</th>
                 <th>Size</th>
+                <th>Analysis</th>
+                <th>Move times</th>
                 <th>Download</th>
               </tr>
             </thead>
             <tbody>
               <!-- files -->
+              <!-- total -->
             </tbody>
           </table>
 

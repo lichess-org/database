@@ -116,6 +116,9 @@ table th,
 table td {
   padding: 3px 10px;
 }
+table .center {
+  text-align: center;
+}
 table td a:hover {
   text-decoration: underline;
 }
