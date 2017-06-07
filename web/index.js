@@ -9,9 +9,6 @@ const styleFile = 'style.css';
 
 const clockSince = moment('2017-04');
 
-const sizePerGameBeforeClock = 160;
-const sizePerGameAfterClock = 230;
-
 function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
 }
@@ -23,7 +20,6 @@ function fileInfo(gameCounts, n) {
     const m = moment(dateStr);
     const shortName = n.replace(/.+(\d{4}-\d{2}.+)$/, '$1');
     const hasClock = m.unix() >= clockSince.unix();
-    const sizePerGame = hasClock ? sizePerGameAfterClock : sizePerGameBeforeClock;
     return {
       name: n,
       shortName: shortName,
