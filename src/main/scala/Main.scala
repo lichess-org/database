@@ -56,7 +56,7 @@ object Main extends App {
           .documentSource(maxDocs = Int.MaxValue)
 
         val tickSource =
-          Source.tick(10.second, 10.second, None)
+          Source.tick(Reporter.freq, Reporter.freq, None)
 
         def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
           g -> chess.Replay.boards(g.pgnMoves, None, g.variant).fold(
@@ -104,9 +104,9 @@ object Main extends App {
         gameSource
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
-          .via(new Reporter)
-          .mapAsyncUnordered(16)(checkLegality)
-          .filter(_._2).map(_._1)
+          .via(Reporter)
+          // .mapAsyncUnordered(16)(checkLegality)
+          // .filter(_._2).map(_._1)
           .mapAsyncUnordered(16)(withAnalysis)
           .mapAsyncUnordered(16)(withUsers)
           .map(toPgn)

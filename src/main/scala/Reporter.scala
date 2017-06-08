@@ -3,12 +3,16 @@ package lichess
 import akka.stream._
 import akka.stream.scaladsl._
 import akka.stream.stage._
+import scala.concurrent.duration._
 
-import org.joda.time.format._
-import org.joda.time.DateTime
 import lila.game.Game
+import org.joda.time.DateTime
+import org.joda.time.format._
 
-class Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
+object Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
+
+  val freq = 10.seconds
+
   val in = Inlet[Option[Game]]("reporter.in")
   val out = Outlet[Game]("reporter.out")
   override val shape = FlowShape.of(in, out)
@@ -18,6 +22,7 @@ class Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
     private val formatter = DateTimeFormat forStyle "MS"
 
     private var counter = 0
+    private var prev = 0
     private var date: Option[DateTime] = None
 
     setHandler(in, new InHandler {
@@ -29,7 +34,8 @@ class Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
             push(out, g)
           }
           case None => {
-            println(s"${date.fold("-")(formatter.print)} $counter")
+            val gps = (counter - prev) / freq.toSeconds
+            println(s"${date.fold("-")(formatter.print)} $counter $gps/s")
             pull(in)
           }
         }
@@ -41,10 +47,10 @@ class Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
         }
       })
 
-//       override def onUpstreamFinish(): Unit = {
-//         println("finished?")
-//         completeStage()
-//       }
+      //       override def onUpstreamFinish(): Unit = {
+      //         println("finished?")
+      //         completeStage()
+      //       }
     })
 
   }
