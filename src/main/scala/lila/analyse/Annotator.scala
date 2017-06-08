@@ -11,18 +11,9 @@ object Annotator {
     analysis: Option[Analysis],
     winner: Option[Color],
     status: Status,
-    clock: Option[Clock]): Pgn =
-    annotateStatus(winner, status) {
-      addEvals(
-        addGlyphs(p, analysis.fold(List.empty[Advice])(_.advices)),
-        analysis.fold(List.empty[Info])(_.infos))
-    }
-
-  private def annotateStatus(winner: Option[Color], status: Status)(p: Pgn) =
-    lila.game.StatusText(status, winner, chess.variant.Standard) match {
-      case "" => p
-      case text => p.updateLastPly(_.copy(result = Some(text)))
-    }
+    clock: Option[Clock]): Pgn = addEvals(
+    addGlyphs(p, analysis.fold(List.empty[Advice])(_.advices)),
+    analysis.fold(List.empty[Info])(_.infos))
 
   private def addGlyphs(p: Pgn, advices: List[Advice]): Pgn =
     advices.foldLeft(p) {
