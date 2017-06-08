@@ -63,6 +63,8 @@ object PgnDump {
     Tag(_.BlackElo, rating(game.blackPlayer))) ::: List(
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
       users.black.title.map { t => Tag(_.BlackTitle, t) }).flatten ::: List(
+        Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
+        Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
         Tag(_.Result, result(game)),
         Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
         Tag(_.Termination, {

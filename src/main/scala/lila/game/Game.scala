@@ -127,7 +127,9 @@ case class Game(
 
   lazy val pgnMoves: PgnMoves = BinaryFormat.pgn read binaryPgn
 
-  def openingPgnMoves(nb: Int): PgnMoves = BinaryFormat.pgn.read(binaryPgn, nb)
+  lazy val opening: Option[FullOpening.AtPly] =
+    if (fromPosition || !Variant.openingSensibleVariants(variant)) None
+    else FullOpeningDB search pgnMoves
 
   def pgnMoves(color: Color): PgnMoves = {
     val pivot = if (color == startColor) 0 else 1
