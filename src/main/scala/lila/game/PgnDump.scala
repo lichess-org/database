@@ -50,12 +50,11 @@ object PgnDump {
         else "Casual game"
       }),
     Tag(_.Site, gameUrl(game.id)),
-    Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
-    Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
-    Tag(_.Round, "-"),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
     Tag(_.Result, result(game)),
+    Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
+    Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.WhiteElo, elo(game.whitePlayer)),
     Tag(_.BlackElo, elo(game.blackPlayer)),
     ) ::: List(
