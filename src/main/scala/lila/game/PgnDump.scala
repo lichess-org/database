@@ -5,8 +5,6 @@ import chess.format.pgn.{Pgn, Tag, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
 import chess.{Centis, Color, White, Black}
 import lichess.Users
-import org.joda.time.DateTimeZone
-import org.joda.time.format.DateTimeFormat
 
 object PgnDump {
 
@@ -30,9 +28,6 @@ object PgnDump {
 
   private def gameUrl(id: String) = s"https://lichess.org/$id"
 
-  private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd" withZone DateTimeZone.UTC
-  private val timeFormat = DateTimeFormat forPattern "HH:MM:SS" withZone DateTimeZone.UTC
-
   private def rating(p: Player) = p.rating.fold("?")(_.toString)
 
   private def player(g: Game, color: Color, users: Users) = {
@@ -55,8 +50,8 @@ object PgnDump {
         if (game.rated) "Rated game"
         else "Casual game"
       }),
-    Tag(_.UTCDate, dateFormat.print(game.createdAt)),
-    Tag(_.UTCTime, timeFormat.print(game.createdAt)),
+    Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
+    Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
     Tag(_.WhiteElo, rating(game.whitePlayer)),
