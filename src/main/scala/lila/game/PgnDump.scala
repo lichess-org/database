@@ -39,7 +39,6 @@ object PgnDump {
     Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
 
   def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
-    Tag(_.Site, gameUrl(game.id)),
     Tag(
       _.Event,
       game.tournamentId.map { id =>
@@ -50,10 +49,13 @@ object PgnDump {
         if (game.rated) "Rated game"
         else "Casual game"
       }),
+    Tag(_.Site, gameUrl(game.id)),
     Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
     Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
+    Tag(_.Round, "-"),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
+    Tag(_.Result, result(game)),
     Tag(_.WhiteElo, elo(game.whitePlayer)),
     Tag(_.BlackElo, elo(game.blackPlayer)),
     ) ::: List(
@@ -63,7 +65,6 @@ object PgnDump {
       users.black.title.map { t => Tag(_.BlackTitle, t) }).flatten ::: List(
         Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
         Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
-        Tag(_.Result, result(game)),
         Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
         Tag(_.Termination, {
           import chess.Status._
