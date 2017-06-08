@@ -28,7 +28,7 @@ function fileInfo(gameCounts, n) {
       size: s.size,
       date: m,
       clock: hasClock,
-      games: parseInt(gameCounts[n])
+      games: parseInt(gameCounts[n]) || 0
     };
   });
 }
@@ -56,7 +56,7 @@ function renderTable(files) {
     return `<tr>
     <td>${f.date.format('MMMM YYYY')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
-    <td class="right">${numberFormat(f.games)}</td>
+    <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
     <td><a href="${f.name}">${f.shortName}</a></td>
     </tr>`;
@@ -85,6 +85,7 @@ Promise.all([
   fs.readFile(styleFile, { encoding: 'utf8' })
 ]).then(arr => {
   const rendered = arr[1]
+    .replace(/<!-- nbGames -->/, numberFormat(arr[0].map(f => f.games).reduce((a, b) => a + b)))
     .replace(/<!-- files -->/, renderTable(arr[0]))
     .replace(/<!-- total -->/, renderTotal(arr[0]))
     .replace(/<!-- style -->/, arr[2]);

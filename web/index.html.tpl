@@ -17,7 +17,7 @@
         </header>
         <hr>
         <section id="main_content">
-          <p>All standard rated games played on <a href="https://lichess.org">lichess.org</a>, in PGN format.</p>
+          <p><strong><!-- nbGames --></strong> standard rated games, played on lichess.org, in PGN format.</p>
 
           <table>
             <thead>
