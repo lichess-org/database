@@ -5,6 +5,7 @@ import chess.format.pgn.{Pgn, Tag, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
 import chess.{Centis, Color, White, Black}
 import lichess.Users
+import org.joda.time.DateTimeZone
 import org.joda.time.format.DateTimeFormat
 
 object PgnDump {
@@ -29,7 +30,8 @@ object PgnDump {
 
   private def gameUrl(id: String) = s"https://lichess.org/$id"
 
-  private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd";
+  private val dateFormat = DateTimeFormat forPattern "yyyy.MM.dd" withZone DateTimeZone.UTC
+  private val timeFormat = DateTimeFormat forPattern "HH:MM:SS" withZone DateTimeZone.UTC
 
   private def rating(p: Player) = p.rating.fold("?")(_.toString)
 
@@ -43,7 +45,18 @@ object PgnDump {
 
   def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
     Tag(_.Site, gameUrl(game.id)),
-    Tag(_.Date, dateFormat.print(game.createdAt)),
+    Tag(
+      _.Event,
+      game.tournamentId.map { id =>
+        s"https://lichess.org/tournament/$id"
+      } orElse game.simulId.map { id =>
+        s"https://lichess.org/simul/$id"
+      } getOrElse {
+        if (game.rated) "Rated game"
+        else "Casual game"
+      }),
+    Tag(_.UTCDate, dateFormat.print(game.createdAt)),
+    Tag(_.UTCTime, timeFormat.print(game.createdAt)),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
     Tag(_.WhiteElo, rating(game.whitePlayer)),
