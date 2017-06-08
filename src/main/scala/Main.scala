@@ -92,7 +92,13 @@ object Main extends App {
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
           Flow[Pgn]
-            .map(pgn => ByteString(s"$pgn\n\n"))
+            .map { pgn =>
+              // merge analysis & eval comments
+              // 1. e4 { [%eval 0.17] } { [%clk 0:00:30] }
+              // 1. e4 { [%eval 0.17] [%clk 0:00:30] }
+              val str = pgn.toString.replace("] } { [", "] [")
+              ByteString(s"$str\n\n")
+            }
             .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
         gameSource
