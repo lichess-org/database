@@ -38,17 +38,19 @@ object PgnDump {
   private val customStartPosition: Set[chess.variant.Variant] =
     Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
 
+  private def eventOf(game: Game) = {
+    val perf = game.perfType.fold("Standard")(_.name)
+    game.tournamentId.map { id =>
+      s"${game.mode} $perf tournament https://lichess.org/tournament/$id"
+    } orElse game.simulId.map { id =>
+      s"$perf simul https://lichess.org/simul/$id"
+    } getOrElse {
+      s"${game.mode} $perf game"
+    }
+  }
+
   def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
-    Tag(
-      _.Event,
-      game.tournamentId.map { id =>
-        s"https://lichess.org/tournament/$id"
-      } orElse game.simulId.map { id =>
-        s"https://lichess.org/simul/$id"
-      } getOrElse {
-        if (game.rated) "Rated game"
-        else "Casual game"
-      }),
+    Tag(_.Event, eventOf(game)),
     Tag(_.Site, gameUrl(game.id)),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
@@ -56,32 +58,29 @@ object PgnDump {
     Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
     Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.WhiteElo, elo(game.whitePlayer)),
-    Tag(_.BlackElo, elo(game.blackPlayer)),
-    ) ::: List(
+    Tag(_.BlackElo, elo(game.blackPlayer))) ::: List(
       game.whitePlayer.ratingDiff.map { rd => Tag(_.WhiteRatingDiff, rd) },
       game.blackPlayer.ratingDiff.map { rd => Tag(_.BlackRatingDiff, rd) },
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
-      users.black.title.map { t => Tag(_.BlackTitle, t) }).flatten ::: List(
-        Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
-        Tag(_.Opening, game.opening.fold("?")(_.opening.name)),
-        Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" }),
-        Tag(_.Termination, {
-          import chess.Status._
-          game.status match {
-            case Created | Started => "Unterminated"
-            case Aborted | NoStart => "Abandoned"
-            case Timeout | Outoftime => "Time forfeit"
-            case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
-            case Cheat => "Rules infraction"
-            case UnknownFinish => "Unknown"
-          }
-        })) ::: {
-          if (customStartPosition(game.variant)) List(Tag(_.FEN, initialFen getOrElse "?"), Tag("SetUp", "1"))
-          else Nil
-        } ::: {
-          if (game.variant.exotic) List(Tag(_.Variant, game.variant.name.capitalize))
-          else Nil
+      users.black.title.map { t => Tag(_.BlackTitle, t) },
+      Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))),
+      Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))),
+      Some(Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" })),
+      Some(Tag(_.Termination, {
+        import chess.Status._
+        game.status match {
+          case Created | Started => "Unterminated"
+          case Aborted | NoStart => "Abandoned"
+          case Timeout | Outoftime => "Time forfeit"
+          case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
+          case Cheat => "Rules infraction"
+          case UnknownFinish => "Unknown"
         }
+      })),
+      if (customStartPosition(game.variant)) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
+      if (customStartPosition(game.variant)) Some(Tag("SetUp", "1")) else None,
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name.capitalize)) else None
+    ).flatten
 
   private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {

@@ -150,6 +150,9 @@ case class Game(
 
   def speed = chess.Speed(clock.map(_.config))
 
+  def perfKey = PerfPicker.key(this)
+  def perfType = lila.rating.PerfType(perfKey)
+
   def started = status >= Status.Started
 
   def notStarted = !started
