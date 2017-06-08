@@ -58,10 +58,10 @@ object Main extends App {
         val tickSource =
           Source.tick(10.second, 10.second, None)
 
-        def checkLegality(g: Game) =
-          chess.Replay.boards(g.pgnMoves, None, g.variant).fold(
+        def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
+          g -> chess.Replay.boards(g.pgnMoves, None, g.variant).fold(
             err => {
-              println(s"Replay error ${g.id} $err")
+              println(s"Replay error ${g.id} ${err.toString.take(60)}")
               false
             },
             boards => {
@@ -71,6 +71,7 @@ object Main extends App {
                 false
               }
             })
+        }
 
         type Analysed = (Game, Option[Analysis])
 
@@ -98,9 +99,10 @@ object Main extends App {
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(new Reporter)
-          .filter(checkLegality)
-          .mapAsync(32)(withAnalysis)
-          .mapAsync(32)(withUsers)
+          .mapAsyncUnordered(16)(checkLegality)
+          .filter(_._2).map(_._1)
+          .mapAsyncUnordered(16)(withAnalysis)
+          .mapAsyncUnordered(16)(withUsers)
           .map(toPgn)
           .runWith(pgnSink) andThen {
             case state =>
