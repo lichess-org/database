@@ -68,6 +68,19 @@ object BinaryFormat {
   }
 
   case class clock(start: Timestamp) {
+
+    def legacyElapsed(clock: Clock, color: Color) =
+      clock.limit - clock.players(color).remaining
+
+    def computeRemaining(config: Clock.Config, legacyElapsed: Centis) =
+      config.limit - legacyElapsed
+
+    // TODO: new binary clock format
+    // - clock history
+    // - berserk bits
+    // - "real" elapsed
+    // - lag stats
+
     def write(clock: Clock): ByteArray = ???
 
     def read(ba: ByteArray, whiteBerserk: Boolean, blackBerserk: Boolean): Color => Clock = color => {
@@ -84,36 +97,53 @@ object BinaryFormat {
       ia match {
         case Array(b1, b2, b3, b4, b5, b6, b7, b8, _*) => {
           val config = Clock.Config(readClockLimit(b1), b2)
-          val whiteTime = Centis(readSignedInt24(b3, b4, b5))
-          val blackTime = Centis(readSignedInt24(b6, b7, b8))
-          timer.fold[Clock](
-            PausedClock(
-              config = config,
-              color = color,
-              whiteTime = whiteTime,
-              blackTime = blackTime,
-              whiteBerserk = whiteBerserk,
-              blackBerserk = blackBerserk
-            )
-          )(t =>
-              RunningClock(
+          val legacyWhite = Centis(readSignedInt24(b3, b4, b5))
+          val legacyBlack = Centis(readSignedInt24(b6, b7, b8))
+          Clock(
+            config = config,
+            color = color,
+            players = Color.Map(
+              ClockPlayer(
                 config = config,
-                color = color,
-                whiteTime = whiteTime,
-                blackTime = blackTime,
-                whiteBerserk = whiteBerserk,
-                blackBerserk = blackBerserk,
-                timer = t
-              ))
+                berserk = whiteBerserk
+              ).setRemaining(computeRemaining(config, legacyWhite)),
+              ClockPlayer(
+                config = config,
+                berserk = blackBerserk
+              ).setRemaining(computeRemaining(config, legacyBlack))
+            ),
+            timer = timer
+          )
         }
         case _ => sys error s"BinaryFormat.clock.read invalid bytes: ${ba.showBytes}"
       }
     }
 
+    private def writeTimer(timer: Timestamp) = {
+      val centis = (timer - start).centis
+      /*
+       * A zero timer is resolved by `readTimer` as the absence of a timer.
+       * As a result, a clock that is started with a timer = 0
+       * resolves as a clock that is not started.
+       * This can happen when the clock was started at the same time as the game
+       * For instance in simuls
+       */
+      val nonZero = centis max 1
+      writeInt(nonZero)
+    }
+
     private def readTimer(l: Int) =
       if (l != 0) Some(start + Centis(l)) else None
 
-    private def writeClockLimit(limit: Int): Byte = ???
+    private def writeClockLimit(limit: Int): Byte = {
+      // The database expects a byte for a limit, and this is limit / 60.
+      // For 0.5+0, this does not give a round number, so there needs to be
+      // an alternative way to describe 0.5.
+      // The max limit where limit % 60 == 0, returns 180 for limit / 60
+      // So, for the limits where limit % 30 == 0, we can use the space
+      // from 181-255, where 181 represents 0.25 and 182 represents 0.50...
+      (if (limit % 60 == 0) limit / 60 else limit / 15 + 180).toByte
+    }
 
     private def readClockLimit(i: Int) = {
       if (i < 181) i * 60 else (i - 180) * 15
