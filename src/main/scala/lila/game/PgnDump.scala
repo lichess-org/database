@@ -1,7 +1,7 @@
 package lila.game
 
 import chess.format.Forsyth
-import chess.format.pgn.{Pgn, Tag, Parser, ParsedPgn}
+import chess.format.pgn.{Pgn, Tag, TagType, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
 import chess.{Centis, Color, White, Black}
 import lichess.Users
@@ -49,6 +49,9 @@ object PgnDump {
     }
   }
 
+  private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
+    p.ratingDiff.map { rd => Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd") }
+
   def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
     Tag(_.Event, eventOf(game)),
     Tag(_.Site, gameUrl(game.id)),
@@ -59,8 +62,8 @@ object PgnDump {
     Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.WhiteElo, elo(game.whitePlayer)),
     Tag(_.BlackElo, elo(game.blackPlayer))) ::: List(
-      game.whitePlayer.ratingDiff.map { rd => Tag(_.WhiteRatingDiff, rd) },
-      game.blackPlayer.ratingDiff.map { rd => Tag(_.BlackRatingDiff, rd) },
+      ratingDiffTag(game.whitePlayer, _.WhiteRatingDiff),
+      ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
       users.black.title.map { t => Tag(_.BlackTitle, t) },
       Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))),
@@ -79,8 +82,7 @@ object PgnDump {
       })),
       if (customStartPosition(game.variant)) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
       if (customStartPosition(game.variant)) Some(Tag("SetUp", "1")) else None,
-      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name.capitalize)) else None
-    ).flatten
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name.capitalize)) else None).flatten
 
   private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
