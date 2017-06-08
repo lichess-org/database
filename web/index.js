@@ -34,7 +34,7 @@ function fileInfo(gameCounts, n) {
 
 function getGameCounts() {
   return fs.readFile(sourceDir + '/counts.txt', { encoding: 'utf8' }).then(c => {
-    let gameCounts = {};
+    var gameCounts = {};
     c.split('\n').map(l => l.trim()).forEach(line => {
       if (line !== '') gameCounts[line.split(' ')[0]] = line.split(' ')[1];
     });
