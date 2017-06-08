@@ -73,7 +73,6 @@ function renderTotal(files) {
   <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>
   <td></td>
   <td></td>
-  <td></td>
   </tr>`;
 }
 
