@@ -27,7 +27,7 @@ function fileInfo(gameCounts, n) {
       size: s.size,
       date: m,
       clock: hasClock,
-      games: gameCounts[n],
+      games: parseInt(gameCounts[n])
     };
   });
 }
