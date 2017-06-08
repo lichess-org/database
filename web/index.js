@@ -83,7 +83,7 @@ function renderList(files) {
 }
 
 Promise.all([
-  getGameCounts().then(counts => getFiles(counts)),
+  getGameCounts().then(getFiles),
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
 ]).then(arr => {
