@@ -57,17 +57,17 @@
         <section>
         <h3>Sample</h3>
         <pre>
-[Event "https://lichess.org/tournament/yc1WW2Ox"]
+[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
 [Site "https://lichess.org/PpwPOZMq"]
-[White "Guibert"]
-[Black "MatMikles"]
+[White "Abbot"]
+[Black "Costello"]
 [Result "0-1"]
 [UTCDate "2017.04.01"]
 [UTCTime "11:32:01"]
 [WhiteElo "1175"]
 [BlackElo "1691"]
 [WhiteRatingDiff "-4"]
-[BlackRatingDiff "1"]
+[BlackRatingDiff "+1"]
 [WhiteTitle "FM"]
 [ECO "B30"]
 [Opening "Sicilian Defense: Old Sicilian"]
