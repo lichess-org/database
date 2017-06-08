@@ -43,6 +43,10 @@
             Some games include Stockfish analysis evaluations in the format <code>[%eval +2.35]</code>.<br />
             In files with <strong>✔ Clock</strong> real-time games include clock states, like <code>[%clk 0:01:00]</code>.<br />
           </p>
+          <p>
+            Here's a plain text <a href="list.txt">download list</a>,
+            and the <a href="sha256sums.txt">SHA256 checksums.</a>
+          </p>
         </section>
 
         <br /><br />
@@ -53,13 +57,6 @@
             <li>Windows: use <a href="http://www.7-zip.org/download.html">7zip</a></li>
             <li>OSX: just click it</li>
           </ul>
-        </section>
-
-        <br /><br />
-        <section>
-          <h3>Plain text download list</h3>
-          <pre><!-- list --></pre>
-          <p>Checksums: <a href="sha256sums.txt">SHA256</a></p>
         </section>
 
         <footer>

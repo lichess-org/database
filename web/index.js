@@ -6,6 +6,7 @@ const sourceDir = process.argv[2];
 const indexFile = 'index.html';
 const indexTpl = indexFile + '.tpl';
 const styleFile = 'style.css';
+const listFile = 'list.txt';
 
 const clockSince = moment('2017-04');
 
@@ -50,10 +51,6 @@ function getFiles(gameCounts) {
   }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
 }
 
-function getIndex() {
-  return fs.readFile(indexFile, { encoding: 'utf8' });
-}
-
 function renderTable(files) {
   return files.map(f => {
     return `<tr>
@@ -90,7 +87,8 @@ Promise.all([
   const rendered = arr[1]
     .replace(/<!-- files -->/, renderTable(arr[0]))
     .replace(/<!-- total -->/, renderTotal(arr[0]))
-    .replace(/<!-- list -->/, renderList(arr[0]))
     .replace(/<!-- style -->/, arr[2]);
-  fs.writeFile(sourceDir + '/' + indexFile, rendered);
+  return fs.writeFile(sourceDir + '/' + indexFile, rendered).then(_ => {
+    return fs.writeFile(sourceDir + '/' + listFile, renderList(arr[0]));
+  });
 });
