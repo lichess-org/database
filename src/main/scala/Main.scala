@@ -107,8 +107,8 @@ object Main extends App {
           .via(Reporter)
           // .mapAsyncUnordered(16)(checkLegality)
           // .filter(_._2).map(_._1)
-          .mapAsyncUnordered(16)(withAnalysis)
-          .mapAsyncUnordered(16)(withUsers)
+          .mapAsyncUnordered(32)(withAnalysis)
+          .mapAsyncUnordered(32)(withUsers)
           .map(toPgn)
           .runWith(pgnSink) andThen {
             case state =>

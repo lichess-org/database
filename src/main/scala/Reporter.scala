@@ -36,6 +36,7 @@ object Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
           case None => {
             val gps = (counter - prev) / freq.toSeconds
             println(s"${date.fold("-")(formatter.print)} $counter $gps/s")
+            prev = counter
             pull(in)
           }
         }
