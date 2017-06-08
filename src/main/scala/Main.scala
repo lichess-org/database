@@ -84,10 +84,12 @@ object Main extends App {
         def withUsers(a: Analysed): Future[WithUsers] =
           db.users(a._1).map { a -> _ }
 
-        def toPgn(w: WithUsers): Pgn = w match {
-          case ((game, analysis), users) =>
-            val pgn = PgnDump(game, users, None)
-            lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
+        def toPgn(w: WithUsers): Future[Pgn] = Future {
+          w match {
+            case ((game, analysis), users) =>
+              val pgn = PgnDump(game, users, None)
+              lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
+          }
         }
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
@@ -105,11 +107,11 @@ object Main extends App {
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(Reporter)
-          // .mapAsyncUnordered(16)(checkLegality)
-          // .filter(_._2).map(_._1)
-          .mapAsyncUnordered(32)(withAnalysis)
-          .mapAsyncUnordered(32)(withUsers)
-          .map(toPgn)
+          .mapAsyncUnordered(16)(checkLegality)
+          .filter(_._2).map(_._1)
+          .mapAsyncUnordered(16)(withAnalysis)
+          .mapAsyncUnordered(16)(withUsers)
+          .mapAsyncUnordered(16)(toPgn)
           .runWith(pgnSink) andThen {
             case state =>
               close()

@@ -11,7 +11,7 @@ import org.joda.time.format._
 
 object Reporter extends GraphStage[FlowShape[Option[Game], Game]] {
 
-  val freq = 10.seconds
+  val freq = 2.seconds
 
   val in = Inlet[Option[Game]]("reporter.in")
   val out = Outlet[Game]("reporter.out")
