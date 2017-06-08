@@ -47,7 +47,6 @@ object Main extends App {
         val query = BSONDocument(
           "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
           "ra" -> true,
-          "so" -> BSONDocument("$in" -> sources.map(_.id)),
           "v" -> BSONDocument("$exists" -> false))
 
         val gameSource = db.gameColl
@@ -57,7 +56,21 @@ object Main extends App {
           .documentSource(maxDocs = Int.MaxValue)
 
         val tickSource =
-          Source.tick(1.second, 1.second, None)
+          Source.tick(10.second, 10.second, None)
+
+        def checkLegality(g: Game) =
+          chess.Replay.boards(g.pgnMoves, None, g.variant).fold(
+            err => {
+              println(s"Replay error ${g.id} $err")
+              false
+            },
+            boards => {
+              if (boards.size == g.pgnMoves.size + 1) true
+              else {
+                println(s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.pgnMoves.size}")
+                false
+              }
+            })
 
         type Analysed = (Game, Option[Analysis])
 
@@ -85,8 +98,9 @@ object Main extends App {
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(new Reporter)
-          .mapAsync(16)(withAnalysis)
-          .mapAsync(16)(withUsers)
+          .filter(checkLegality)
+          .mapAsync(32)(withAnalysis)
+          .mapAsync(32)(withUsers)
           .map(toPgn)
           .runWith(pgnSink) andThen {
             case state =>
