@@ -28,7 +28,7 @@ object PgnDump {
 
   private def gameUrl(id: String) = s"https://lichess.org/$id"
 
-  private def rating(p: Player) = p.rating.fold("?")(_.toString)
+  private def elo(p: Player) = p.rating.fold("?")(_.toString)
 
   private def player(g: Game, color: Color, users: Users) = {
     val player = g.player(color)
@@ -54,8 +54,11 @@ object PgnDump {
     Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.White, player(game, White, users)),
     Tag(_.Black, player(game, Black, users)),
-    Tag(_.WhiteElo, rating(game.whitePlayer)),
-    Tag(_.BlackElo, rating(game.blackPlayer))) ::: List(
+    Tag(_.WhiteElo, elo(game.whitePlayer)),
+    Tag(_.BlackElo, elo(game.blackPlayer)),
+    ) ::: List(
+      game.whitePlayer.ratingDiff.map { rd => Tag(_.WhiteRatingDiff, rd) },
+      game.blackPlayer.ratingDiff.map { rd => Tag(_.BlackRatingDiff, rd) },
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
       users.black.title.map { t => Tag(_.BlackTitle, t) }).flatten ::: List(
         Tag(_.ECO, game.opening.fold("?")(_.opening.eco)),
