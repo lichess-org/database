@@ -40,8 +40,8 @@ object Main extends App {
     implicit val materializer = ActorMaterializer(
       ActorMaterializerSettings(system)
         .withInputBuffer(
-          initialSize = 10000,
-          maxSize = 10000))
+          initialSize = 32,
+          maxSize = 32))
 
     DB.get foreach {
       case (db, close) =>
@@ -106,11 +106,12 @@ object Main extends App {
             .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
         gameSource
+          .buffer(10000, OverflowStrategy.backpressure)
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(Reporter)
-          .mapAsyncUnordered(16)(checkLegality)
-          .filter(_._2).map(_._1)
+          // .mapAsyncUnordered(16)(checkLegality)
+          // .filter(_._2).map(_._1)
           .mapAsyncUnordered(16)(withAnalysis)
           .mapAsyncUnordered(16)(withUsers)
           .map(toPgn).async
