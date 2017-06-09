@@ -37,7 +37,11 @@ object Main extends App {
     println(s"Export $from to $path")
 
     implicit val system = ActorSystem()
-    implicit val materializer = ActorMaterializer()
+    implicit val materializer = ActorMaterializer(
+      ActorMaterializerSettings(system)
+        .withInputBuffer(
+          initialSize = 10000,
+          maxSize = 10000))
 
     DB.get foreach {
       case (db, close) =>
@@ -84,12 +88,10 @@ object Main extends App {
         def withUsers(a: Analysed): Future[WithUsers] =
           db.users(a._1).map { a -> _ }
 
-        def toPgn(w: WithUsers): Future[Pgn] = Future {
-          w match {
-            case ((game, analysis), users) =>
-              val pgn = PgnDump(game, users, None)
-              lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
-          }
+        def toPgn(w: WithUsers): Pgn = w match {
+          case ((game, analysis), users) =>
+            val pgn = PgnDump(game, users, None)
+            lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
         }
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
@@ -111,7 +113,7 @@ object Main extends App {
           .filter(_._2).map(_._1)
           .mapAsyncUnordered(16)(withAnalysis)
           .mapAsyncUnordered(16)(withUsers)
-          .mapAsyncUnordered(16)(toPgn)
+          .map(toPgn).async
           .runWith(pgnSink) andThen {
             case state =>
               close()
