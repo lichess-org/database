@@ -11,6 +11,8 @@ sbt "run $month $dir/$file"
 
 cd "$dir"
 
+echo "Counting games in $bz2file"
+
 touch counts.txt
 grep -v -F "$file" counts.txt > counts.txt.new || touch counts.txt.new
 games=$(grep --count -F '[Site ' "$file")
@@ -29,4 +31,10 @@ sha256sum "$bz2file" | tee --append sha256sums.txt.new
 mv sha256sums.txt.new sha256sums.txt
 
 cd -
+
+echo "Generating website"
+
+cd web
+nodejs index.js $dir
+
 echo "Done!"
