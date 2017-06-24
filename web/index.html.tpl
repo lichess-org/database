@@ -92,10 +92,11 @@
         <section>
           <h3>Open PGN files</h3>
           <p>
-            Current PGN database software, like SCID or chessbase, are very limited.
+            Current PGN database software, like SCID or ChessBase, are very limited.
             They fail to open large PGN collections! Please send a bug report to info@chessbase.com.<br />
             In the meantime, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
-            or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>.
+            or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
+            or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
           </p>
         </section>
 
