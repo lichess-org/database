@@ -65,11 +65,14 @@ strong { font-weight: bold; }
 
 em { font-style: italic; }
 
-table { width: 100%; border: 1px solid #ebebeb; }
+table { width: 100%; border: 1px solid #ebebeb; border-left: none; border-right: none; }
 
 th { font-weight: 500; }
+th:first-child { padding-left: 0; }
 
 td { font-weight: 300; text-align: center; border: 1px solid #ebebeb; }
+td:first-child { border-left: none; padding-left: 0; }
+td:last-child { border-right: none; padding-right: 0; }
 
 form { padding: 20px; background: #f2f2f2; }
 
@@ -130,5 +133,5 @@ table td a:hover {
   text-decoration: underline;
 }
 pre {
-  font-size: 0.8em;
+  font-size: 0.7em;
 }

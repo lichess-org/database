@@ -23,8 +23,8 @@
             <thead>
               <tr>
                 <th>Date</th>
-                <th>Size</th>
-                <th>Games</th>
+                <th class="right">Size</th>
+                <th class="right">Games</th>
                 <th class="center">Clock</th>
                 <th>Download</th>
               </tr>
@@ -38,7 +38,7 @@
           <br /><br />
           <p>
             Here's a plain text <a href="list.txt">download list</a>,
-            and the <a href="sha256sums.txt">SHA256 checksums.</a>
+            and the <a href="sha256sums.txt">SHA256 checksums</a>.
           </p>
 
         </section>
@@ -57,7 +57,7 @@
 [WhiteElo "2100"]
 [BlackElo "2000"]
 [WhiteRatingDiff "-4"]
-[BlackRatingDiff "+3"]
+[BlackRatingDiff "+1"]
 [WhiteTitle "FM"]
 [ECO "B30"]
 [Opening "Sicilian Defense: Old Sicilian"]
@@ -86,7 +86,7 @@
             28 million games include Stockfish analysis evaluations: <code>[%eval 2.35]</code>.<br />
             In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
             The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.<br />
-            The <code>Round</code> and <code>Date</code> tags are omitted (See UTCDate &amp; UTCTime instead).<br />
+            The <code>Round</code> and <code>Date</code> tags are omitted (See <code>UTCDate</code> &amp; <code>UTCTime</code> instead).<br />
           </p>
         </section>
 
@@ -104,9 +104,8 @@
         <section>
           <h3>Open PGN files</h3>
           <p>
-            Current PGN database software, like SCID or ChessBase, are very limited.
-            They fail to open large PGN collections! Please send a bug report to info@chessbase.com.<br />
-            In the meantime, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
+            Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
+            Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
             or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
             or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
           </p>
