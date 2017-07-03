@@ -100,7 +100,7 @@ ol li { list-style-position: inside; list-style: decimal; padding-left: 3px; }
 
 dl dt { color: #303030; }
 
-footer { padding-top: 20px; padding-bottom: 30px; margin-top: 40px; font-size: 13px; color: #aaa; background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAp0AAAABCAQAAAA2592kAAAASUlEQVR4Aa2SMQ4AIAwCy/8fjYO75jzdOFCblEzmdOIpJ5tpLVySFUkxkdKegK3fOfD75Fck/5CifPlr/Cb607tes32WN4S1bQG4FyUDSe/XhgAAAABJRU5ErkJggg==') 0 0 no-repeat; }
+footer { text-align: center; padding-top: 20px; padding-bottom: 30px; margin-top: 40px; font-size: 13px; color: #aaa; background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAp0AAAABCAQAAAA2592kAAAASUlEQVR4Aa2SMQ4AIAwCy/8fjYO75jzdOFCblEzmdOIpJ5tpLVySFUkxkdKegK3fOfD75Fck/5CifPlr/Cb607tes32WN4S1bQG4FyUDSe/XhgAAAABJRU5ErkJggg==') 0 0 no-repeat; }
 
 footer a { color: #666; }
 
