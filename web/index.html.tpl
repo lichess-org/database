@@ -114,7 +114,7 @@
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
           Are you building something cool with this database? Please let us know!<br />
-          <a href="https://twitter.com/lichessorg">@lichessorg</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
+          <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
 
       </div>
