@@ -2,8 +2,8 @@ package lila.game
 
 import org.joda.time.DateTime
 import scala.collection.breakOut
-import scala.collection.Searching._
 import scala.collection.breakOut
+import scala.collection.Searching._
 import scala.util.Try
 
 import chess._
@@ -103,14 +103,13 @@ object BinaryFormat {
             config = config,
             color = color,
             players = Color.Map(
-              ClockPlayer(
-                config = config,
-                berserk = whiteBerserk
-              ).setRemaining(computeRemaining(config, legacyWhite)),
-              ClockPlayer(
-                config = config,
-                berserk = blackBerserk
-              ).setRemaining(computeRemaining(config, legacyBlack))
+              ClockPlayer
+                .withConfig(config)
+                .copy(berserk = whiteBerserk)
+                .setRemaining(computeRemaining(config, legacyWhite)),
+              ClockPlayer.withConfig(config)
+                .copy(berserk = blackBerserk)
+                .setRemaining(computeRemaining(config, legacyBlack))
             ),
             timer = timer
           )
