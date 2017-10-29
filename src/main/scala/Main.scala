@@ -17,6 +17,7 @@ import reactivemongo.akkastream.{State, cursorProducer}
 import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
+import chess.variant.Variant
 import lichess.DB.BSONDateTimeHandler
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
@@ -34,6 +35,8 @@ object Main extends App {
 
     val path = args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
 
+    val variant = Variant.apply(args.lift(2).getOrElse("standard")).getOrElse(throw new RuntimeException("Invalid variant.")).id
+
     println(s"Export $from to $path")
 
     implicit val system = ActorSystem()
@@ -48,10 +51,11 @@ object Main extends App {
 
         val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
 
+        val variantBson = if (variant == 1) BSONDocument("$exists" -> false) else BSONInteger(variant)
         val query = BSONDocument(
           "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
           "ra" -> true,
-          "v" -> BSONDocument("$exists" -> false))
+          "v" -> variantBson)
 
         val gameSource = db.gameColl
           .find(query)
