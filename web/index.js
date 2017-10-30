@@ -69,8 +69,8 @@ function renderTable(files, variant) {
 function renderTotal(files) {
   return `<tr class="total">
   <td>Total: ${files.length} files</td>
-  <td class="right">${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b))}</td>
-  <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b))}</td>
+  <td class="right">${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b, 0))}</td>
+  <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0))}</td>
   <td></td>
   <td></td>
   </tr>`;
@@ -86,7 +86,7 @@ function processVariantAndReturnTable(variant, template) {
   return getGameCounts(variant).then(getFiles(variant)).then(files => {
     return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
       return template
-        .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b)))
+        .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
         .replace(/<!-- files -->/, renderTable(files, variant))
         .replace(/<!-- total -->/, renderTotal(files))
         .replace(/<!-- variant -->/g, variant);
