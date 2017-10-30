@@ -17,7 +17,7 @@ import reactivemongo.akkastream.{State, cursorProducer}
 import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
-import chess.variant.Variant
+import chess.variant.{ Standard, Horde, Variant }
 import lichess.DB.BSONDateTimeHandler
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
@@ -33,13 +33,13 @@ object Main extends App {
 
     val path = args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
 
-    val variant = Variant.apply(args.lift(2).getOrElse("standard")).getOrElse(throw new RuntimeException("Invalid variant.")).id
+    val variant = Variant.apply(args.lift(2).getOrElse("standard")).getOrElse(throw new RuntimeException("Invalid variant."))
 
     val fromWithoutAdjustments = new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
     val to = fromWithoutAdjustments plusMonths 1
 
     val hordeStartDate = new DateTime(2015, 4, 11, 10, 0)
-    val from = if (variant == 8 && hordeStartDate.compareTo(fromWithoutAdjustments) > 0) hordeStartDate else fromWithoutAdjustments
+    val from = if (variant == Horde && hordeStartDate.compareTo(fromWithoutAdjustments) > 0) hordeStartDate else fromWithoutAdjustments
 
     if (from.compareTo(to) > 0) {
       System.out.println("Too early for Horde games. Exiting.");
@@ -60,7 +60,7 @@ object Main extends App {
 
         val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
 
-        val variantBson = if (variant == 1) BSONDocument("$exists" -> false) else BSONInteger(variant)
+        val variantBson = if (variant == Standard) BSONDocument("$exists" -> false) else BSONInteger(variant.id)
         val query = BSONDocument(
           "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
           "ra" -> true,
