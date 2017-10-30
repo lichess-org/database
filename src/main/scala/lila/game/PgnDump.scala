@@ -19,7 +19,7 @@ object PgnDump {
       fenSituation.map(_.fullMoveNumber) getOrElse 1,
       game.bothClockStates getOrElse Vector.empty,
       game.startColor)
-    Pgn(ts, turns)
+    Pgn(chessPgn.Tags(ts), turns)
   }
 
   def result(game: Game) =
