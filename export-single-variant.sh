@@ -31,11 +31,4 @@ grep -v -F "$bz2file" sha256sums.txt > sha256sums.txt.new || touch sha256sums.tx
 sha256sum "$bz2file" | tee --append sha256sums.txt.new
 mv sha256sums.txt.new sha256sums.txt
 
-cd -
-
-echo "Generating website"
-
-cd web
-nodejs index.js $dir
-
 echo "Done!"

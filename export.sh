@@ -14,3 +14,10 @@ variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill raci
 for variant in $variants; do
   export $variant
 done
+
+cd -
+
+echo "Generating website"
+
+cd web
+nodejs index.js $dir
