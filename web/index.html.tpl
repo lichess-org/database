@@ -16,8 +16,30 @@
           <h1><a href="https://lichess.org">lichess.org</a> game database</h1>
         </header>
         <hr>
-        <section id="main_content">
+        <div id="selector">
+          <a for="standard_games" class="on">Standard Chess</a>
+          <a for="variant_games">Variants</a>
+        </div>
+        <section id="standard_games" class="panel">
           <!-- table-standard -->
+        </section>
+        <section id="variant_games" class="panel" style="display:none">
+          <h3>Antichess</h3>
+          <!-- table-antichess -->
+          <h3>Atomic</h3>
+          <!-- table-atomic -->
+          <h3>Chess960</h3>
+          <!-- table-chess960 -->
+          <h3>Crazyhouse</h3>
+          <!-- table-crazyhouse -->
+          <h3>Horde</h3>
+          <!-- table-horde -->
+          <h3>King of the Hill</h3>
+          <!-- table-kingOfTheHill -->
+          <h3>Racing Kings</h3>
+          <!-- table-racingKings -->
+          <h3>Three-check</h3>
+          <!-- table-threeCheck -->
         </section>
 
         <br /><br />
@@ -89,27 +111,6 @@
           </p>
         </section>
 
-        <br /><br />
-        <section>
-          <h2>Variant databases</h2>
-          <h3>Antichess</h3>
-          <!-- table-antichess -->
-          <h3>Atomic</h3>
-          <!-- table-atomic -->
-          <h3>Chess960</h3>
-          <!-- table-chess960 -->
-          <h3>Crazyhouse</h3>
-          <!-- table-crazyhouse -->
-          <h3>Horde</h3>
-          <!-- table-horde -->
-          <h3>King of the Hill</h3>
-          <!-- table-kingOfTheHill -->
-          <h3>Racing Kings</h3>
-          <!-- table-racingKings -->
-          <h3>Three-check</h3>
-          <!-- table-threeCheck -->
-        </section>
-
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
           Are you building something cool with this database? Please let us know!<br />
@@ -118,5 +119,23 @@
 
       </div>
     </div>
+    <script>
+      function doAll(els, f) {
+        Array.prototype.forEach.call(els, f);
+      }
+      var selectors = document.querySelectorAll('#selector a');
+      doAll(selectors, function(el) {
+        el.addEventListener('click', function() {
+          var selected = el.getAttribute('for');
+          doAll(selectors, function(s) {
+            s.className = s === el ? 'on' : '';
+          });
+          doAll(document.querySelectorAll('.panel'), function(panel) {
+            panel.style.display = panel.id === selected ? '' : 'none';
+            console.log(panel);
+          });
+        });
+      });
+    </script>
   </body>
 </html>
