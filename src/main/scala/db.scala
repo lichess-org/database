@@ -49,7 +49,6 @@ object DB {
   val conOpts = MongoConnectionOptions(
     connectTimeoutMS = fiveMinutesInMillis,
     maxIdleTimeMS = fiveMinutesInMillis,
-    writeConcernTimeout = fiveMinutesInMillis,
     monitorRefreshMS = fiveMinutesInMillis
   )
   val conUri = MongoConnection.parseURI(dbUri).get
