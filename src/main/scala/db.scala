@@ -5,7 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.api.MongoConnection
+import reactivemongo.api.{ MongoConnection, MongoConnectionOptions }
 import reactivemongo.bson._
 
 import org.joda.time._
@@ -13,14 +13,16 @@ import org.joda.time._
 final class DB(
     val gameColl: BSONCollection,
     val analysisColl: BSONCollection,
-    val userColl: BSONCollection) {
+    val userColl: BSONCollection
+) {
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
   private implicit val lightUserBSONReader = new BSONDocumentReader[LightUser] {
     def read(doc: BSONDocument) = LightUser(
       id = doc.getAs[String]("_id").get,
       name = doc.getAs[String]("username").get,
-      title = doc.getAs[String]("title"))
+      title = doc.getAs[String]("title")
+    )
   }
 
   def users(g: lila.game.Game): Future[Users] =
@@ -41,15 +43,25 @@ object DB {
   val dbName = "lichess"
   val collName = "game5"
 
+  val fiveMinutesInMillis = 5 * 60 * 1000
+
   val driver = new reactivemongo.api.MongoDriver
-  val conn = driver connection MongoConnection.parseURI(dbUri).get
+  val conOpts = MongoConnectionOptions(
+    connectTimeoutMS = fiveMinutesInMillis,
+    maxIdleTimeMS = fiveMinutesInMillis,
+    writeConcernTimeout = fiveMinutesInMillis,
+    monitorRefreshMS = fiveMinutesInMillis
+  )
+  val conUri = MongoConnection.parseURI(dbUri).get
+  val conn = driver.connection(List(dbUri), conOpts, Nil, None)
 
   def get: Future[(DB, () => Unit)] =
     conn.database(dbName).map { db =>
       (new DB(
         gameColl = db collection "game5",
         analysisColl = db collection "analysis2",
-        userColl = db collection "user4"),
+        userColl = db collection "user4"
+      ),
         (() => {
           conn.close()
           driver.close()
