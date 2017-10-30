@@ -4,12 +4,16 @@ dir=${1}
 
 export() {
     echo "---------------------------"
-    ./export-single-variant.sh "$1-$2" $dir $3
+    ./export-single-variant.sh "$1-$2" $dir/$3 $3
 }
 
 echo "Export all to $dir"
 
 variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill racingKings threeCheck"
+
+for variant in $variants; do
+  mkdir -p $dir/$variant
+done
 
 for year in 2013; do
   for month in 08 09 10 11 12; do
