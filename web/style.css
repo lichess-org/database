@@ -144,6 +144,10 @@ pre {
 #selector a {
   cursor: pointer;
   padding: .5em 1em;
+  text-transform: uppercase;
+}
+#selector a:hover {
+  border-bottom: 3px solid #ddd;
 }
 
 #selector a.on {
