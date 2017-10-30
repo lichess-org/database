@@ -14,8 +14,7 @@ variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill raci
 for year in 2013; do
   for month in 08 09 10 11 12; do
     for variant in $variants; do
-      echo $variant
-      #export $year $month $variant
+      export $year $month $variant
     done
   done
 done
