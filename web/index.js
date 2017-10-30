@@ -102,6 +102,8 @@ function replaceVariant(variant, tableTemplate) {
     };
 }
 
+process.on('unhandledRejection', r => console.log(r));
+
 Promise.all([
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(tableTpl, { encoding: 'utf8' }),
