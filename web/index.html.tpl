@@ -123,19 +123,21 @@
       function doAll(els, f) {
         Array.prototype.forEach.call(els, f);
       }
+      function select(selected) {
+        doAll(selectors, function(s) {
+          s.className = s.getAttribute('for') === selected ? 'on' : '';
+        });
+        doAll(document.querySelectorAll('.panel'), function(panel) {
+          panel.style.display = panel.id === selected ? '' : 'none';
+        });
+      }
       var selectors = document.querySelectorAll('#selector a');
       doAll(selectors, function(el) {
         el.addEventListener('click', function() {
-          var selected = el.getAttribute('for');
-          doAll(selectors, function(s) {
-            s.className = s === el ? 'on' : '';
-          });
-          doAll(document.querySelectorAll('.panel'), function(panel) {
-            panel.style.display = panel.id === selected ? '' : 'none';
-            console.log(panel);
-          });
+          select(el.getAttribute('for'));
         });
       });
+      if (location.hash.indexOf('#variant') === 0) select('variant_games');
     </script>
   </body>
 </html>
