@@ -17,30 +17,7 @@
         </header>
         <hr>
         <section id="main_content">
-          <p><strong><!-- nbGames --></strong> standard rated games, played on lichess.org, in PGN format.</p>
-
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th class="right">Size</th>
-                <th class="right">Games</th>
-                <th class="center">Clock</th>
-                <th>Download</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- files -->
-              <!-- total -->
-            </tbody>
-          </table>
-
-          <br /><br />
-          <p>
-            Here's a plain text <a href="list.txt">download list</a>,
-            and the <a href="sha256sums.txt">SHA256 checksums</a>.
-          </p>
-
+          <!-- table-standard -->
         </section>
 
         <br /><br />
@@ -87,6 +64,7 @@
             In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
             The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.<br />
             The <code>Round</code> and <code>Date</code> tags are omitted (See <code>UTCDate</code> &amp; <code>UTCTime</code> instead).<br />
+            Variant games (see variant databases below) have a `Variant` tag, for example <code>[Variant "Antichess"]</code>.</br />
           </p>
         </section>
 
@@ -111,6 +89,27 @@
           </p>
         </section>
 
+        <br /><br />
+        <section>
+          <h2>Variant databases</h2>
+          <h3>Antichess</h3>
+          <!-- table-antichess -->
+          <h3>Atomic</h3>
+          <!-- table-atomic -->
+          <h3>Chess960</h3>
+          <!-- table-chess960 -->
+          <h3>Crazyhouse</h3>
+          <!-- table-crazyhouse -->
+          <h3>Horde</h3>
+          <!-- table-horde -->
+          <h3>King of the Hill</h3>
+          <!-- table-kingOfTheHill -->
+          <h3>Racing Kings</h3>
+          <!-- table-racingKings -->
+          <h3>Three-check</h3>
+          <!-- table-threeCheck -->
+        </section>
+
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
           Are you building something cool with this database? Please let us know!<br />
@@ -119,7 +118,5 @@
 
       </div>
     </div>
-
-
   </body>
 </html>
