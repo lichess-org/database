@@ -15,8 +15,6 @@ for variant in $variants; do
   export_variant $variant
 done
 
-cd -
-
 echo "Generating website"
 
 cd web
