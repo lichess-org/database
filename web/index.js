@@ -83,23 +83,23 @@ function renderList(files, variant) {
 }
 
 function processVariantAndReturnTable(variant, template) {
-    return getGameCounts(variant).then(getFiles(variant)).then(files => {
-        return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
-          return template
-            .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b)))
-            .replace(/<!-- files -->/, renderTable(files, variant))
-            .replace(/<!-- total -->/, renderTotal(files))
-            .replace(/<!-- variant -->/g, variant);
-        });
+  return getGameCounts(variant).then(getFiles(variant)).then(files => {
+    return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
+      return template
+        .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b)))
+        .replace(/<!-- files -->/, renderTable(files, variant))
+        .replace(/<!-- total -->/, renderTotal(files))
+        .replace(/<!-- variant -->/g, variant);
     });
+  });
 }
 
 function replaceVariant(variant, tableTemplate) {
-    return function(fullTemplate) {
-        return processVariantAndReturnTable(variant, tableTemplate).then(tbl => {
-            return fullTemplate.replace('<!-- table-' + variant + ' -->', tbl);
-        });
-    };
+  return function(fullTemplate) {
+    return processVariantAndReturnTable(variant, tableTemplate).then(tbl => {
+      return fullTemplate.replace('<!-- table-' + variant + ' -->', tbl);
+    });
+  };
 }
 
 process.on('unhandledRejection', r => console.log(r));
@@ -120,6 +120,6 @@ Promise.all([
     .then(rv('racingKings'))
     .then(rv('threeCheck'))
     .then(rendered => {
-        return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, arr[2]));
+      return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, arr[2]));
     });
 });
