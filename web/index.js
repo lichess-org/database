@@ -5,6 +5,7 @@ const moment = require('moment');
 const sourceDir = process.argv[2];
 const indexFile = 'index.html';
 const indexTpl = indexFile + '.tpl';
+const tableTpl = 'table.html.tpl';
 const styleFile = 'style.css';
 const listFile = 'list.txt';
 
@@ -14,8 +15,8 @@ function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
 }
 
-function fileInfo(gameCounts, n) {
-  const path = sourceDir + '/' + n;
+function fileInfo(gameCounts, variant, n) {
+  const path = sourceDir + '/' + variant + '/' + n;
   return fs.stat(path).then(s => {
     const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.bz2/, '$1');
     const m = moment(dateStr);
@@ -33,8 +34,8 @@ function fileInfo(gameCounts, n) {
   });
 }
 
-function getGameCounts() {
-  return fs.readFile(sourceDir + '/counts.txt', { encoding: 'utf8' }).then(c => {
+function getGameCounts(variant) {
+  return fs.readFile(sourceDir + '/' + variant + '/counts.txt', { encoding: 'utf8' }).then(c => {
     var gameCounts = {};
     c.split('\n').map(l => l.trim()).forEach(line => {
       if (line !== '') gameCounts[line.split(' ')[0]] = line.split(' ')[1];
@@ -43,22 +44,24 @@ function getGameCounts() {
   });
 }
 
-function getFiles(gameCounts) {
-  return fs.readdir(sourceDir).then(items => {
-    return Promise.all(
-      items.filter(n => n.includes('.pgn.bz2')).map(n => fileInfo(gameCounts, n))
-    );
-  }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
+function getFiles(variant) {
+  return function(gameCounts) {
+    return fs.readdir(sourceDir + '/' + variant).then(items => {
+      return Promise.all(
+        items.filter(n => n.includes('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n))
+      );
+    }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
+  }
 }
 
-function renderTable(files) {
+function renderTable(files, variant) {
   return files.map(f => {
     return `<tr>
     <td>${f.date.format('MMMM YYYY')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
-    <td><a href="${f.name}">${f.shortName}</a></td>
+    <td><a href="${variant}/${f.name}">${f.shortName}</a></td>
     </tr>`;
   }).join('\n');
 }
@@ -73,23 +76,48 @@ function renderTotal(files) {
   </tr>`;
 }
 
-function renderList(files) {
+function renderList(files, variant) {
   return files.map(f => {
-    return `https://database.lichess.org/${f.name}`;
+    return `https://database.lichess.org/${variant}/${f.name}`;
   }).join('\n');
 }
 
+function processVariantAndReturnTable(variant, template) {
+    return getGameCounts(variant).then(getFiles(variant)).then(files => {
+        return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
+          return template
+            .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b)))
+            .replace(/<!-- files -->/, renderTable(files, variant))
+            .replace(/<!-- total -->/, renderTotal(files))
+            .replace(/<!-- variant -->/g, variant);
+        });
+    });
+}
+
+function replaceVariant(variant, tableTemplate) {
+    return function(fullTemplate) {
+        return processVariantAndReturnTable(variant, tableTemplate).then(tbl => {
+            return fullTemplate.replace('<!-- table-' + variant + ' -->', tbl);
+        });
+    };
+}
+
 Promise.all([
-  getGameCounts().then(getFiles),
   fs.readFile(indexTpl, { encoding: 'utf8' }),
+  fs.readFile(tableTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
 ]).then(arr => {
-  const rendered = arr[1]
-    .replace(/<!-- nbGames -->/, numberFormat(arr[0].map(f => f.games).reduce((a, b) => a + b)))
-    .replace(/<!-- files -->/, renderTable(arr[0]))
-    .replace(/<!-- total -->/, renderTotal(arr[0]))
-    .replace(/<!-- style -->/, arr[2]);
-  return fs.writeFile(sourceDir + '/' + indexFile, rendered).then(_ => {
-    return fs.writeFile(sourceDir + '/' + listFile, renderList(arr[0]));
-  });
+  const rv = function(variant) { return replaceVariant(variant, arr[1]); };
+  return rv('standard')(arr[0])
+    .then(rv('antichess'))
+    .then(rv('atomic'))
+    .then(rv('chess960'))
+    .then(rv('crazyhouse'))
+    .then(rv('horde'))
+    .then(rv('kingOfTheHill'))
+    .then(rv('racingKings'))
+    .then(rv('threeCheck'))
+    .then(rendered => {
+        return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, arr[2]));
+    });
 });
