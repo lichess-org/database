@@ -60,11 +60,9 @@ object Main extends App {
 
         val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
 
-        val variantBson = if (variant == Standard) BSONDocument("$exists" -> false) else BSONInteger(variant.id)
         val query = BSONDocument(
           "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
-          "ra" -> true,
-          "v" -> variantBson)
+          "ra" -> true)
 
         val gameSource = db.gameColl
           .find(query)
@@ -120,6 +118,7 @@ object Main extends App {
 
         gameSource
           .buffer(10000, OverflowStrategy.backpressure)
+          .filter(_.variant == variant)
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(Reporter)
