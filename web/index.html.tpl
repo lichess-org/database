@@ -86,7 +86,7 @@
             In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
             The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.<br />
             The <code>Round</code> and <code>Date</code> tags are omitted (See <code>UTCDate</code> &amp; <code>UTCTime</code> instead).<br />
-            Variant games (see variant databases below) have a `Variant` tag, for example <code>[Variant "Antichess"]</code>.</br />
+            Variant games  have a <code>Variant</code> tag, e.g. <code>[Variant "Antichess"]</code>.
           </p>
         </section>
 
