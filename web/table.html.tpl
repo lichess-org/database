@@ -1,9 +1,12 @@
-<p><strong><!-- nbGames --></strong> <!-- variant --> rated games, played on lichess.org, in PGN format.</p>
+<p>
+<strong><!-- nbGames --></strong> <!-- variant --> rated games, played on lichess.org, in PGN format.<br />
+Each file contains the games for one month only; they are not cumulative.
+</p>
 
 <table>
   <thead>
     <tr>
-      <th>Date</th>
+      <th>Month</th>
       <th class="right">Size</th>
       <th class="right">Games</th>
       <th class="center">Clock</th>
