@@ -1,6 +1,6 @@
 package lila.game
 
-import chess.format.Forsyth
+import chess.format.{FEN, Forsyth}
 import chess.format.pgn.{Pgn, Tag, TagType, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
 import chess.{Centis, Color, White, Black}
@@ -8,7 +8,7 @@ import lichess.Users
 
 object PgnDump {
 
-  def apply(game: Game, users: Users, initialFen: Option[String]): Pgn = {
+  def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
     val ts = tags(game, users, initialFen)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
     val moves2 =
@@ -35,9 +35,6 @@ object PgnDump {
     player.aiLevel.fold(users(color).name)("lichess AI level " + _)
   }
 
-  private val customStartPosition: Set[chess.variant.Variant] =
-    Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
-
   private def eventOf(game: Game) = {
     val perf = game.perfType.fold("Standard")(_.name)
     game.tournamentId.map { id =>
@@ -52,7 +49,7 @@ object PgnDump {
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
     p.ratingDiff.map { rd => Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd") }
 
-  def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
+  def tags(game: Game, users: Users, initialFen: Option[FEN]): List[Tag] = List(
     Tag(_.Event, eventOf(game)),
     Tag(_.Site, gameUrl(game.id)),
     Tag(_.White, player(game, White, users)),
@@ -66,8 +63,8 @@ object PgnDump {
       ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
       users.black.title.map { t => Tag(_.BlackTitle, t) },
-      Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))),
-      Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))),
+      if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
+      if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
       Some(Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" })),
       Some(Tag(_.Termination, {
         import chess.Status._
@@ -80,9 +77,9 @@ object PgnDump {
           case UnknownFinish => "Unknown"
         }
       })),
-      if (customStartPosition(game.variant)) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
-      if (customStartPosition(game.variant)) Some(Tag("SetUp", "1")) else None,
-      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name.capitalize)) else None).flatten
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.map(_.value).getOrElse("?"))) else None,
+      if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None).flatten
 
   private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
