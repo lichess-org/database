@@ -35,9 +35,6 @@ object PgnDump {
     player.aiLevel.fold(users(color).name)("lichess AI level " + _)
   }
 
-  private val customStartPosition: Set[chess.variant.Variant] =
-    Set(chess.variant.Chess960, chess.variant.FromPosition, chess.variant.Horde, chess.variant.RacingKings)
-
   private def eventOf(game: Game) = {
     val perf = game.perfType.fold("Standard")(_.name)
     game.tournamentId.map { id =>
@@ -80,9 +77,9 @@ object PgnDump {
           case UnknownFinish => "Unknown"
         }
       })),
-      if (customStartPosition(game.variant)) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
-      if (customStartPosition(game.variant)) Some(Tag("SetUp", "1")) else None,
-      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name.capitalize)) else None).flatten
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
+      if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None).flatten
 
   private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
