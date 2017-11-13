@@ -66,8 +66,8 @@ object PgnDump {
       ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
       users.black.title.map { t => Tag(_.BlackTitle, t) },
-      Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))),
-      Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))),
+      if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
+      if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
       Some(Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" })),
       Some(Tag(_.Termination, {
         import chess.Status._
