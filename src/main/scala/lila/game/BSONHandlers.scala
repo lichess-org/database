@@ -6,6 +6,7 @@ import reactivemongo.bson._
 
 import chess.variant.{ Variant, Crazyhouse }
 import chess.{ CheckCount, Color, Clock, White, Black, Status, Mode, UnmovedRooks }
+import chess.format.FEN
 
 import lila.db.{ BSON, ByteArray }
 import chess.Centis
@@ -114,6 +115,14 @@ object BSONHandlers {
     }
 
     def writes(w: BSON.Writer, o: Game) = ???
+  }
+
+  implicit val gameWithInitialFenBSONHandler: BSON[Game.WithInitialFen] = new BSON[Game.WithInitialFen] {
+    def reads(r: BSON.Reader): Game.WithInitialFen = {
+      Game.WithInitialFen(gameBSONHandler.reads(r), (r strO Game.BSONFields.initialFen).map(FEN.apply))
+    }
+
+    def writes(w: BSON.Writer, o: Game.WithInitialFen) = ???
   }
 
   private def clockHistory(color: Color, clockHistory: Option[ClockHistory], clock: Option[Clock], flagged: Option[Color]) =

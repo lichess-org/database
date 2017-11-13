@@ -1,6 +1,6 @@
 package lila.game
 
-import chess.format.Forsyth
+import chess.format.{FEN, Forsyth}
 import chess.format.pgn.{Pgn, Tag, TagType, Parser, ParsedPgn}
 import chess.format.{pgn => chessPgn}
 import chess.{Centis, Color, White, Black}
@@ -8,7 +8,7 @@ import lichess.Users
 
 object PgnDump {
 
-  def apply(game: Game, users: Users, initialFen: Option[String]): Pgn = {
+  def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
     val ts = tags(game, users, initialFen)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
     val moves2 =
@@ -49,7 +49,7 @@ object PgnDump {
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
     p.ratingDiff.map { rd => Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd") }
 
-  def tags(game: Game, users: Users, initialFen: Option[String]): List[Tag] = List(
+  def tags(game: Game, users: Users, initialFen: Option[FEN]): List[Tag] = List(
     Tag(_.Event, eventOf(game)),
     Tag(_.Site, gameUrl(game.id)),
     Tag(_.White, player(game, White, users)),
@@ -77,7 +77,7 @@ object PgnDump {
           case UnknownFinish => "Unknown"
         }
       })),
-      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen getOrElse "?")) else None,
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.map(_.value).getOrElse("?"))) else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None).flatten
 

@@ -67,7 +67,7 @@ object Main extends App {
         val gameSource = db.gameColl
           .find(query)
           .sort(BSONDocument("ca" -> 1))
-          .cursor[Game]()
+          .cursor[Game.WithInitialFen]()
           .documentSource(maxDocs = Int.MaxValue)
 
         val tickSource =
@@ -88,21 +88,20 @@ object Main extends App {
             })
         }
 
-        type Analysed = (Game, Option[Analysis])
-
-        def withAnalysis(g: Game): Future[Analysed] =
-          if (g.metadata.analysed)
-            db.analysisColl.find(BSONDocument("_id" -> g.id)).one[Analysis] map { g -> _ }
+        type Analysed = (Game.WithInitialFen, Option[Analysis])
+        def withAnalysis(g: Game.WithInitialFen): Future[Analysed] =
+          if (g.game.metadata.analysed)
+            db.analysisColl.find(BSONDocument("_id" -> g.game.id)).one[Analysis] map { g -> _ }
           else Future.successful(g -> None)
 
         type WithUsers = (Analysed, Users)
         def withUsers(a: Analysed): Future[WithUsers] =
-          db.users(a._1).map { a -> _ }
+          db.users(a._1.game).map { a -> _ }
 
         def toPgn(w: WithUsers): Future[Pgn] = Future(w match {
-          case ((game, analysis), users) =>
-            val pgn = PgnDump(game, users, None)
-            lila.analyse.Annotator(pgn, analysis, game.winnerColor, game.status, game.clock)
+          case ((g, analysis), users) =>
+            val pgn = PgnDump(g.game, users, g.fen)
+            lila.analyse.Annotator(pgn, analysis, g.game.winnerColor, g.game.status, g.game.clock)
         })
 
         def pgnSink: Sink[Pgn, Future[IOResult]] =
@@ -118,7 +117,7 @@ object Main extends App {
 
         gameSource
           .buffer(10000, OverflowStrategy.backpressure)
-          .filter(_.variant == variant)
+          .filter(_.game.variant == variant)
           .map(g => Some(g))
           .merge(tickSource, eagerComplete = true)
           .via(Reporter)
