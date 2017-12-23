@@ -44,7 +44,7 @@
 
         <br /><br />
         <section>
-        <h3>Sample</h3>
+        <h3 id="sample">Sample</h3>
         <pre>
 [Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
 [Site "https://lichess.org/PpwPOZMq"]
@@ -80,7 +80,7 @@
 
         <br /><br />
         <section>
-        <h3>Notes</h3>
+        <h3 id="notes">Notes</h3>
           <p>
             About 15% of the games include Stockfish analysis evaluations: <code>[%eval 2.35]</code>.<br />
             In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
@@ -92,7 +92,7 @@
 
         <br /><br />
         <section>
-          <h3>Extract bz2 files</h3>
+          <h3 id="extract" >Extract bz2 files</h3>
           <p>
             Linux: <code>bunzip2 filename.pgn.bz2</code><br />
             Windows: use <a href="http://www.7-zip.org/download.html">7zip</a><br />
@@ -102,7 +102,7 @@
 
         <br /><br />
         <section>
-          <h3>Open PGN files</h3>
+          <h3 id="open-pgn-files" >Open PGN files</h3>
           <p>
             Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
             Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
@@ -111,9 +111,25 @@
           </p>
         </section>
 
+        <br /><br />
+        <section>
+          <h3 id="related-projects" >Related projects</h3>
+          <ul>
+            <li>
+              <a>Your project here</a>
+            </li>
+          </ul>
+          <p>
+            Did you use this database? Please share your results!<br />
+            <a target="_blank" href="https://github.com/ornicar/lichess-db/edit/master/web/index.html.tpl#l119">
+              Send us a pull request on github to list your project here
+            </a>
+            <br />
+          </p>
+        </section>
+
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
-          Are you building something cool with this database? Please let us know!<br />
           <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
 
