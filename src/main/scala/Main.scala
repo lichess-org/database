@@ -67,7 +67,7 @@ object Main extends App {
         val gameSource = db.gameColl
           .find(query)
           .sort(BSONDocument("ca" -> 1))
-          .cursor[Game.WithInitialFen]()
+          .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondary)
           .documentSource(maxDocs = Int.MaxValue)
 
         val tickSource =
