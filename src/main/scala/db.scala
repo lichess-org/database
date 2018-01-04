@@ -5,7 +5,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.api.MongoConnection
+import reactivemongo.api._
 import reactivemongo.bson._
 
 import org.joda.time._
@@ -13,18 +13,21 @@ import org.joda.time._
 final class DB(
     val gameColl: BSONCollection,
     val analysisColl: BSONCollection,
-    val userColl: BSONCollection) {
+    val userColl: BSONCollection
+) {
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
   private implicit val lightUserBSONReader = new BSONDocumentReader[LightUser] {
     def read(doc: BSONDocument) = LightUser(
       id = doc.getAs[String]("_id").get,
       name = doc.getAs[String]("username").get,
-      title = doc.getAs[String]("title"))
+      title = doc.getAs[String]("title")
+    )
   }
 
   def users(g: lila.game.Game): Future[Users] =
     userColl.find(BSONDocument("_id" -> BSONDocument("$in" -> g.userIds)), userProj)
+      .options(QueryOpts().slaveOk)
       .cursor[LightUser].collect[List]().map { users =>
         def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) { uid =>
           users.find(_.id == uid) getOrElse LightUser(uid, uid)
@@ -49,7 +52,8 @@ object DB {
       (new DB(
         gameColl = db collection "game5",
         analysisColl = db collection "analysis2",
-        userColl = db collection "user4"),
+        userColl = db collection "user4"
+      ),
         (() => {
           conn.close()
           driver.close()

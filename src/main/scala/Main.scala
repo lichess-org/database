@@ -92,7 +92,7 @@ object Main extends App {
         type Analysed = (Game.WithInitialFen, Option[Analysis])
         def withAnalysis(g: Game.WithInitialFen): Future[Analysed] =
           if (g.game.metadata.analysed)
-            db.analysisColl.find(BSONDocument("_id" -> g.game.id)).one[Analysis] map { g -> _ }
+            db.analysisColl.find(BSONDocument("_id" -> g.game.id)).options(QueryOpts().slaveOk).one[Analysis] map { g -> _ }
           else Future.successful(g -> None)
 
         type WithUsers = (Analysed, Users)
