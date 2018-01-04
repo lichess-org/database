@@ -4,7 +4,7 @@ import scala.concurrent.duration._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import reactivemongo.api.ReadPreference
+import reactivemongo.api._
 import reactivemongo.bson._
 
 import akka.actor.ActorSystem
@@ -66,6 +66,7 @@ object Main extends App {
 
         val gameSource = db.gameColl
           .find(query)
+          .options(QueryOpts().slaveOk)
           .sort(BSONDocument("ca" -> 1))
           .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondary)
           .documentSource(maxDocs = Int.MaxValue)
