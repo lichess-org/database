@@ -28,7 +28,7 @@ final class DB(
   def users(g: lila.game.Game): Future[Users] =
     userColl.find(BSONDocument("_id" -> BSONDocument("$in" -> g.userIds)), userProj)
       .options(QueryOpts().slaveOk)
-      .cursor[LightUser].collect[List]().map { users =>
+      .cursor[LightUser](readPreference = ReadPreference.secondary).collect[List]().map { users =>
         def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) { uid =>
           users.find(_.id == uid) getOrElse LightUser(uid, uid)
         }
