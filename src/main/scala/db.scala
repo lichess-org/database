@@ -4,8 +4,8 @@ import com.typesafe.config.ConfigFactory
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.api._
+import reactivemongo.api.collections.bson.BSONCollection
 import reactivemongo.bson._
 
 import org.joda.time._
@@ -25,14 +25,17 @@ final class DB(
     )
   }
 
-  def users(g: lila.game.Game): Future[Users] =
-    userColl.find(BSONDocument("_id" -> BSONDocument("$in" -> g.userIds)), userProj)
-      .options(QueryOpts().slaveOk)
-      .cursor[LightUser](readPreference = ReadPreference.secondary).collect[List]().map { users =>
+  def users(gs: Seq[lila.game.Game]): Future[Seq[Users]] =
+    userColl.find(
+      BSONDocument("_id" -> BSONDocument("$in" -> gs.flatMap(_.userIds).distinct)),
+      userProj
+    ).cursor[LightUser](readPreference = ReadPreference.secondary).collect[List]().map { users =>
         def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) { uid =>
           users.find(_.id == uid) getOrElse LightUser(uid, uid)
         }
-        Users(of(g.whitePlayer), of(g.blackPlayer))
+        gs.map { g =>
+          Users(of(g.whitePlayer), of(g.blackPlayer))
+        }
       }
 }
 
