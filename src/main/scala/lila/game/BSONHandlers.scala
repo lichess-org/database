@@ -1,20 +1,22 @@
 package lila.game
 
-import scala.collection.breakOut
 import org.joda.time.DateTime
 import reactivemongo.bson._
+import scala.collection.breakOut
 
 import chess.variant.{ Variant, Crazyhouse }
-import chess.{ CheckCount, Color, Clock, White, Black, Status, Mode, UnmovedRooks }
-import chess.format.FEN
+import chess.{ CheckCount, Color, Clock, White, Black, Status, Mode, UnmovedRooks, History => ChessHistory, Game => ChessGame }
 
-import lila.db.{ BSON, ByteArray }
-import chess.Centis
+import lila.db.BSON
+import lila.db.dsl._
 
 object BSONHandlers {
 
   import lila.db.ByteArray.ByteArrayBSONHandler
 
+  private[game] implicit val checkCountWriter = new BSONWriter[CheckCount, BSONArray] {
+    def write(cc: CheckCount) = BSONArray(cc.white, cc.black)
+  }
 
   implicit val StatusBSONHandler = new BSONHandler[BSONInteger, Status] {
     def read(bsonInt: BSONInteger): Status = Status(bsonInt.value) err s"No such status: ${bsonInt.value}"
@@ -36,87 +38,121 @@ object BSONHandlers {
 
     def reads(r: BSON.Reader) = Crazyhouse.Data(
       pockets = {
-      val (white, black) = {
-        r.str("p").flatMap(chess.Piece.fromChar)(breakOut): List[chess.Piece]
-      }.partition(_ is chess.White)
-      Pockets(
-        white = Pocket(white.map(_.role)),
-        black = Pocket(black.map(_.role))
-      )
-    },
+        val (white, black) = {
+          r.str("p").flatMap(chess.Piece.fromChar)(breakOut): List[chess.Piece]
+        }.partition(_ is chess.White)
+        Pockets(
+          white = Pocket(white.map(_.role)),
+          black = Pocket(black.map(_.role))
+        )
+      },
       promoted = r.str("t").flatMap(chess.Pos.piotr)(breakOut)
     )
 
-    def writes(w: BSON.Writer, o: Crazyhouse.Data) = BSONDocument(
-      "p" -> {
-        o.pockets.white.roles.map(_.forsythUpper).mkString +
-          o.pockets.black.roles.map(_.forsyth).mkString
-      },
-      "t" -> o.promoted.map(_.piotr).mkString
-    )
+    def writes(w: BSON.Writer, o: Crazyhouse.Data) = ???
   }
 
   implicit val gameBSONHandler: BSON[Game] = new BSON[Game] {
 
-    import Game.BSONFields._
+    import Game.{ BSONFields => F }
     import Player.playerBSONHandler
 
     private val emptyPlayerBuilder = playerBSONHandler.read(BSONDocument())
 
     def reads(r: BSON.Reader): Game = {
-      val winC = r boolO winnerColor map Color.apply
-      val (whiteId, blackId) = r str playerIds splitAt 4
-      val uids = r.getO[List[String]](playerUids) getOrElse Nil
+
+      val gameVariant = Variant(r intD F.variant) | chess.variant.Standard
+      val plies = r int F.turns
+      val turnColor = Color.fromPly(plies)
+
+      val decoded = r.bytesO(F.huffmanPgn).map { PgnStorage.Huffman.decode(_, plies) } getOrElse {
+        val clm = r.get[CastleLastMove](F.castleLastMove)
+        PgnStorage.Decoded(
+          pgnMoves = PgnStorage.OldBin.decode(r bytesD F.oldPgn, plies),
+          pieces = BinaryFormat.piece.read(r bytes F.binaryPieces, gameVariant),
+          positionHashes = r.getO[chess.PositionHash](F.positionHashes) getOrElse Array.empty,
+          unmovedRooks = r.getO[UnmovedRooks](F.unmovedRooks) getOrElse UnmovedRooks.default,
+          lastMove = clm.lastMove,
+          castles = clm.castles,
+          format = PgnStorage.OldBin
+        )
+      }
+
+      val winC = r boolO F.winnerColor map Color.apply
+      val uids = r.getO[List[String]](F.playerUids) getOrElse Nil
       val (whiteUid, blackUid) = (uids.headOption.filter(_.nonEmpty), uids.lift(1).filter(_.nonEmpty))
-      def player(field: String, color: Color, id: Player.Id, uid: Player.UserId): Player = {
+      def makePlayer(field: String, color: Color, id: Player.Id, uid: Player.UserId): Player = {
         val builder = r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
         val win = winC map (_ == color)
         builder(color)(id)(uid)(win)
       }
+      val (whiteId, blackId) = r str F.playerIds splitAt 4
+      val wPlayer = makePlayer(F.whitePlayer, White, whiteId, whiteUid)
+      val bPlayer = makePlayer(F.blackPlayer, Black, blackId, blackUid)
 
-      val g = Game(
-        id = r str id,
-        whitePlayer = player(whitePlayer, White, whiteId, whiteUid),
-        blackPlayer = player(blackPlayer, Black, blackId, blackUid),
-        binaryPgn = r bytesD binaryPgn,
-        status = r.get[Status](status),
-        turns = r int turns,
-        startedAtTurn = r intD startedAtTurn,
-        checkCount = {
-          val counts = r.intsD(checkCount)
-          CheckCount(counts.headOption getOrElse 0, counts.lastOption getOrElse 0)
-        },
-        daysPerTurn = r intO daysPerTurn,
-        binaryMoveTimes = r bytesO moveTimes,
-        mode = Mode(r boolD rated),
-        variant = Variant(r intD variant) | chess.variant.Standard,
-        createdAt = r date createdAt,
-        movedAt = r.dateD(movedAt, r date createdAt),
-        metadata = Metadata(
-          source = r intO source flatMap Source.apply,
-          tournamentId = r strO tournamentId,
-          simulId = r strO simulId,
-          analysed = r boolD analysed
-        )
+      val createdAt = r date F.createdAt
+      val status = r.get[Status](F.status)
+
+      val chessGame = ChessGame(
+        situation = chess.Situation(
+          chess.Board(
+            pieces = decoded.pieces,
+            history = ChessHistory(
+              lastMove = decoded.lastMove,
+              castles = decoded.castles,
+              positionHashes = decoded.positionHashes,
+              unmovedRooks = decoded.unmovedRooks,
+              checkCount = if (gameVariant.threeCheck) {
+                val counts = r.intsD(F.checkCount)
+                CheckCount(counts.headOption getOrElse 0, counts.lastOption getOrElse 0)
+              }
+              else Game.emptyCheckCount
+            ),
+            variant = gameVariant,
+            crazyData =
+              if (gameVariant.crazyhouse) Some(r.get[Crazyhouse.Data](F.crazyData))
+              else None
+          ),
+          color = turnColor
+        ),
+        pgnMoves = decoded.pgnMoves,
+        clock = r.getO[Color => Clock](F.clock) {
+          clockBSONReader(createdAt, wPlayer.berserk, bPlayer.berserk)
+        } map (_(turnColor)),
+        turns = plies,
+        startedAtTurn = r intD F.startedAtTurn
       )
 
-      val gameClock = r.getO[Color => Clock](clock)(clockBSONReader(g.createdAt, g.whitePlayer.berserk, g.blackPlayer.berserk)) map (_(g.turnColor))
-
-      g.copy(
-        clock = gameClock,
-        crazyData = if(g.variant == Crazyhouse) Some(r.get[Crazyhouse.Data](crazyData)) else None,
+      Game(
+        id = r str F.id,
+        whitePlayer = wPlayer,
+        blackPlayer = bPlayer,
+        chess = chessGame,
+        status = status,
+        daysPerTurn = r intO F.daysPerTurn,
+        binaryMoveTimes = r bytesO F.moveTimes,
         clockHistory = for {
-        clk <- gameClock
-        bw <- r bytesO whiteClockHistory
-        bb <- r bytesO blackClockHistory
-        history <- BinaryFormat.clockHistory.read(clk.limit, bw, bb, g.flagged, g.id)
-      } yield history
+          clk <- chessGame.clock
+          bw <- r bytesO F.whiteClockHistory
+          bb <- r bytesO F.blackClockHistory
+          history <- BinaryFormat.clockHistory.read(clk.limit, bw, bb, if (status == Status.Outoftime) Some(turnColor) else None)
+        } yield history,
+        mode = Mode(r boolD F.rated),
+        createdAt = createdAt,
+        movedAt = r.dateD(F.movedAt, createdAt),
+        metadata = Metadata(
+          source = r intO F.source flatMap Source.apply,
+          tournamentId = r strO F.tournamentId,
+          simulId = r strO F.simulId,
+          analysed = r boolD F.analysed
+        )
       )
     }
 
     def writes(w: BSON.Writer, o: Game) = ???
   }
 
+  import chess.format.FEN
   implicit val gameWithInitialFenBSONHandler: BSON[Game.WithInitialFen] = new BSON[Game.WithInitialFen] {
     def reads(r: BSON.Reader): Game.WithInitialFen = {
       Game.WithInitialFen(gameBSONHandler.reads(r), (r strO Game.BSONFields.initialFen).map(FEN.apply))
@@ -136,5 +172,9 @@ object BSONHandlers {
     def read(bin: BSONBinary) = BinaryFormat.clock(since).read(
       ByteArrayBSONHandler read bin, whiteBerserk, blackBerserk
     )
+  }
+
+  private[game] def clockBSONWrite(since: DateTime, clock: Clock) = ByteArrayBSONHandler write {
+    BinaryFormat clock since write clock
   }
 }

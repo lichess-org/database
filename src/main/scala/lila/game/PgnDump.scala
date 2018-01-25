@@ -1,9 +1,9 @@
 package lila.game
 
-import chess.format.{FEN, Forsyth}
-import chess.format.pgn.{Pgn, Tag, TagType, Parser, ParsedPgn}
-import chess.format.{pgn => chessPgn}
-import chess.{Centis, Color, White, Black}
+import chess.format.pgn.{ Pgn, Tag, TagType, Parser, ParsedPgn }
+import chess.format.{ FEN, Forsyth }
+import chess.format.{ pgn => chessPgn }
+import chess.{ Centis, Color, White, Black }
 import lichess.Users
 
 object PgnDump {
@@ -11,14 +11,15 @@ object PgnDump {
   def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
     val ts = tags(game, users, initialFen)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
-    val moves2 =
-      if (fenSituation.fold(false)(_.situation.color.black)) ".." :: game.pgnMoves
+    val moves2: PgnMoves =
+      if (fenSituation.fold(false)(_.situation.color.black)) ".." +: game.pgnMoves
       else game.pgnMoves
     val turns = makeTurns(
       moves2,
       fenSituation.map(_.fullMoveNumber) getOrElse 1,
       game.bothClockStates getOrElse Vector.empty,
-      game.startColor)
+      game.startColor
+    )
     Pgn(chessPgn.Tags(ts), turns)
   }
 
@@ -58,7 +59,8 @@ object PgnDump {
     Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
     Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
     Tag(_.WhiteElo, elo(game.whitePlayer)),
-    Tag(_.BlackElo, elo(game.blackPlayer))) ::: List(
+    Tag(_.BlackElo, elo(game.blackPlayer))
+  ) ::: List(
       ratingDiffTag(game.whitePlayer, _.WhiteRatingDiff),
       ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
       users.white.title.map { t => Tag(_.WhiteTitle, t) },
@@ -79,23 +81,27 @@ object PgnDump {
       })),
       if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.map(_.value).getOrElse("?"))) else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
-      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None).flatten
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
+    ).flatten
 
-  private def makeTurns(moves: List[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
+  private def makeTurns(moves: Vector[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
       case (moves, index) =>
         val clockOffset = startColor.fold(0, 1)
         chessPgn.Turn(
           number = index + from,
           white = moves.headOption filter (".." !=) map { san =>
-          chessPgn.Move(
-            san = san,
-            secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds))
-        },
+            chessPgn.Move(
+              san = san,
+              secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
+            )
+          },
           black = moves lift 1 map { san =>
-          chessPgn.Move(
-            san = san,
-            secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds))
-        })
+            chessPgn.Move(
+              san = san,
+              secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds)
+            )
+          }
+        )
     } filterNot (_.isEmpty)
 }

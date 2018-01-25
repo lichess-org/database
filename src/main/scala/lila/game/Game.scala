@@ -16,22 +16,23 @@ case class Game(
     id: String,
     whitePlayer: Player,
     blackPlayer: Player,
-    binaryPgn: ByteArray,
+    chess: ChessGame,
     status: Status,
-    turns: Int, // = ply
-    startedAtTurn: Int,
-    clock: Option[Clock] = None,
     daysPerTurn: Option[Int],
-    checkCount: CheckCount = CheckCount(0, 0),
     binaryMoveTimes: Option[ByteArray] = None,
     clockHistory: Option[ClockHistory] = Option(ClockHistory()),
     mode: Mode = Mode.default,
-    variant: Variant = Variant.default,
-    crazyData: Option[Crazyhouse.Data] = None,
     createdAt: DateTime = DateTime.now,
     movedAt: DateTime = DateTime.now,
     metadata: Metadata
 ) {
+  def situation = chess.situation
+  def board = chess.situation.board
+  def history = chess.situation.board.history
+  def variant = chess.situation.board.variant
+  def turns = chess.turns
+  def clock = chess.clock
+  def pgnMoves = chess.pgnMoves
 
   val players = List(whitePlayer, blackPlayer)
 
@@ -51,6 +52,7 @@ case class Game(
   def player: Player = player(turnColor)
 
   def playerByUserId(userId: String): Option[Player] = players.find(_.userId contains userId)
+  def opponentByUserId(userId: String): Option[Player] = playerByUserId(userId) map opponent
 
   def opponent(p: Player): Player = opponent(p.color)
 
@@ -65,9 +67,11 @@ case class Game(
   def turnOf(p: Player): Boolean = p == player
   def turnOf(c: Color): Boolean = c == turnColor
 
-  def playedTurns = turns - startedAtTurn
+  def playedTurns = turns - chess.startedAtTurn
 
   def flagged = if (status == Status.Outoftime) Some(turnColor) else None
+
+  def fullIdOf(color: Color): String = s"$id${player(color).id}"
 
   def tournamentId = metadata.tournamentId
   def simulId = metadata.simulId
@@ -125,18 +129,27 @@ case class Game(
 
   def bothClockStates: Option[Vector[Centis]] = clockHistory.map(_ bothClockStates startColor)
 
-  lazy val pgnMoves: PgnMoves = BinaryFormat.pgn read binaryPgn
-
-  lazy val opening: Option[FullOpening.AtPly] =
-    if (fromPosition || !Variant.openingSensibleVariants(variant)) None
-    else FullOpeningDB search pgnMoves
-
   def pgnMoves(color: Color): PgnMoves = {
     val pivot = if (color == startColor) 0 else 1
     pgnMoves.zipWithIndex.collect {
       case (e, i) if (i % 2) == pivot => e
     }
   }
+
+  def lastMoveKeys: Option[String] = history.lastMove map {
+    case Uci.Drop(target, _) => s"$target$target"
+    case m: Uci.Move => m.keys
+  }
+
+  def updatePlayer(color: Color, f: Player => Player) = color.fold(
+    copy(whitePlayer = f(whitePlayer)),
+    copy(blackPlayer = f(blackPlayer))
+  )
+
+  def updatePlayers(f: Player => Player) = copy(
+    whitePlayer = f(whitePlayer),
+    blackPlayer = f(blackPlayer)
+  )
 
   def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map { days =>
     val increment = days * 24 * 60 * 60
@@ -147,11 +160,6 @@ case class Game(
       blackTime = turnColor.fold(increment, secondsLeft)
     )
   }
-
-  def speed = chess.Speed(clock.map(_.config))
-
-  def perfKey = PerfPicker.key(this)
-  def perfType = lila.rating.PerfType(perfKey)
 
   def started = status >= Status.Started
 
@@ -171,8 +179,6 @@ case class Game(
 
   def playableByAi: Boolean = playable && player.isAi
 
-  def mobilePushable = isCorrespondence && playable && nonAi
-
   def alarmable = hasCorrespondenceClock && playable && nonAi
 
   def continuable = status != Status.Mate && status != Status.Stalemate
@@ -191,11 +197,6 @@ case class Game(
 
   def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
 
-  def abortable = status == Status.Started && playedTurns < 2 && nonMandatory
-
-  def resignable = playable && !abortable
-  def drawable = playable && !abortable
-
   def rated = mode.rated
   def casual = !rated
 
@@ -205,23 +206,11 @@ case class Game(
 
   def accountable = playedTurns >= 2 || isTournament
 
-  def replayable = finished || (aborted && bothPlayersHaveMoved)
-
-  def analysable =
-    replayable && playedTurns > 4 &&
-      Game.analysableVariants(variant) &&
-      !Game.isOldHorde(this)
-
-  def ratingVariant =
-    if (isTournament && variant == chess.variant.FromPosition) chess.variant.Standard
-    else variant
-
-  def fromPosition = variant == chess.variant.FromPosition || source.contains(Source.Position)
-
   def imported = source contains Source.Import
 
   def fromPool = source contains Source.Pool
   def fromLobby = source contains Source.Lobby
+  def fromFriend = source contains Source.Friend
 
   def winner = players find (_.wins)
 
@@ -239,10 +228,6 @@ case class Game(
 
   def drawn = finished && winner.isEmpty
 
-  def isCorrespondence = speed == chess.Speed.Correspondence
-
-  def isSwitchable = nonAi && (isCorrespondence || isSimul)
-
   def hasClock = clock.isDefined
 
   def hasCorrespondenceClock = daysPerTurn.isDefined
@@ -257,7 +242,7 @@ case class Game(
   def onePlayerHasMoved = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
 
-  def startColor = Color(startedAtTurn % 2 == 0)
+  def startColor = Color(chess.startedAtTurn % 2 == 0)
 
   def playerMoves(color: Color): Int =
     if (color == startColor) (playedTurns + 1) / 2
@@ -265,13 +250,11 @@ case class Game(
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
-  def isBeingPlayed = !finishedOrAborted
-
   def olderThan(seconds: Int) = movedAt isBefore DateTime.now.minusSeconds(seconds)
 
-  def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
+  def justCreated = createdAt isAfter DateTime.now.minusSeconds(1)
 
-  def forecastable = started && playable && isCorrespondence && !hasAi
+  def unplayed = !bothPlayersHaveMoved && (createdAt isBefore Game.unplayedDate)
 
   def userIds = playerMaps(_.userId)
 
@@ -285,7 +268,15 @@ case class Game(
 
   def source = metadata.source
 
-  def resetTurns = copy(turns = 0, startedAtTurn = 0)
+  def ratingVariant =
+    if (isTournament && board.variant.fromPosition) _root_.chess.variant.Standard
+    else variant
+
+  def fromPosition = variant.fromPosition || source.contains(Source.Position)
+
+  lazy val opening: Option[FullOpening.AtPly] =
+    if (fromPosition || !Variant.openingSensibleVariants(variant)) None
+    else FullOpeningDB search pgnMoves
 
   def synthetic = id == Game.syntheticId
 
@@ -294,6 +285,13 @@ case class Game(
   def pov(c: Color) = Pov(this, c)
   def whitePov = pov(White)
   def blackPov = pov(Black)
+  def playerPov(p: Player) = pov(p.color)
+  def loserPov = loser map playerPov
+
+  def speed = _root_.chess.Speed(clock.map(_.config))
+
+  def perfKey = PerfPicker.key(this)
+  def perfType = lila.rating.PerfType(perfKey)
 }
 
 object Game {
@@ -360,6 +358,8 @@ object Game {
   def takeGameId(fullId: String) = fullId take gameIdSize
   def takePlayerId(fullId: String) = fullId drop gameIdSize
 
+  private[game] val emptyCheckCount = CheckCount(0, 0)
+
   object BSONFields {
 
     val id = "_id"
@@ -368,12 +368,17 @@ object Game {
     val playerIds = "is"
     val playerUids = "us"
     val playingUids = "pl"
-    val binaryPgn = "pg"
+    val binaryPieces = "ps"
+    val oldPgn = "pg"
+    val huffmanPgn = "hp"
     val status = "s"
     val turns = "t"
     val startedAtTurn = "st"
     val clock = "c"
+    val positionHashes = "ph"
     val checkCount = "cc"
+    val castleLastMove = "cl"
+    val unmovedRooks = "ur"
     val daysPerTurn = "cd"
     val moveTimes = "mt"
     val whiteClockHistory = "cw"
@@ -382,39 +387,37 @@ object Game {
     val analysed = "an"
     val variant = "v"
     val crazyData = "chd"
+    val next = "ne"
+    val bookmarks = "bm"
     val createdAt = "ca"
     val movedAt = "ua" // ua = updatedAt (bc)
     val source = "so"
+    val pgnImport = "pgni"
     val tournamentId = "tid"
     val simulId = "sid"
+    val tvAt = "tv"
     val winnerColor = "w"
     val winnerId = "wid"
     val initialFen = "if"
+    val checkAt = "ck"
   }
 }
 
-case class CastleLastMoveTime(
-    castles: Castles,
-    lastMove: Option[(Pos, Pos)],
-    check: Option[Pos]
-) {
+case class CastleLastMove(castles: Castles, lastMove: Option[Uci])
 
-  def lastMoveString = lastMove map { case (a, b) => s"$a$b" }
-}
+object CastleLastMove {
 
-object CastleLastMoveTime {
-
-  def init = CastleLastMoveTime(Castles.all, None, None)
+  def init = CastleLastMove(Castles.all, None)
 
   import reactivemongo.bson._
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  private[game] implicit val castleLastMoveTimeBSONHandler = new BSONHandler[BSONBinary, CastleLastMoveTime] {
-    def read(bin: BSONBinary) = BinaryFormat.castleLastMoveTime read {
+  private[game] implicit val castleLastMoveBSONHandler = new BSONHandler[BSONBinary, CastleLastMove] {
+    def read(bin: BSONBinary) = BinaryFormat.castleLastMove read {
       ByteArrayBSONHandler read bin
     }
-    def write(clmt: CastleLastMoveTime) = ByteArrayBSONHandler write {
-      BinaryFormat.castleLastMoveTime write clmt
+    def write(clmt: CastleLastMove) = ByteArrayBSONHandler write {
+      BinaryFormat.castleLastMove write clmt
     }
   }
 }

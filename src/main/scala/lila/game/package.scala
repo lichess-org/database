@@ -1,5 +1,5 @@
 package lila
 
 package object game {
-  type PgnMoves = List[String]
+  type PgnMoves = Vector[String]
 }
