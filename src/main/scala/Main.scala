@@ -71,7 +71,7 @@ object Main extends App {
           .find(query)
           .sort(BSONDocument("ca" -> 1))
           .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondary)
-          .documentSource(maxDocs = Int.MaxValue)
+          .documentSource(maxDocs = Int.MaxValue, err = Cursor.ContOnError((_, e) => println(e.getMessage)))
 
         val tickSource =
           Source.tick(Reporter.freq, Reporter.freq, None)
