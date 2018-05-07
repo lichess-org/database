@@ -87,8 +87,7 @@ object PgnDump {
         })),
         if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.map(_.value).getOrElse("?"))) else None,
         if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
-        if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None,
-        Some(Tag("LichessId", game.id))
+        if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
       ).flatten
   }
 
