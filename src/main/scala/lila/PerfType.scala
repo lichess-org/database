@@ -41,6 +41,14 @@ object PerfType {
     iconChar = ')'
   )
 
+  case object Rapid extends PerfType(
+    6,
+    key = "rapid",
+    name = Speed.Rapid.name,
+    title = Speed.Rapid.title,
+    iconChar = '#'
+  )
+
   case object Classical extends PerfType(
     3,
     key = "classical",
@@ -137,7 +145,7 @@ object PerfType {
     iconChar = '-'
   )
 
-  val all: List[PerfType] = List(UltraBullet, Bullet, Blitz, Classical, Correspondence, Standard, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings, Puzzle)
+  val all: List[PerfType] = List(UltraBullet, Bullet, Blitz, Rapid, Classical, Correspondence, Standard, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings, Puzzle)
   val byKey = all map { p => (p.key, p) } toMap
   val byId = all map { p => (p.id, p) } toMap
 
@@ -152,53 +160,11 @@ object PerfType {
 
   def id2key(id: Int): Option[String] = byId get id map (_.key)
 
-  val nonPuzzle: List[PerfType] = List(UltraBullet, Bullet, Blitz, Classical, Correspondence, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings)
+  val nonPuzzle: List[PerfType] = List(UltraBullet, Bullet, Blitz, Rapid, Classical, Correspondence, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings)
   val nonGame: List[PerfType] = List(Puzzle)
-  val leaderboardable: List[PerfType] = List(Bullet, Blitz, Classical, UltraBullet, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings)
+  val leaderboardable: List[PerfType] = List(Bullet, Blitz, Rapid, Classical, UltraBullet, Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings)
   val variants: List[PerfType] = List(Crazyhouse, Chess960, KingOfTheHill, ThreeCheck, Antichess, Atomic, Horde, RacingKings)
-  val standard: List[PerfType] = List(Bullet, Blitz, Classical, Correspondence)
+  val standard: List[PerfType] = List(Bullet, Blitz, Rapid, Classical, Correspondence)
 
   def isGame(pt: PerfType) = !nonGame.contains(pt)
-
-  val nonPuzzleIconByName = nonPuzzle.map { pt =>
-    pt.name -> pt.iconString
-  } toMap
-
-  def variantOf(pt: PerfType): chess.variant.Variant = pt match {
-    case Crazyhouse => chess.variant.Crazyhouse
-    case Chess960 => chess.variant.Chess960
-    case KingOfTheHill => chess.variant.KingOfTheHill
-    case ThreeCheck => chess.variant.ThreeCheck
-    case Antichess => chess.variant.Antichess
-    case Atomic => chess.variant.Atomic
-    case Horde => chess.variant.Horde
-    case RacingKings => chess.variant.RacingKings
-    case _ => chess.variant.Standard
-  }
-
-  def byVariant(variant: chess.variant.Variant): Option[PerfType] = variant match {
-    case chess.variant.Crazyhouse => Some(Crazyhouse)
-    case chess.variant.Chess960 => Some(Chess960)
-    case chess.variant.KingOfTheHill => Some(KingOfTheHill)
-    case chess.variant.ThreeCheck => Some(ThreeCheck)
-    case chess.variant.Antichess => Some(Antichess)
-    case chess.variant.Atomic => Some(Atomic)
-    case chess.variant.Horde => Some(Horde)
-    case chess.variant.RacingKings => Some(RacingKings)
-    case _ => None
-  }
-
-  lazy val totalTimeRoughEstimation: Map[PerfType, Centis] = nonPuzzle.map { pt =>
-    pt -> Centis(pt match {
-      case UltraBullet => 25 * 100
-      case Bullet => 90 * 100
-      case Blitz => 7 * 60 * 100
-      case Classical => 15 * 60 * 100
-      case Correspondence => 60 * 60 * 100
-      case _ => 7 * 60 * 100
-    })
-  }(scala.collection.breakOut)
-
-  def iconByVariant(variant: chess.variant.Variant): Char =
-    byVariant(variant).fold('C')(_.iconChar)
 }
