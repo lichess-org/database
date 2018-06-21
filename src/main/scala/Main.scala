@@ -64,7 +64,8 @@ object Main extends App {
 
         val query = BSONDocument(
           "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
-          "ra" -> true
+          "ra" -> true,
+          "v" -> BSONDocument("$exists" -> variant.exotic)
         )
 
         val gameSource = db.gameColl
