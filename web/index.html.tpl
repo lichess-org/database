@@ -130,6 +130,7 @@
 
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
+          These collections of games are in the public domain, with no rights reserved.<br />
           <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
 
