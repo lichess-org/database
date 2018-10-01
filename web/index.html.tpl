@@ -116,6 +116,9 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://github.com/Ramon-Deniz/ChessData#heatmap-of-chess-moves">Heatmap of Chess Moves</a>
+            </li>
+            <li>
               <a>Your project here</a>
             </li>
           </ul>
