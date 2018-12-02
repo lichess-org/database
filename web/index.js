@@ -57,8 +57,7 @@ function getFiles(variant) {
 function renderTable(files, variant) {
   return files.map(f => {
     return `<tr>
-    <td>${f.date.format('YYYY')}</td>
-    <td>${f.date.format('MMMM')}</td>
+    <td>${f.date.format('YYYY - MMMM')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
