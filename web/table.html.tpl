@@ -6,6 +6,7 @@ Each file contains the games for one month only; they are not cumulative.
 <table>
   <thead>
     <tr>
+      <th>Year</th>
       <th>Month</th>
       <th class="right">Size</th>
       <th class="right">Games</th>
