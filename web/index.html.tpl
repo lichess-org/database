@@ -121,7 +121,7 @@
             <li>
               <a href="https://github.com/QueensGambit/CrazyAra">Deep Learning Engine for Crazyhouse </a>
             </li>
-             <li>
+            <li>
               <a href="https://github.com/mark-dev/chessfactory-hall-of-fame">Top lichess games by various criteria</a>
             </li>
             <li>
