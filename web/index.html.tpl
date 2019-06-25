@@ -125,7 +125,7 @@
               <a href="https://github.com/mark-dev/chessfactory-hall-of-fame">Top lichess games by various criteria</a>
             </li>
             <li>
-              <a>Your project here</a>
+              <a href="https://reddit.com/r/chess/comments/c4nzje/how_lichess_ratings_compare_analysis_of_35/">Comparison of Bullet, Blitz, Rapid and Classical ratings</a>
             </li>
           </ul>
           <p>
