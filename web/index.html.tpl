@@ -128,7 +128,10 @@
               <a href="https://reddit.com/r/chess/comments/c4nzje/how_lichess_ratings_compare_analysis_of_35/">Comparison of Bullet, Blitz, Rapid and Classical ratings</a>
             </li>
             <li>
-            <a href="https://medium.com/@yyyeliko/this-bot-is-actually-you-63d89631b2e5">A Bot plays its next move by what the majority of all the players chose at that specific position.</a>
+              <a href="https://medium.com/@yyyeliko/this-bot-is-actually-you-63d89631b2e5">A Bot plays its next move by what the majority of all the players chose at that specific position.</a>
+            </li>
+            <li>
+              <a href="https://thenewstack.io/artificial-stupidity-one-google-engineers-algorithms-for-bad-chess-playing/">Machine learning over 500 million games</a>
             </li>
           </ul>
           <p>
