@@ -116,6 +116,8 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://www.chessroots.com">ChessRoots visual opening explorer</a>
+            <li>
               <a href="https://github.com/Ramon-Deniz/ChessData#heatmap-of-chess-moves">Heatmap of Chess Moves</a>
             </li>
             <li>
