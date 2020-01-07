@@ -135,6 +135,9 @@
             <li>
               <a href="https://thenewstack.io/artificial-stupidity-one-google-engineers-algorithms-for-bad-chess-playing/">Machine learning over 500 million games</a>
             </li>
+            <li>
+              <a href="https://www.youtube.com/watch?v=7eevSgJqV7o">Finding the Most Common Chess Blunders</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results!<br />
