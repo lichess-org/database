@@ -138,6 +138,9 @@
             <li>
               <a href="https://www.youtube.com/watch?v=7eevSgJqV7o">Finding the Most Common Chess Blunders</a>
             </li>
+            <li>
+              <a href="https://www.youtube.com/watch?v=VcghDhMlgBw">20 most popular chess openings over time</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results!<br />
