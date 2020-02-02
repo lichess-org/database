@@ -1,15 +1,15 @@
 package lila.game
 
-import chess.format.pgn.{ Pgn, Tag, TagType, Parser, ParsedPgn }
+import chess.format.pgn.{ ParsedPgn, Parser, Pgn, Tag, TagType }
 import chess.format.{ FEN, Forsyth }
 import chess.format.{ pgn => chessPgn }
-import chess.{ Centis, Color, White, Black }
+import chess.{ Black, Centis, Color, White }
 import lichess.Users
 
 object PgnDump {
 
   def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
-    val ts = tags(game, users, initialFen)
+    val ts           = tags(game, users, initialFen)
     val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
     val moves2: PgnMoves =
       if (fenSituation.fold(false)(_.situation.color.black)) ".." +: game.pgnMoves
@@ -48,7 +48,9 @@ object PgnDump {
   }
 
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
-    p.ratingDiff.map { rd => Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd") }
+    p.ratingDiff.map { rd =>
+      Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd")
+    }
 
   private val emptyRound = Tag(_.Round, "-")
 
@@ -67,31 +69,47 @@ object PgnDump {
       Tag(_.WhiteElo, elo(game.whitePlayer)),
       Tag(_.BlackElo, elo(game.blackPlayer))
     ) ::: List(
-        ratingDiffTag(game.whitePlayer, _.WhiteRatingDiff),
-        ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
-        users.white.title.map { t => Tag(_.WhiteTitle, t) },
-        users.black.title.map { t => Tag(_.BlackTitle, t) },
-        if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
-        if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
-        Some(Tag(_.TimeControl, game.clock.fold("-") { c => s"${c.limit.roundSeconds}+${c.increment.roundSeconds}" })),
-        Some(Tag(_.Termination, {
-          import chess.Status._
-          game.status match {
-            case Created | Started => "Unterminated"
-            case Aborted | NoStart => "Abandoned"
-            case Timeout | Outoftime => "Time forfeit"
-            case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
-            case Cheat => "Rules infraction"
-            case UnknownFinish => "Unknown"
+      ratingDiffTag(game.whitePlayer, _.WhiteRatingDiff),
+      ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
+      users.white.title.map { t =>
+        Tag(_.WhiteTitle, t)
+      },
+      users.black.title.map { t =>
+        Tag(_.BlackTitle, t)
+      },
+      if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
+      if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
+      Some(Tag(_.TimeControl, game.clock.fold("-") { c =>
+        s"${c.limit.roundSeconds}+${c.increment.roundSeconds}"
+      })),
+      Some(
+        Tag(
+          _.Termination, {
+            import chess.Status._
+            game.status match {
+              case Created | Started                             => "Unterminated"
+              case Aborted | NoStart                             => "Abandoned"
+              case Timeout | Outoftime                           => "Time forfeit"
+              case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
+              case Cheat                                         => "Rules infraction"
+              case UnknownFinish                                 => "Unknown"
+            }
           }
-        })),
-        if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.fold(Forsyth.initial)(_.value))) else None,
-        if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
-        if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
-      ).flatten
+        )
+      ),
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.fold(Forsyth.initial)(_.value)))
+      else None,
+      if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
+      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
+    ).flatten
   }
 
-  private def makeTurns(moves: Vector[String], from: Int, clocks: Vector[Centis], startColor: Color): List[chessPgn.Turn] =
+  private def makeTurns(
+      moves: Vector[String],
+      from: Int,
+      clocks: Vector[Centis],
+      startColor: Color
+  ): List[chessPgn.Turn] =
     (moves grouped 2).zipWithIndex.toList map {
       case (moves, index) =>
         val clockOffset = startColor.fold(0, 1)

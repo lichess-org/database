@@ -189,7 +189,7 @@ object PerfType {
   val default = Standard
 
   def apply(key: String): Option[PerfType] = byKey get key
-  def orDefault(key: String): PerfType = apply(key) getOrElse default
+  def orDefault(key: String): PerfType     = apply(key) getOrElse default
 
   def apply(id: Int): Option[PerfType] = byId get id
 

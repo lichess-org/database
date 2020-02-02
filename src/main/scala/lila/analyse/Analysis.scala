@@ -9,7 +9,7 @@ case class Analysis(
     infos: List[Info],
     startPly: Int,
     uid: Option[String], // requester lichess ID
-    by: Option[String], // analyser lichess ID
+    by: Option[String],  // analyser lichess ID
     date: DateTime
 ) {
 
@@ -34,18 +34,17 @@ case class Analysis(
       }
     }.toMap
 
-  def summary: List[(Color, List[(Advice.Judgment, Int)])] = Color.all map {
-    color =>
-      color -> (Advice.Judgment.all map { judgment =>
-        judgment -> (advices count { adv =>
-          adv.color == color && adv.judgment == judgment
-        })
+  def summary: List[(Color, List[(Advice.Judgment, Int)])] = Color.all map { color =>
+    color -> (Advice.Judgment.all map { judgment =>
+      judgment -> (advices count { adv =>
+        adv.color == color && adv.judgment == judgment
       })
+    })
   }
 
   def valid = infos.nonEmpty
 
-  def nbEmptyInfos = infos.count(_.isEmpty)
+  def nbEmptyInfos       = infos.count(_.isEmpty)
   def emptyRatio: Double = nbEmptyInfos.toDouble / infos.size
 }
 
@@ -59,7 +58,7 @@ object Analysis {
   implicit val analysisBSONHandler = new BSON[Analysis] {
     def reads(r: BSON.Reader) = {
       val startPly = r intD "ply"
-      val raw = r str "data"
+      val raw      = r str "data"
       Analysis(
         id = r str "_id",
         infos = Info.decodeList(raw, startPly) getOrElse {

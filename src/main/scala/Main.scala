@@ -12,18 +12,18 @@ import akka.stream._
 import akka.stream.scaladsl._
 import akka.util.ByteString
 import java.nio.file.Paths
-import reactivemongo.akkastream.{State, cursorProducer}
+import reactivemongo.akkastream.{ cursorProducer, State }
 
 import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
-import chess.variant.{Standard, Horde, Variant}
+import chess.variant.{ Horde, Standard, Variant }
 import lichess.DB.BSONDateTimeHandler
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
 import lila.game.BSONHandlers._
 import lila.game.BSONHandlers._
-import lila.game.{Game, PgnDump, Source => S}
+import lila.game.{ Game, PgnDump, Source => S }
 
 object Main extends App {
 
@@ -69,7 +69,7 @@ object Main extends App {
       val query = BSONDocument(
         "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
         "ra" -> true,
-        "v" -> BSONDocument("$exists" -> variant.exotic)
+        "v"  -> BSONDocument("$exists" -> variant.exotic)
       )
 
       val gameSource = db.gameColl
@@ -115,11 +115,10 @@ object Main extends App {
             )
           )
           .cursor[Analysis](readPreference = ReadPreference.secondary)
-          .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]()) map {
-          as =>
-            gs.map { g =>
-              g -> as.find(_.id == g.game.id)
-            }
+          .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]()) map { as =>
+          gs.map { g =>
+            g -> as.find(_.id == g.game.id)
+          }
         }
 
       type WithUsers = (Analysed, Users)

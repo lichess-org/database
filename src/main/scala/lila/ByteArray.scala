@@ -28,7 +28,7 @@ object ByteArray {
 
   implicit val ByteArrayBSONHandler = new BSONHandler[BSONBinary, ByteArray] {
     def read(bin: BSONBinary) = ByteArray(bin.byteArray)
-    def write(ba: ByteArray) = BSONBinary(ba.value, subtype)
+    def write(ba: ByteArray)  = BSONBinary(ba.value, subtype)
   }
 
   implicit def fromBytes(value: Array[Byte]) = new ByteArray(value)
@@ -36,8 +36,8 @@ object ByteArray {
   def parseBytes(s: List[String]) = ByteArray(s.map(parseByte).toArray)
 
   private def parseByte(s: String): Byte = {
-    var i = s.length - 1
-    var sum = 0
+    var i    = s.length - 1
+    var sum  = 0
     var mult = 1
     while (i >= 0) {
       s.charAt(i) match {

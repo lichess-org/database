@@ -3,10 +3,10 @@ package lila.game
 import scala.concurrent.duration._
 import scala.language.postfixOps
 
-import chess.Color.{White, Black}
-import chess.format.{Uci, FEN}
-import chess.opening.{FullOpening, FullOpeningDB}
-import chess.variant.{Variant, Crazyhouse}
+import chess.Color.{ Black, White }
+import chess.format.{ FEN, Uci }
+import chess.opening.{ FullOpening, FullOpeningDB }
+import chess.variant.{ Crazyhouse, Variant }
 import chess.{
   History => ChessHistory,
   CheckCount,
@@ -43,12 +43,12 @@ case class Game(
     metadata: Metadata
 ) {
   def situation = chess.situation
-  def board = chess.situation.board
-  def history = chess.situation.board.history
-  def variant = chess.situation.board.variant
-  def turns = chess.turns
-  def clock = chess.clock
-  def pgnMoves = chess.pgnMoves
+  def board     = chess.situation.board
+  def history   = chess.situation.board.history
+  def variant   = chess.situation.board.variant
+  def turns     = chess.turns
+  def clock     = chess.clock
+  def pgnMoves  = chess.pgnMoves
 
   val players = List(whitePlayer, blackPlayer)
 
@@ -77,13 +77,13 @@ case class Game(
   def opponent(c: Color): Player = player(!c)
 
   lazy val firstColor = Color(whitePlayer before blackPlayer)
-  def firstPlayer = player(firstColor)
-  def secondPlayer = player(!firstColor)
+  def firstPlayer     = player(firstColor)
+  def secondPlayer    = player(!firstColor)
 
   def turnColor = Color((turns & 1) == 0)
 
   def turnOf(p: Player): Boolean = p == player
-  def turnOf(c: Color): Boolean = c == turnColor
+  def turnOf(c: Color): Boolean  = c == turnColor
 
   def playedTurns = turns - chess.startedAtTurn
 
@@ -92,11 +92,11 @@ case class Game(
   def fullIdOf(color: Color): String = s"$id${player(color).id}"
 
   def tournamentId = metadata.tournamentId
-  def simulId = metadata.simulId
+  def simulId      = metadata.simulId
 
   def isTournament = tournamentId.isDefined
-  def isSimul = simulId.isDefined
-  def isMandatory = isTournament || isSimul
+  def isSimul      = simulId.isDefined
+  def isMandatory  = isTournament || isSimul
   def nonMandatory = !isMandatory
 
   def hasChat = !isTournament && !isSimul && nonAi
@@ -136,7 +136,7 @@ case class Game(
   } orElse binaryMoveTimes.map { binary =>
     // TODO: make movetime.read return List after writes are disabled.
     val base = BinaryFormat.moveTime.read(binary, playedTurns)
-    val mts = if (color == startColor) base else base.drop(1)
+    val mts  = if (color == startColor) base else base.drop(1)
     everyOther(mts.toList)
   }
 
@@ -171,16 +171,15 @@ case class Game(
     blackPlayer = f(blackPlayer)
   )
 
-  def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map {
-    days =>
-      val increment = days * 24 * 60 * 60
-      val secondsLeft = (movedAt.getMillis / 1000 + increment - System
-        .currentTimeMillis() / 1000).toInt max 0
-      CorrespondenceClock(
-        increment = increment,
-        whiteTime = turnColor.fold(secondsLeft, increment),
-        blackTime = turnColor.fold(increment, secondsLeft)
-      )
+  def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map { days =>
+    val increment = days * 24 * 60 * 60
+    val secondsLeft = (movedAt.getMillis / 1000 + increment - System
+      .currentTimeMillis() / 1000).toInt max 0
+    CorrespondenceClock(
+      increment = increment,
+      whiteTime = turnColor.fold(secondsLeft, increment),
+      blackTime = turnColor.fold(increment, secondsLeft)
+    )
   }
 
   def started = status >= Status.Started
@@ -208,7 +207,7 @@ case class Game(
   def aiLevel: Option[Int] = players find (_.isAi) flatMap (_.aiLevel)
 
   def hasAi: Boolean = players.exists(_.isAi)
-  def nonAi = !hasAi
+  def nonAi          = !hasAi
 
   def aiPov: Option[Pov] = players.find(_.isAi).map(_.color) map pov
 
@@ -219,7 +218,7 @@ case class Game(
 
   def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
 
-  def rated = mode.rated
+  def rated  = mode.rated
   def casual = !rated
 
   def finished = status >= Status.Mate
@@ -230,8 +229,8 @@ case class Game(
 
   def imported = source contains Source.Import
 
-  def fromPool = source contains Source.Pool
-  def fromLobby = source contains Source.Lobby
+  def fromPool   = source contains Source.Pool
+  def fromLobby  = source contains Source.Lobby
   def fromFriend = source contains Source.Friend
 
   def winner = players find (_.wins)
@@ -262,7 +261,7 @@ case class Game(
     estimateClockTotalTime orElse
       correspondenceClock.map(_.estimateTotalTime) getOrElse 1200
 
-  def onePlayerHasMoved = playedTurns > 0
+  def onePlayerHasMoved    = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
 
   def startColor = Color(chess.startedAtTurn % 2 == 0)
@@ -309,15 +308,15 @@ case class Game(
     f(_)
   }
 
-  def pov(c: Color) = Pov(this, c)
-  def whitePov = pov(White)
-  def blackPov = pov(Black)
+  def pov(c: Color)        = Pov(this, c)
+  def whitePov             = pov(White)
+  def blackPov             = pov(Black)
   def playerPov(p: Player) = pov(p.color)
-  def loserPov = loser map playerPov
+  def loserPov             = loser map playerPov
 
   def speed = _root_.chess.Speed(clock.map(_.config))
 
-  def perfKey = PerfPicker.key(this)
+  def perfKey  = PerfPicker.key(this)
   def perfType = lila.rating.PerfType(perfKey)
 }
 
@@ -344,8 +343,7 @@ object Game {
     chess.variant.RacingKings
   )
 
-  val unanalysableVariants
-      : Set[Variant] = Variant.all.toSet -- analysableVariants
+  val unanalysableVariants: Set[Variant] = Variant.all.toSet -- analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,
@@ -369,65 +367,65 @@ object Game {
   def allowRated(variant: Variant, clock: Clock.Config) =
     variant.standard || clock.estimateTotalTime >= Centis(3000)
 
-  val gameIdSize = 8
+  val gameIdSize   = 8
   val playerIdSize = 4
-  val fullIdSize = 12
-  val tokenSize = 4
+  val fullIdSize   = 12
+  val tokenSize    = 4
 
   val unplayedHours = 24
-  def unplayedDate = DateTime.now minusHours unplayedHours
+  def unplayedDate  = DateTime.now minusHours unplayedHours
 
   val abandonedDays = 21
   def abandonedDate = DateTime.now minusDays abandonedDays
 
   val aiAbandonedHours = 6
-  def aiAbandonedDate = DateTime.now minusHours aiAbandonedHours
+  def aiAbandonedDate  = DateTime.now minusHours aiAbandonedHours
 
-  def takeGameId(fullId: String) = fullId take gameIdSize
+  def takeGameId(fullId: String)   = fullId take gameIdSize
   def takePlayerId(fullId: String) = fullId drop gameIdSize
 
   private[game] val emptyCheckCount = CheckCount(0, 0)
 
   object BSONFields {
 
-    val id = "_id"
-    val whitePlayer = "p0"
-    val blackPlayer = "p1"
-    val playerIds = "is"
-    val playerUids = "us"
-    val playingUids = "pl"
-    val binaryPieces = "ps"
-    val oldPgn = "pg"
-    val huffmanPgn = "hp"
-    val status = "s"
-    val turns = "t"
-    val startedAtTurn = "st"
-    val clock = "c"
-    val positionHashes = "ph"
-    val checkCount = "cc"
-    val castleLastMove = "cl"
-    val unmovedRooks = "ur"
-    val daysPerTurn = "cd"
-    val moveTimes = "mt"
+    val id                = "_id"
+    val whitePlayer       = "p0"
+    val blackPlayer       = "p1"
+    val playerIds         = "is"
+    val playerUids        = "us"
+    val playingUids       = "pl"
+    val binaryPieces      = "ps"
+    val oldPgn            = "pg"
+    val huffmanPgn        = "hp"
+    val status            = "s"
+    val turns             = "t"
+    val startedAtTurn     = "st"
+    val clock             = "c"
+    val positionHashes    = "ph"
+    val checkCount        = "cc"
+    val castleLastMove    = "cl"
+    val unmovedRooks      = "ur"
+    val daysPerTurn       = "cd"
+    val moveTimes         = "mt"
     val whiteClockHistory = "cw"
     val blackClockHistory = "cb"
-    val rated = "ra"
-    val analysed = "an"
-    val variant = "v"
-    val crazyData = "chd"
-    val next = "ne"
-    val bookmarks = "bm"
-    val createdAt = "ca"
-    val movedAt = "ua" // ua = updatedAt (bc)
-    val source = "so"
-    val pgnImport = "pgni"
-    val tournamentId = "tid"
-    val simulId = "sid"
-    val tvAt = "tv"
-    val winnerColor = "w"
-    val winnerId = "wid"
-    val initialFen = "if"
-    val checkAt = "ck"
+    val rated             = "ra"
+    val analysed          = "an"
+    val variant           = "v"
+    val crazyData         = "chd"
+    val next              = "ne"
+    val bookmarks         = "bm"
+    val createdAt         = "ca"
+    val movedAt           = "ua" // ua = updatedAt (bc)
+    val source            = "so"
+    val pgnImport         = "pgni"
+    val tournamentId      = "tid"
+    val simulId           = "sid"
+    val tvAt              = "tv"
+    val winnerColor       = "w"
+    val winnerId          = "wid"
+    val initialFen        = "if"
+    val checkAt           = "ck"
   }
 }
 
@@ -440,7 +438,7 @@ object CastleLastMove {
   import reactivemongo.bson._
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  private[game] implicit val castleLastMoveBSONHandler =
+  implicit private[game] val castleLastMoveBSONHandler =
     new BSONHandler[BSONBinary, CastleLastMove] {
       def read(bin: BSONBinary) = BinaryFormat.castleLastMove read {
         ByteArrayBSONHandler read bin

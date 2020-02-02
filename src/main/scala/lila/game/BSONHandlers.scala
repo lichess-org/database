@@ -3,7 +3,7 @@ package lila.game
 import org.joda.time.DateTime
 import reactivemongo.bson._
 
-import chess.variant.{Variant, Crazyhouse}
+import chess.variant.{ Crazyhouse, Variant }
 import chess.{
   CheckCount,
   Color,
@@ -24,7 +24,7 @@ object BSONHandlers {
 
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  private[game] implicit val checkCountWriter =
+  implicit private[game] val checkCountWriter =
     new BSONWriter[CheckCount, BSONArray] {
       def write(cc: CheckCount) = BSONArray(cc.white, cc.black)
     }
@@ -35,7 +35,7 @@ object BSONHandlers {
     def write(x: Status) = BSONInteger(x.id)
   }
 
-  private[game] implicit val unmovedRooksHandler =
+  implicit private[game] val unmovedRooksHandler =
     new BSONHandler[BSONBinary, UnmovedRooks] {
       def read(bin: BSONBinary): UnmovedRooks = BinaryFormat.unmovedRooks.read {
         ByteArrayBSONHandler.read(bin)
@@ -45,7 +45,7 @@ object BSONHandlers {
       }
     }
 
-  private[game] implicit val crazyhouseDataBSONHandler =
+  implicit private[game] val crazyhouseDataBSONHandler =
     new BSON[Crazyhouse.Data] {
 
       import Crazyhouse._
@@ -70,7 +70,7 @@ object BSONHandlers {
 
   implicit val gameBSONHandler: BSON[Game] = new BSON[Game] {
 
-    import Game.{BSONFields => F}
+    import Game.{ BSONFields => F }
     import Player.playerBSONHandler
 
     private val emptyPlayerBuilder = playerBSONHandler.read(BSONDocument())
@@ -78,8 +78,8 @@ object BSONHandlers {
     def reads(r: BSON.Reader): Game = {
 
       val gameVariant = Variant(r intD F.variant) | chess.variant.Standard
-      val plies = r int F.turns
-      val turnColor = Color.fromPly(plies)
+      val plies       = r int F.turns
+      val turnColor   = Color.fromPly(plies)
 
       val decoded = r.bytesO(F.huffmanPgn).map {
         PgnStorage.Huffman.decode(_, plies)
@@ -109,15 +109,15 @@ object BSONHandlers {
           uid: Player.UserId
       ): Player = {
         val builder = r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
-        val win = winC map (_ == color)
+        val win     = winC map (_ == color)
         builder(color)(id)(uid)(win)
       }
       val (whiteId, blackId) = r str F.playerIds splitAt 4
-      val wPlayer = makePlayer(F.whitePlayer, White, whiteId, whiteUid)
-      val bPlayer = makePlayer(F.blackPlayer, Black, blackId, blackUid)
+      val wPlayer            = makePlayer(F.whitePlayer, White, whiteId, whiteUid)
+      val bPlayer            = makePlayer(F.blackPlayer, Black, blackId, blackUid)
 
       val createdAt = r date F.createdAt
-      val status = r.get[Status](F.status)
+      val status    = r.get[Status](F.status)
 
       val chessGame = ChessGame(
         situation = chess.Situation(
@@ -162,8 +162,8 @@ object BSONHandlers {
         binaryMoveTimes = r bytesO F.moveTimes,
         clockHistory = for {
           clk <- chessGame.clock
-          bw <- r bytesO F.whiteClockHistory
-          bb <- r bytesO F.blackClockHistory
+          bw  <- r bytesO F.whiteClockHistory
+          bb  <- r bytesO F.blackClockHistory
           history <- BinaryFormat.clockHistory.read(
             clk.limit,
             bw,
@@ -206,7 +206,7 @@ object BSONHandlers {
       flagged: Option[Color]
   ) =
     for {
-      clk <- clock
+      clk     <- clock
       history <- clockHistory
       times = history(color)
     } yield BinaryFormat.clockHistory.writeSide(

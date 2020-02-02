@@ -18,7 +18,7 @@ case class Pov(game: Game, color: Color) {
 
   def ref = PovRef(game.id, color)
 
-  def withGame(g: Game) = copy(game = g)
+  def withGame(g: Game)   = copy(game = g)
   def withColor(c: Color) = copy(color = c)
 
   lazy val isMyTurn = game.started && game.playable && game.turnColor == color
@@ -36,10 +36,10 @@ object Pov {
 
   def apply(game: Game): List[Pov] = game.players.map { apply(game, _) }
 
-  def first(game: Game) = apply(game, if (!game.variant.racingKings) game.firstPlayer else game.whitePlayer)
+  def first(game: Game)  = apply(game, if (!game.variant.racingKings) game.firstPlayer else game.whitePlayer)
   def second(game: Game) = apply(game, if (!game.variant.racingKings) game.secondPlayer else game.blackPlayer)
-  def white(game: Game) = apply(game, game.whitePlayer)
-  def black(game: Game) = apply(game, game.blackPlayer)
+  def white(game: Game)  = apply(game, game.whitePlayer)
+  def black(game: Game)  = apply(game, game.blackPlayer)
   def player(game: Game) = apply(game, game.player)
 
   def apply(game: Game, player: Player) = new Pov(game, player.color)

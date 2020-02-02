@@ -6,10 +6,9 @@ import scalaz.NonEmptyList
 
 trait Handlers {
 
-  implicit object BSONJodaDateTimeHandler
-      extends BSONHandler[BSONDateTime, DateTime] {
+  implicit object BSONJodaDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {
     def read(x: BSONDateTime) = new DateTime(x.value)
-    def write(x: DateTime) = BSONDateTime(x.getMillis)
+    def write(x: DateTime)    = BSONDateTime(x.getMillis)
   }
 
   implicit def nullableHandler[T, B <: BSONValue](

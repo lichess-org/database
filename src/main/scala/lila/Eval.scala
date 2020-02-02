@@ -19,19 +19,19 @@ object Eval {
 
   case class Score(value: Either[Cp, Mate]) extends AnyVal {
 
-    def cp: Option[Cp] = value.left.toOption
+    def cp: Option[Cp]     = value.left.toOption
     def mate: Option[Mate] = value.right.toOption
 
     def isCheckmate = value == Score.checkmate
-    def mateFound = value.isRight
+    def mateFound   = value.isRight
 
-    def invert = copy(value = value.left.map(_.invert).right.map(_.invert))
+    def invert                  = copy(value = value.left.map(_.invert).right.map(_.invert))
     def invertIf(cond: Boolean) = if (cond) invert else this
   }
 
   object Score {
 
-    def cp(x: Cp): Score = Score(Left(x))
+    def cp(x: Cp): Score     = Score(Left(x))
     def mate(y: Mate): Score = Score(Right(y))
 
     val checkmate: Either[Cp, Mate] = Right(Mate(0))
@@ -41,7 +41,7 @@ object Eval {
 
     def centipawns = value
 
-    def pawns: Float = value / 100f
+    def pawns: Float      = value / 100f
     def showPawns: String = "%.2f" format pawns
 
     def ceiled =
@@ -49,7 +49,7 @@ object Eval {
       else if (value < -Cp.CEILING) Cp(-Cp.CEILING)
       else this
 
-    def invert = Cp(value = -value)
+    def invert                  = Cp(value = -value)
     def invertIf(cond: Boolean) = if (cond) invert else this
 
     def compare(other: Cp) = value compare other.value
@@ -68,7 +68,7 @@ object Eval {
 
     def moves = value
 
-    def invert = Mate(value = -value)
+    def invert                  = Mate(value = -value)
     def invertIf(cond: Boolean) = if (cond) invert else this
 
     def compare(other: Mate) = value compare other.value

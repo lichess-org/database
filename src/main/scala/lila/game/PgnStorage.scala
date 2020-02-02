@@ -4,7 +4,7 @@ import scala.jdk.CollectionConverters._
 
 import chess.format.Uci
 import chess.variant.Variant
-import chess.{variant => _, ToOptionOpsFromOption => _, _}
+import chess.{ variant => _, ToOptionOpsFromOption => _, _ }
 import lila.db.ByteArray
 
 sealed trait PgnStorage
@@ -74,13 +74,13 @@ private object PgnStorage {
       pgnMoves: PgnMoves,
       pieces: PieceMap,
       positionHashes: PositionHash, // irrelevant after game ends
-      unmovedRooks: UnmovedRooks, // irrelevant after game ends
+      unmovedRooks: UnmovedRooks,   // irrelevant after game ends
       lastMove: Option[Uci],
       castles: Castles, // irrelevant after game ends
       format: PgnStorage
   )
 
-  private val betaTesters = Set("thibault", "revoof", "isaacly")
+  private val betaTesters                        = Set("thibault", "revoof", "isaacly")
   private def shouldUseHuffman(variant: Variant) = variant.standard
   private[game] def apply(variant: Variant): PgnStorage =
     if (shouldUseHuffman(variant)) Huffman else OldBin

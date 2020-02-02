@@ -29,12 +29,12 @@ trait dsl extends LowPriorityDsl {
 
   type QueryBuilder = GenericQueryBuilder[BSONSerializationPack.type]
 
-  type BSONValueReader[A] = BSONReader[_ <: BSONValue, A]
-  type BSONValueWriter[A] = BSONWriter[A, _ <: BSONValue]
+  type BSONValueReader[A]  = BSONReader[_ <: BSONValue, A]
+  type BSONValueWriter[A]  = BSONWriter[A, _ <: BSONValue]
   type BSONValueHandler[A] = BSONHandler[_ <: BSONValue, A]
 
-  type BSONArrayReader[A] = BSONReader[BSONArray, A]
-  type BSONArrayWriter[A] = BSONWriter[A, BSONArray]
+  type BSONArrayReader[A]  = BSONReader[BSONArray, A]
+  type BSONArrayWriter[A]  = BSONWriter[A, BSONArray]
   type BSONArrayHandler[A] = BSONHandler[BSONArray, A]
 
   implicit val LilaBSONDocumentZero: Zero[BSONDocument] =
@@ -62,8 +62,8 @@ trait dsl extends LowPriorityDsl {
     $id($doc("$in" -> ids))
 
   def $boolean(b: Boolean) = BSONBoolean(b)
-  def $string(s: String) = BSONString(s)
-  def $int(i: Int) = BSONInteger(i)
+  def $string(s: String)   = BSONString(s)
+  def $int(i: Int)         = BSONInteger(i)
 
   // End of Helpers
   //**********************************************************************************************//
@@ -113,9 +113,10 @@ trait dsl extends LowPriorityDsl {
     $doc("$mul" -> $doc(item))
   }
 
-  def $rename(item: (String, String), items: (String, String)*)(implicit writer: BSONWriter[String, _ <: BSONValue]): BSONDocument = {
-    $doc("$rename" -> $doc((item +: items).
-      map { case (k, v) => BSONElement(k, BSONString(v)) }))
+  def $rename(item: (String, String), items: (String, String)*)(
+      implicit writer: BSONWriter[String, _ <: BSONValue]
+  ): BSONDocument = {
+    $doc("$rename" -> $doc((item +: items).map { case (k, v) => BSONElement(k, BSONString(v)) }))
   }
 
   def $setOnInsert(item: Producer[BSONElement], items: Producer[BSONElement]*): BSONDocument = {
@@ -205,7 +206,9 @@ trait dsl extends LowPriorityDsl {
     $doc("$push" -> $doc(item))
   }
 
-  def $pushEach[T](field: String, values: T*)(implicit writer: BSONWriter[T, _ <: BSONValue]): BSONDocument = {
+  def $pushEach[T](field: String, values: T*)(
+      implicit writer: BSONWriter[T, _ <: BSONValue]
+  ): BSONDocument = {
     $doc(
       "$push" -> $doc(
         field -> $doc(
@@ -222,9 +225,9 @@ trait dsl extends LowPriorityDsl {
   //**********************************************************************************************//
 
   /**
-   * Represents the inital state of the expression which has only the name of the field.
-   * It does not know the value of the expression.
-   */
+    * Represents the inital state of the expression which has only the name of the field.
+    * It does not know the value of the expression.
+    */
   trait ElementBuilder {
     def field: String
     def append(value: BSONDocument): BSONDocument = value
@@ -237,28 +240,27 @@ trait dsl extends LowPriorityDsl {
   }
 
   /*
-  * This type of expressions cannot be cascaded. Examples:
-  *
-  * {{{
-  * "price" $eq 10
-  * "price" $ne 1000
-  * "size" $in ("S", "M", "L")
-  * "size" $nin ("S", "XXL")
-  * }}}
-  *
-  */
-  case class SimpleExpression[V <: BSONValue](field: String, value: V)
-    extends Expression[V]
-
-  /**
-   * Expressions of this type can be cascaded. Examples:
+   * This type of expressions cannot be cascaded. Examples:
    *
    * {{{
-   *  "age" $gt 50 $lt 60
-   *  "age" $gte 50 $lte 60
+   * "price" $eq 10
+   * "price" $ne 1000
+   * "size" $in ("S", "M", "L")
+   * "size" $nin ("S", "XXL")
    * }}}
    *
    */
+  case class SimpleExpression[V <: BSONValue](field: String, value: V) extends Expression[V]
+
+  /**
+    * Expressions of this type can be cascaded. Examples:
+    *
+    * {{{
+    *  "age" $gt 50 $lt 60
+    *  "age" $gte 50 $lte 60
+    * }}}
+    *
+    */
   case class CompositeExpression(field: String, value: BSONDocument)
       extends Expression[BSONDocument]
       with ComparisonOperators {
@@ -285,7 +287,9 @@ trait dsl extends LowPriorityDsl {
     }
 
     /** Matches any of the values that exist in an array specified in the query.*/
-    def $in[T](values: Iterable[T])(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
+    def $in[T](
+        values: Iterable[T]
+    )(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
       SimpleExpression(field, $doc("$in" -> values))
     }
 
@@ -305,7 +309,9 @@ trait dsl extends LowPriorityDsl {
     }
 
     /** Matches values that do not exist in an array specified to the query. */
-    def $nin[T](values: Iterable[T])(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
+    def $nin[T](
+        values: Iterable[T]
+    )(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
       SimpleExpression(field, $doc("$nin" -> values))
     }
 
@@ -335,7 +341,9 @@ trait dsl extends LowPriorityDsl {
   }
 
   trait ArrayOperators { self: ElementBuilder =>
-    def $all[T](values: Seq[T])(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
+    def $all[T](
+        values: Seq[T]
+    )(implicit writer: BSONWriter[T, _ <: BSONValue]): SimpleExpression[BSONDocument] = {
       SimpleExpression(field, $doc("$all" -> values))
     }
 
@@ -350,34 +358,38 @@ trait dsl extends LowPriorityDsl {
 
   object $sort {
 
-    def asc(field: String) = $doc(field -> 1)
+    def asc(field: String)  = $doc(field -> 1)
     def desc(field: String) = $doc(field -> -1)
 
-    val naturalAsc = asc("$natural")
-    val naturalDesc = desc("$natural")
+    val naturalAsc   = asc("$natural")
+    val naturalDesc  = desc("$natural")
     val naturalOrder = naturalDesc
 
-    val createdAsc = asc("createdAt")
+    val createdAsc  = asc("createdAt")
     val createdDesc = desc("createdAt")
     val updatedDesc = desc("updatedAt")
   }
 
   implicit class ElementBuilderLike(val field: String)
-    extends ElementBuilder
-    with ComparisonOperators
-    with ElementOperators
-    with EvaluationOperators
-    with LogicalOperators
-    with ArrayOperators
+      extends ElementBuilder
+      with ComparisonOperators
+      with ElementOperators
+      with EvaluationOperators
+      with LogicalOperators
+      with ArrayOperators
 
-  implicit def toBSONDocument[V <: BSONValue](expression: Expression[V])(implicit writer: BSONWriter[V, _ <: BSONValue]): BSONDocument =
+  implicit def toBSONDocument[V <: BSONValue](
+      expression: Expression[V]
+  )(implicit writer: BSONWriter[V, _ <: BSONValue]): BSONDocument =
     $doc(expression.field -> expression.value)
 
 }
 
 sealed trait LowPriorityDsl { self: dsl =>
   // Priority lower than toBSONDocument
-  implicit def toBSONElement[V <: BSONValue](expression: Expression[V])(implicit writer: BSONWriter[V, _ <: BSONValue]): Producer[BSONElement] = {
+  implicit def toBSONElement[V <: BSONValue](
+      expression: Expression[V]
+  )(implicit writer: BSONWriter[V, _ <: BSONValue]): Producer[BSONElement] = {
     BSONElement(expression.field, expression.value)
   }
 }

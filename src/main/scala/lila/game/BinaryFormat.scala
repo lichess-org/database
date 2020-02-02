@@ -6,9 +6,9 @@ import scala.util.Try
 import scala.language.postfixOps
 
 import chess.variant.Variant
-import chess.{ToOptionOpsFromOption => _, _}
+import chess.{ ToOptionOpsFromOption => _, _ }
 import chess.format.Uci
-import org.lichess.compression.clock.{Encoder => ClockEncoder}
+import org.lichess.compression.clock.{ Encoder => ClockEncoder }
 
 import lila.db.ByteArray
 
@@ -68,8 +68,8 @@ object BinaryFormat {
 
     private type MT = Int // centiseconds
     private val size = 16
-    private val buckets = List(10, 50, 100, 150, 200, 300, 400, 500, 600, 800,
-      1000, 1500, 2000, 3000, 4000, 6000)
+    private val buckets =
+      List(10, 50, 100, 150, 200, 300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 4000, 6000)
     private val encodeCutoffs = (buckets zip buckets).tail.view.map {
       case (i1, i2) => (i1 + i2) / 2
     }.toVector
@@ -135,7 +135,7 @@ object BinaryFormat {
 
       ia match {
         case Array(b1, b2, b3, b4, b5, b6, b7, b8, _*) => {
-          val config = Clock.Config(readClockLimit(b1), b2)
+          val config      = Clock.Config(readClockLimit(b1), b2)
           val legacyWhite = Centis(readSignedInt24(b3, b4, b5))
           val legacyBlack = Centis(readSignedInt24(b6, b7, b8))
           Clock(
@@ -219,8 +219,7 @@ object BinaryFormat {
 
     private def doRead(b1: Int, b2: Int) =
       CastleLastMove(
-        castles =
-          Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
+        castles = Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
         lastMove = for {
           orig ← posAt((b1 & 15) >> 1, ((b1 & 1) << 2) + (b2 >> 6))
           dest ← posAt((b2 & 63) >> 3, b2 & 7)
@@ -305,8 +304,8 @@ object BinaryFormat {
 
     private val arrIndexes = 0 to 1
     private val bitIndexes = 0 to 7
-    private val whiteStd = Set(Pos.A1, Pos.H1)
-    private val blackStd = Set(Pos.A8, Pos.H8)
+    private val whiteStd   = Set(Pos.A1, Pos.H1)
+    private val blackStd   = Set(Pos.A8, Pos.H8)
 
     def read(ba: ByteArray) = UnmovedRooks {
       var set = Set.empty[Pos]

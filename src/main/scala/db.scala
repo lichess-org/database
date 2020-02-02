@@ -17,7 +17,7 @@ final class DB(
 ) {
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
-  private implicit val lightUserBSONReader = new BSONDocumentReader[LightUser] {
+  implicit private val lightUserBSONReader = new BSONDocumentReader[LightUser] {
     def read(doc: BSONDocument) = LightUser(
       id = doc.getAs[String]("_id").get,
       name = doc.getAs[String]("username").get,
@@ -36,9 +36,8 @@ final class DB(
       .cursor[LightUser](readPreference = ReadPreference.secondary)
       .collect[List](Int.MaxValue, Cursor.ContOnError[List[LightUser]]())
       .map { users =>
-        def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) {
-          uid =>
-            users.find(_.id == uid) getOrElse LightUser(uid, uid)
+        def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) { uid =>
+          users.find(_.id == uid) getOrElse LightUser(uid, uid)
         }
         gs.map { g =>
           Users(of(g.whitePlayer), of(g.blackPlayer))
@@ -49,16 +48,17 @@ final class DB(
 object DB {
 
   private val config = ConfigFactory.load()
-  private val dbUri = config.getString("db.uri")
 
-  val dbName = "lichess"
+  val dbName   = "lichess"
   val collName = "game5"
 
-  val driver = new reactivemongo.api.MongoDriver
-  val conn = driver connection MongoConnection.parseURI(dbUri).get
+  val uri       = config.getString("db.uri")
+  val driver    = new AsyncDriver(Some(config.getConfig("mongo-async-driver ")))
+  val parsedUri = MongoConnection.fromString(uri)
+  val conn      = parsedUri.flatMap(driver.connect)
 
   def get: Future[(DB, () => Unit)] =
-    conn.database(dbName).map { db =>
+    conn.flatMap(_.database(dbName)).map { db =>
       (
         new DB(
           gameColl = db collection "game5",
@@ -71,10 +71,9 @@ object DB {
       )
     }
 
-  implicit object BSONDateTimeHandler
-      extends BSONHandler[BSONDateTime, DateTime] {
+  implicit object BSONDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {
     def read(time: BSONDateTime) = new DateTime(time.value, DateTimeZone.UTC)
-    def write(jdtime: DateTime) = BSONDateTime(jdtime.getMillis)
+    def write(jdtime: DateTime)  = BSONDateTime(jdtime.getMillis)
   }
 
   def debug(v: BSONValue): String = v match {
