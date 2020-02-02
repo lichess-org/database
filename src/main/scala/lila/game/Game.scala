@@ -1,12 +1,28 @@
 package lila.game
 
 import scala.concurrent.duration._
+import scala.language.postfixOps
 
-import chess.Color.{ White, Black }
-import chess.format.{ Uci, FEN }
-import chess.opening.{ FullOpening, FullOpeningDB }
-import chess.variant.{ Variant, Crazyhouse }
-import chess.{ History => ChessHistory, CheckCount, Castles, Board, MoveOrDrop, Pos, Game => ChessGame, Clock, Status, Color, Mode, PositionHash, UnmovedRooks, Centis }
+import chess.Color.{White, Black}
+import chess.format.{Uci, FEN}
+import chess.opening.{FullOpening, FullOpeningDB}
+import chess.variant.{Variant, Crazyhouse}
+import chess.{
+  History => ChessHistory,
+  CheckCount,
+  Castles,
+  Board,
+  MoveOrDrop,
+  Pos,
+  Game => ChessGame,
+  Clock,
+  Status,
+  Color,
+  Mode,
+  PositionHash,
+  UnmovedRooks,
+  Centis
+}
 import org.joda.time.DateTime
 
 import lila.common.Sequence
@@ -51,8 +67,10 @@ case class Game(
 
   def player: Player = player(turnColor)
 
-  def playerByUserId(userId: String): Option[Player] = players.find(_.userId contains userId)
-  def opponentByUserId(userId: String): Option[Player] = playerByUserId(userId) map opponent
+  def playerByUserId(userId: String): Option[Player] =
+    players.find(_.userId contains userId)
+  def opponentByUserId(userId: String): Option[Player] =
+    playerByUserId(userId) map opponent
 
   def opponent(p: Player): Player = opponent(p.color)
 
@@ -85,7 +103,7 @@ case class Game(
 
   def everyOther[A](l: List[A]): List[A] = l match {
     case a :: b :: tail => a :: everyOther(tail)
-    case _ => l
+    case _              => l
   }
 
   def moveTimes(color: Color): Option[List[Centis]] = {
@@ -122,12 +140,14 @@ case class Game(
     everyOther(mts.toList)
   }
 
-  def moveTimes: Option[Vector[Centis]] = for {
-    a <- moveTimes(startColor)
-    b <- moveTimes(!startColor)
-  } yield Sequence.interleave(a, b)
+  def moveTimes: Option[Vector[Centis]] =
+    for {
+      a <- moveTimes(startColor)
+      b <- moveTimes(!startColor)
+    } yield Sequence.interleave(a, b)
 
-  def bothClockStates: Option[Vector[Centis]] = clockHistory.map(_ bothClockStates startColor)
+  def bothClockStates: Option[Vector[Centis]] =
+    clockHistory.map(_ bothClockStates startColor)
 
   def pgnMoves(color: Color): PgnMoves = {
     val pivot = if (color == startColor) 0 else 1
@@ -138,7 +158,7 @@ case class Game(
 
   def lastMoveKeys: Option[String] = history.lastMove map {
     case Uci.Drop(target, _) => s"$target$target"
-    case m: Uci.Move => m.keys
+    case m: Uci.Move         => m.keys
   }
 
   def updatePlayer(color: Color, f: Player => Player) = color.fold(
@@ -151,14 +171,16 @@ case class Game(
     blackPlayer = f(blackPlayer)
   )
 
-  def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map { days =>
-    val increment = days * 24 * 60 * 60
-    val secondsLeft = (movedAt.getMillis / 1000 + increment - System.currentTimeMillis() / 1000).toInt max 0
-    CorrespondenceClock(
-      increment = increment,
-      whiteTime = turnColor.fold(secondsLeft, increment),
-      blackTime = turnColor.fold(increment, secondsLeft)
-    )
+  def correspondenceClock: Option[CorrespondenceClock] = daysPerTurn map {
+    days =>
+      val increment = days * 24 * 60 * 60
+      val secondsLeft = (movedAt.getMillis / 1000 + increment - System
+        .currentTimeMillis() / 1000).toInt max 0
+      CorrespondenceClock(
+        increment = increment,
+        whiteTime = turnColor.fold(secondsLeft, increment),
+        blackTime = turnColor.fold(increment, secondsLeft)
+      )
   }
 
   def started = status >= Status.Started
@@ -236,8 +258,9 @@ case class Game(
 
   def estimateClockTotalTime = clock.map(_.estimateTotalSeconds)
 
-  def estimateTotalTime = estimateClockTotalTime orElse
-    correspondenceClock.map(_.estimateTotalTime) getOrElse 1200
+  def estimateTotalTime =
+    estimateClockTotalTime orElse
+      correspondenceClock.map(_.estimateTotalTime) getOrElse 1200
 
   def onePlayerHasMoved = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
@@ -250,7 +273,8 @@ case class Game(
 
   def playerHasMoved(color: Color) = playerMoves(color) > 0
 
-  def olderThan(seconds: Int) = movedAt isBefore DateTime.now.minusSeconds(seconds)
+  def olderThan(seconds: Int) =
+    movedAt isBefore DateTime.now.minusSeconds(seconds)
 
   def justCreated = createdAt isAfter DateTime.now.minusSeconds(1)
 
@@ -262,14 +286,15 @@ case class Game(
 
   def averageUsersRating = userRatings match {
     case a :: b :: Nil => Some((a + b) / 2)
-    case a :: Nil => Some((a + 1500) / 2)
-    case _ => None
+    case a :: Nil      => Some((a + 1500) / 2)
+    case _             => None
   }
 
   def source = metadata.source
 
   def ratingVariant =
-    if (isTournament && board.variant.fromPosition) _root_.chess.variant.Standard
+    if (isTournament && board.variant.fromPosition)
+      _root_.chess.variant.Standard
     else variant
 
   def fromPosition = variant.fromPosition || source.contains(Source.Position)
@@ -280,7 +305,9 @@ case class Game(
 
   def synthetic = id == Game.syntheticId
 
-  private def playerMaps[A](f: Player => Option[A]): List[A] = players flatMap { f(_) }
+  private def playerMaps[A](f: Player => Option[A]): List[A] = players flatMap {
+    f(_)
+  }
 
   def pov(c: Color) = Pov(this, c)
   def whitePov = pov(White)
@@ -317,7 +344,8 @@ object Game {
     chess.variant.RacingKings
   )
 
-  val unanalysableVariants: Set[Variant] = Variant.all.toSet -- analysableVariants
+  val unanalysableVariants
+      : Set[Variant] = Variant.all.toSet -- analysableVariants
 
   val variantsWhereWhiteIsBetter: Set[Variant] = Set(
     chess.variant.ThreeCheck,
@@ -412,14 +440,15 @@ object CastleLastMove {
   import reactivemongo.bson._
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  private[game] implicit val castleLastMoveBSONHandler = new BSONHandler[BSONBinary, CastleLastMove] {
-    def read(bin: BSONBinary) = BinaryFormat.castleLastMove read {
-      ByteArrayBSONHandler read bin
+  private[game] implicit val castleLastMoveBSONHandler =
+    new BSONHandler[BSONBinary, CastleLastMove] {
+      def read(bin: BSONBinary) = BinaryFormat.castleLastMove read {
+        ByteArrayBSONHandler read bin
+      }
+      def write(clmt: CastleLastMove) = ByteArrayBSONHandler write {
+        BinaryFormat.castleLastMove write clmt
+      }
     }
-    def write(clmt: CastleLastMove) = ByteArrayBSONHandler write {
-      BinaryFormat.castleLastMove write clmt
-    }
-  }
 }
 
 case class ClockHistory(

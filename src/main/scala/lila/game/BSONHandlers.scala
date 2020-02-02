@@ -54,14 +54,15 @@ object BSONHandlers {
         pockets = {
           val (white, black) = {
             r.str("p")
-              .flatMap(chess.Piece.fromChar)(breakOut): List[chess.Piece]
+              .flatMap(chess.Piece.fromChar)
+              .toList
           }.partition(_ is chess.White)
           Pockets(
             white = Pocket(white.map(_.role)),
             black = Pocket(black.map(_.role))
           )
         },
-        promoted = r.str("t").flatMap(chess.Pos.piotr)(breakOut)
+        promoted = r.str("t").flatMap(chess.Pos.piotr).toSet
       )
 
       def writes(w: BSON.Writer, o: Crazyhouse.Data) = ???

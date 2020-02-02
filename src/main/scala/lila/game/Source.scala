@@ -19,10 +19,24 @@ object Source {
   case object Relay extends Source(id = 11)
   case object Pool extends Source(id = 12)
 
-  val all = List(Lobby, Friend, Ai, Api, Tournament, Position, Import, Simul, Relay, Pool)
-  val byId = all map { v => (v.id, v) } toMap
+  val all = List(
+    Lobby,
+    Friend,
+    Ai,
+    Api,
+    Tournament,
+    Position,
+    Import,
+    Simul,
+    Relay,
+    Pool
+  )
+  val byId = all.view.map { v =>
+    (v.id, v)
+  }.toMap
 
-  val searchable = List(Lobby, Friend, Ai, Position, Import, Tournament, Simul, Pool)
+  val searchable =
+    List(Lobby, Friend, Ai, Position, Import, Tournament, Simul, Pool)
 
   def apply(id: Int): Option[Source] = byId get id
 }

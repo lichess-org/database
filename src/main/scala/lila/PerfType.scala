@@ -179,12 +179,12 @@ object PerfType {
     RacingKings,
     Puzzle
   )
-  val byKey = all map { p =>
+  val byKey = all.view.map { p =>
     (p.key, p)
-  } toMap
-  val byId = all map { p =>
+  }.toMap
+  val byId = all.view.map { p =>
     (p.id, p)
-  } toMap
+  }.toMap
 
   val default = Standard
 

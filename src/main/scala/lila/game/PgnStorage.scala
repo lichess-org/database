@@ -1,8 +1,10 @@
 package lila.game
 
+import scala.jdk.CollectionConverters._
+
 import chess.format.Uci
 import chess.variant.Variant
-import chess.{ variant => _, ToOptionOpsFromOption => _, _ }
+import chess.{variant => _, ToOptionOpsFromOption => _, _}
 import lila.db.ByteArray
 
 sealed trait PgnStorage
@@ -12,7 +14,7 @@ private object PgnStorage {
   case object OldBin extends PgnStorage {
 
     def encode(pgnMoves: PgnMoves) = ByteArray {
-        format.pgn.Binary.writeMoves(pgnMoves).get
+      format.pgn.Binary.writeMoves(pgnMoves).get
     }
 
     def decode(bytes: ByteArray, plies: Int): PgnMoves =
@@ -21,18 +23,24 @@ private object PgnStorage {
 
   case object Huffman extends PgnStorage {
 
-    import org.lichess.compression.game.{ Encoder, Square => JavaSquare, Piece => JavaPiece, Role => JavaRole }
-    import scala.collection.JavaConversions._
+    import org.lichess.compression.game.{
+      Encoder,
+      Square => JavaSquare,
+      Piece => JavaPiece,
+      Role => JavaRole
+    }
+    import scala.jdk.CollectionConverters._
 
     def encode(pgnMoves: PgnMoves) = ByteArray {
-        Encoder.encode(pgnMoves.toArray)
+      Encoder.encode(pgnMoves.toArray)
     }
     def decode(bytes: ByteArray, plies: Int): Decoded = {
       val decoded = Encoder.decode(bytes.value, plies)
-      val unmovedRooks = asScalaSet(decoded.unmovedRooks.flatMap(chessPos)).toSet
+      val unmovedRooks =
+        decoded.unmovedRooks.asScala.view.flatMap(chessPos).to(Set)
       Decoded(
         pgnMoves = decoded.pgnMoves.toVector,
-        pieces = mapAsScalaMap(decoded.pieces).flatMap {
+        pieces = decoded.pieces.asScala.view.flatMap {
           case (k, v) => chessPos(k).map(_ -> chessPiece(v))
         }.toMap,
         positionHashes = decoded.positionHashes,
@@ -48,16 +56,18 @@ private object PgnStorage {
       )
     }
 
-    private def chessPos(sq: Integer): Option[Pos] = Pos.posAt(JavaSquare.file(sq) + 1, JavaSquare.rank(sq) + 1)
+    private def chessPos(sq: Integer): Option[Pos] =
+      Pos.posAt(JavaSquare.file(sq) + 1, JavaSquare.rank(sq) + 1)
     private def chessRole(role: JavaRole): Role = role match {
-      case JavaRole.PAWN => Pawn
+      case JavaRole.PAWN   => Pawn
       case JavaRole.KNIGHT => Knight
       case JavaRole.BISHOP => Bishop
-      case JavaRole.ROOK => Rook
-      case JavaRole.QUEEN => Queen
-      case JavaRole.KING => King
+      case JavaRole.ROOK   => Rook
+      case JavaRole.QUEEN  => Queen
+      case JavaRole.KING   => King
     }
-    private def chessPiece(piece: JavaPiece): Piece = Piece(Color(piece.white), chessRole(piece.role))
+    private def chessPiece(piece: JavaPiece): Piece =
+      Piece(Color(piece.white), chessRole(piece.role))
   }
 
   case class Decoded(
