@@ -143,17 +143,15 @@
             </li>
           </ul>
           <p>
-            Did you use this database? Please share your results!<br />
-            <a target="_blank" href="https://github.com/ornicar/lichess-db/edit/master/web/index.html.tpl#l119">
-              Send us a pull request on github to list your project here
-            </a>
-            <br />
+            Did you use this database? Please share your results! contact@lichess.org
           </p>
         </section>
 
         <footer>
           All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
           These collections of games are in the public domain, with no rights reserved.<br />
+          Use them in any way you like, for data mining, research, commercial purpose, publication, anything.<br />
+          You can download, modify and redistribute them at will, without asking for permission.<br />
           <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
 
