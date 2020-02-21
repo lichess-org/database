@@ -82,7 +82,7 @@
         <section>
         <h3 id="notes">Notes</h3>
           <p>
-            About 15% of the games include Stockfish analysis evaluations: <code>[%eval 2.35]</code>.<br />
+            About 6% of the games include Stockfish analysis evaluations: <code>[%eval 2.35]</code>.<br />
             In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
             The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.<br />
             The <code>Round</code> and <code>Date</code> tags are omitted (See <code>UTCDate</code> &amp; <code>UTCTime</code> instead).<br />
