@@ -94,7 +94,7 @@
         <section>
           <h3 id="extract" >Extract bz2 files</h3>
           <p>
-            Linux: <code>bunzip2 filename.pgn.bz2</code><br />
+            Linux: <code>pbzip2 -d filename.pgn.bz2</code><br />
             Windows: use <a href="http://www.7-zip.org/download.html">7zip</a><br />
             OSX: natively supported.
           </p>
