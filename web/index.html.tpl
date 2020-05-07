@@ -142,7 +142,7 @@
               <a href="https://www.youtube.com/watch?v=VcghDhMlgBw">20 most popular chess openings over time</a>
             </li>
             <li>
-              <a href="http://tom7.org/chess/survival.pdf">Survival in chessland [PDF]</a>
+              <a href="http://tom7.org/chess/survival.pdf">Survival in chessland [PDF]</a> - <a href="https://youtu.be/DpXy041BIlA?t=859">YouTube video</a>
             </li>
           </ul>
           <p>
