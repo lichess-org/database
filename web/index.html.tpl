@@ -141,6 +141,9 @@
             <li>
               <a href="https://www.youtube.com/watch?v=VcghDhMlgBw">20 most popular chess openings over time</a>
             </li>
+            <li>
+              <a href="http://tom7.org/chess/survival.pdf">Survival in chessland [PDF]</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
