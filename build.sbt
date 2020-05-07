@@ -1,10 +1,10 @@
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.2"
 name := "lichess-db"
 organization := "org.lichess"
-version := "1.2"
+version := "1.3"
 resolvers += "lila-maven" at "https://raw.githubusercontent.com/ornicar/lila-maven/master"
 
-val akkaVersion = "2.6.3"
+val akkaVersion = "2.6.4"
 
 libraryDependencies += "org.reactivemongo"  %% "reactivemongo"            % "0.20.3"
 libraryDependencies += "org.reactivemongo"  %% "reactivemongo-akkastream" % "0.20.3"
