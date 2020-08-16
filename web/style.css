@@ -97,7 +97,7 @@ p a { font-weight: 400; }
 
 blockquote { padding: 0 0 0 30px; margin-bottom: 20px; font-size: 1.6em; border-left: 10px solid #e9e9e9; }
 
-ul li { list-style: inside disc; }
+ul li { list-style: outside disc; margin-left: 20px; }
 
 ol li { list-style-position: inside; list-style: decimal; padding-left: 3px; }
 
@@ -109,6 +109,9 @@ footer a { color: #666; }
 
 footer a:hover { color: #444; }
 
+table {
+  margin-bottom: 20px;
+}
 table,
 table td {
   text-align: left;
@@ -136,28 +139,29 @@ pre {
   font-size: 0.7em;
 }
 
-#selector {
-  display: flex;
-  margin-bottom: 1.5em;
-}
-
-#selector a {
+nav a {
   cursor: pointer;
   padding: .5em 1em;
   text-transform: uppercase;
 }
-#selector a:hover {
+nav a:hover {
   border-bottom: 3px solid #ddd;
 }
-
-#selector a.on {
+nav a.on {
   border-bottom: 3px solid #888;
 }
 
-#standard_games {
-  margin-top: 2em;
+#variant_games, #variant_games:target ~ #standard_games {
+  display: none;
+}
+#variant_games:target, #standard_games:target, #standard_games {
+  display: block;
 }
 
-#variant_games h3 {
+#standard_games nav {
+  margin-bottom: 2.5em;
+}
+
+h3 {
   margin-top: 2.5em;
 }
