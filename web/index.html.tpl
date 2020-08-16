@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='//fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300" rel="stylesheet">
     <style><!-- style --></style>
     <title>lichess.org game database</title>
   </head>
@@ -11,19 +11,17 @@
   <body>
     <div id="container">
       <div class="inner">
-
         <header>
           <h1><a href="https://lichess.org">lichess.org</a> game database</h1>
         </header>
+
         <hr>
-        <div id="selector">
-          <a for="standard_games" class="on">Standard Chess</a>
-          <a for="variant_games">Variants</a>
-        </div>
-        <section id="standard_games" class="panel">
-          <!-- table-standard -->
-        </section>
-        <section id="variant_games" class="panel" style="display:none">
+
+        <section id="variant_games" class="panel">
+          <nav>
+            <a href="#standard_games">Standard Chess</a>
+            <a href="#variant_games" class="on">Variants</a>
+          </nav>
           <h3>Antichess</h3>
           <!-- table-antichess -->
           <h3>Atomic</h3>
@@ -41,12 +39,17 @@
           <h3>Three-check</h3>
           <!-- table-threeCheck -->
         </section>
+        <section id="standard_games" class="panel">
+          <nav>
+            <a href="#standard_games" class="on">Standard Chess</a>
+            <a href="#variant_games">Variants</a>
+          </nav>
+          <!-- table-standard -->
+        </section>
 
-        <br /><br />
         <section>
-        <h3 id="sample">Sample</h3>
-        <pre>
-[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
+          <h3 id="sample">Sample</h3>
+          <pre>[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
 [Site "https://lichess.org/PpwPOZMq"]
 [White "Abbot"]
 [Black "Costello"]
@@ -78,29 +81,62 @@
 13. b3?? { [%eval -4.14] [%clk 0:00:02] } 13... Nf4? { [%eval -2.73] [%clk 0:00:21] } 0-1</pre>
         </section>
 
-        <br /><br />
         <section>
-        <h3 id="notes">Notes</h3>
+          <h3 id="notes">Notes</h3>
           <p>
-            About 6% of the games include Stockfish analysis evaluations: <code>[%eval 2.35]</code>.<br />
-            In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.<br />
-            The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.<br />
-            The <code>Round</code> and <code>Date</code> tags are omitted (See <code>UTCDate</code> &amp; <code>UTCTime</code> instead).<br />
-            Variant games  have a <code>Variant</code> tag, e.g. <code>[Variant "Antichess"]</code>.
+            About 6% of the games include Stockfish analysis evaluations:
+            <code>[%eval 2.35]</code> (235 centipawn advantage),
+            <code>[%eval #-4]</code> (getting mated in 4),
+            always from White's point of view.
+          </p>
+          <p>
+            In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.
+          </p>
+          <p>
+            The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
+          </p>
+          <p>
+            The <code>Round</code> and <code>Date</code> tags are omitted (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead).
+          </p>
+          <p>
+            Variant games  have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
           </p>
         </section>
 
-        <br /><br />
+        <section>
+          <h3 id="issues">Known issues</h3>
+          <ul>
+            <li>
+              July 2020 (especially 31th), August 2020 (up to 16th):
+              Many games, especially variant games, may have
+              <a href="https://github.com/ornicar/lila/issues/7086">broken evaluations</a>
+              in the opening (up to 15 plies).
+            </li>
+            <li>
+              December 2016 (up to and especially 9th):
+              Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">broken evaluations</a>.
+            </li>
+            <li>
+              Before 2016: In some cases,
+              <a href="https://github.com/ornicar/lichess-db/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
+            </li>
+            <li>
+              June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
+            </li>
+            <li>
+              Before 2015: Some games with illegal moves were recorded.
+            </li>
+          </ul>
+        </section>
+
         <section>
           <h3 id="extract" >Extract bz2 files</h3>
           <p>
-            Linux: <code>pbzip2 -d filename.pgn.bz2</code><br />
-            Windows: use <a href="http://www.7-zip.org/download.html">7zip</a><br />
-            OSX: natively supported.
+            Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
+            Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
           </p>
         </section>
 
-        <br /><br />
         <section>
           <h3 id="open-pgn-files" >Open PGN files</h3>
           <p>
@@ -111,7 +147,6 @@
           </p>
         </section>
 
-        <br /><br />
         <section>
           <h3 id="related-projects" >Related projects</h3>
           <ul>
@@ -163,28 +198,7 @@
           You can download, modify and redistribute them at will, without asking for permission.<br />
           <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
-
       </div>
     </div>
-    <script>
-      function doAll(els, f) {
-        Array.prototype.forEach.call(els, f);
-      }
-      function select(selected) {
-        doAll(selectors, function(s) {
-          s.className = s.getAttribute('for') === selected ? 'on' : '';
-        });
-        doAll(document.querySelectorAll('.panel'), function(panel) {
-          panel.style.display = panel.id === selected ? '' : 'none';
-        });
-      }
-      var selectors = document.querySelectorAll('#selector a');
-      doAll(selectors, function(el) {
-        el.addEventListener('click', function() {
-          select(el.getAttribute('for'));
-        });
-      });
-      if (location.hash.indexOf('#variant') === 0) select('variant_games');
-    </script>
   </body>
 </html>
