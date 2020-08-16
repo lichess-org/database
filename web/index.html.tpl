@@ -107,19 +107,21 @@
           <h3 id="issues">Known issues</h3>
           <ul>
             <li>
-              2020-07-31 to 2020-08-16: Many games, especially variant games, may have
+              July 2020 (especially 31th), August 2020 (up to 16th):
+              Many games, especially variant games, may have
               <a href="https://github.com/ornicar/lila/issues/7086">broken evaluations</a>
               in the opening (up to 15 plies).
             </li>
             <li>
-              2016-12-09: Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">broken evaluations</a>.
+              December 2016 (up to and especially 9th):
+              Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">broken evaluations</a>.
             </li>
             <li>
               Before 2016: In some cases,
               <a href="https://github.com/ornicar/lichess-db/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
             </li>
             <li>
-              June 2020, before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
+              June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
             </li>
             <li>
               Before 2015: Some games with illegal moves were recorded.
