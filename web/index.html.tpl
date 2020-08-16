@@ -104,6 +104,17 @@
         </section>
 
         <section>
+          <h3 id="issues">Known issues</h3>
+          <ul>
+            <li>
+              2020-07-31 to 2020-08-16: Games, especially variant games, may have
+              <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
+              in the opening (up to 15 plies).
+            </li>
+          </ul>
+        </section>
+
+        <section>
           <h3 id="extract" >Extract bz2 files</h3>
           <p>
             Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
