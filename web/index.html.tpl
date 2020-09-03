@@ -109,12 +109,12 @@
             <li>
               July 2020 (especially 31th), August 2020 (up to 16th):
               Many games, especially variant games, may have
-              <a href="https://github.com/ornicar/lila/issues/7086">broken evaluations</a>
+              <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
               in the opening (up to 15 plies).
             </li>
             <li>
               December 2016 (up to and especially 9th):
-              Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">broken evaluations</a>.
+              Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">incorrect evaluations</a>.
             </li>
             <li>
               Before 2016: In some cases,
@@ -124,7 +124,7 @@
               June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
             </li>
             <li>
-              Before 2015: Some games with illegal moves were recorded.
+              Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
             </li>
           </ul>
         </section>
