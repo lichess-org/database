@@ -12,10 +12,14 @@
     <div id="container">
       <div class="inner">
         <header>
-          <h1><a href="https://lichess.org">lichess.org</a> game database</h1>
+          <img src="https://lichess1.org/assets/logo/lichess-pad4.svg" alt="Lichess logo" />
+          <h1>
+            <a href="https://lichess.org">
+              lichess.org
+            </a>
+            <strong>game database</strong>
+          </h1>
         </header>
-
-        <hr>
 
         <section id="variant_games" class="panel">
           <nav>
