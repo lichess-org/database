@@ -155,6 +155,9 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
+            </li>
+            <li>
               <a href="https://www.reddit.com/r/chess/comments/gz8acg/introducing_the_lichess_elite_database/">Elite database (2400+)</a>
             </li>
             <li>
