@@ -10,7 +10,7 @@ object PgnDump {
 
   def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
     val ts           = tags(game, users, initialFen)
-    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
+    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< FEN(fen) }
     val moves2: PgnMoves =
       if (fenSituation.fold(false)(_.situation.color.black)) ".." +: game.pgnMoves
       else game.pgnMoves
@@ -97,7 +97,7 @@ object PgnDump {
           }
         )
       ),
-      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.fold(Forsyth.initial)(_.value)))
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.fold(Forsyth.initial.value)(_.value)))
       else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None

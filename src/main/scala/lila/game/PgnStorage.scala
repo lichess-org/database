@@ -2,9 +2,9 @@ package lila.game
 
 import scala.jdk.CollectionConverters._
 
+import chess._
 import chess.format.Uci
 import chess.variant.Variant
-import chess.{ variant => _, ToOptionOpsFromOption => _, _ }
 import lila.db.ByteArray
 
 sealed trait PgnStorage
@@ -56,8 +56,7 @@ private object PgnStorage {
       )
     }
 
-    private def chessPos(sq: Integer): Option[Pos] =
-      Pos.posAt(JavaSquare.file(sq) + 1, JavaSquare.rank(sq) + 1)
+    private def chessPos(sq: Integer): Option[Pos] = Pos(sq)
     private def chessRole(role: JavaRole): Role = role match {
       case JavaRole.PAWN   => Pawn
       case JavaRole.KNIGHT => Knight
@@ -67,7 +66,7 @@ private object PgnStorage {
       case JavaRole.KING   => King
     }
     private def chessPiece(piece: JavaPiece): Piece =
-      Piece(Color(piece.white), chessRole(piece.role))
+      Piece(Color.fromWhite(piece.white), chessRole(piece.role))
   }
 
   case class Decoded(

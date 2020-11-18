@@ -76,11 +76,11 @@ case class Game(
 
   def opponent(c: Color): Player = player(!c)
 
-  lazy val firstColor = Color(whitePlayer before blackPlayer)
+  lazy val firstColor = Color.fromWhite(whitePlayer before blackPlayer)
   def firstPlayer     = player(firstColor)
   def secondPlayer    = player(!firstColor)
 
-  def turnColor = Color((turns & 1) == 0)
+  def turnColor = Color.fromPly(turns)
 
   def turnOf(p: Player): Boolean = p == player
   def turnOf(c: Color): Boolean  = c == turnColor
@@ -264,7 +264,7 @@ case class Game(
   def onePlayerHasMoved    = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
 
-  def startColor = Color(chess.startedAtTurn % 2 == 0)
+  def startColor = Color.fromPly(chess.startedAtTurn)
 
   def playerMoves(color: Color): Int =
     if (color == startColor) (playedTurns + 1) / 2

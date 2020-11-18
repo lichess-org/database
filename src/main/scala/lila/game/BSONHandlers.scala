@@ -31,7 +31,10 @@ object BSONHandlers {
 
   implicit val StatusBSONHandler = new BSONHandler[BSONInteger, Status] {
     def read(bsonInt: BSONInteger): Status =
-      Status(bsonInt.value) err s"No such status: ${bsonInt.value}"
+      Status(bsonInt.value) match {
+        case Some(status) => status
+        case None => throw new Exception(s"No such status: ${bsonInt.value}")
+      }
     def write(x: Status) = BSONInteger(x.id)
   }
 
@@ -98,7 +101,7 @@ object BSONHandlers {
         )
       }
 
-      val winC = r boolO F.winnerColor map Color.apply
+      val winC = r boolO F.winnerColor map Color.fromWhite
       val uids = r.getO[List[String]](F.playerUids) getOrElse Nil
       val (whiteUid, blackUid) =
         (uids.headOption.filter(_.nonEmpty), uids.lift(1).filter(_.nonEmpty))
