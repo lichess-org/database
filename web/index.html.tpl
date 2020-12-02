@@ -155,6 +155,9 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
+            </li>
+            <li>
               <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
             </li>
             <li>
