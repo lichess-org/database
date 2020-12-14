@@ -53,6 +53,10 @@
           <pre>
             PuzzleId, FEN, Moves, Rating, Popularity, Themes, GameUrl
           </pre>
+          <p>
+            Note that the FEN is the position before the opponent makes their move.
+            The puzzle position to present to the player is after applying the first move to that FEN position.
+          </p>
           <h3 id="puzzle_sample">Sample</h3>
           <pre>
 0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,2,advantage middlegame short,lichess.org/4MWQCxQ6/black#32
