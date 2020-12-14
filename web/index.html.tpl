@@ -20,6 +20,12 @@
             <strong>open database</strong>
           </h1>
         </header>
+        <p class="license">
+          Lichess games and puzzles are released under the
+          <a href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">Creative Commons CC0 license</a>.<br />
+          Use them for research, commercial purpose, publication, anything you like.<br />
+          You can download, modify and redistribute them, without asking for permission.<br />
+        </p>
         <section id="puzzles" class="panel">
           <nav>
             <a href="#standard_games">Standard Chess</a>
@@ -243,10 +249,6 @@
         </section>
 
         <footer>
-          All games played on <a href="https://lichess.org">lichess.org</a> are in the public domain.<br />
-          These collections of games are in the public domain, with no rights reserved.<br />
-          Use them in any way you like, for data mining, research, commercial purpose, publication, anything.<br />
-          You can download, modify and redistribute them at will, without asking for permission.<br />
           <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
         </footer>
       </div>

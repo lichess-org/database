@@ -25,7 +25,7 @@ a { color: #d5000d; }
 a:hover { color: #c5000c; }
 
 header { 
-  padding: 70px 0 80px 0; 
+  padding: 70px 0 50px 0; 
   display: flex;
   align-items: center;
 }
@@ -49,6 +49,15 @@ header h1 strong {
   font-size: 26px; 
   font-weight: lighter;
   letter-spacing: 10px;
+}
+
+.license {
+  font-size: .85em;
+  color: #707070;
+  margin-bottom: 60px;
+  padding: 1.2em 1.5em;
+  background: #f2f2f2;
+  border-radius: 5px;
 }
 
 .inner { width: 620px; margin: 0 auto; }
