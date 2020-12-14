@@ -28,6 +28,7 @@ object Puzzle extends App {
       fen: FEN,
       moves: List[String],
       rating: Int,
+      ratingDev: Int,
       popularity: Int,
       themes: List[String],
       gameUrl: String
@@ -57,6 +58,7 @@ object Puzzle extends App {
     moves      <- doc.string("line")
     glicko     <- doc.child("glicko")
     rating     <- glicko.double("r")
+    rd         <- glicko.double("d")
     popularity <- doc.int("vote")
     themes     <- doc.getAsOpt[List[String]]("themes")
     gameId     <- doc.string("gameId")
@@ -65,6 +67,7 @@ object Puzzle extends App {
     fen = fen,
     moves = moves.split(' ').toList,
     rating = rating.toInt,
+    ratingDev = rd.toInt,
     popularity = popularity,
     themes = themes,
     gameUrl = {
@@ -72,7 +75,7 @@ object Puzzle extends App {
       val ply = fen.fullMove.fold(0) { fm =>
         fm * 2 - fen.color.fold(0)(_.fold(1, 0))
       }
-      s"lichess.org/${gameId}${if (asWhite) "" else "/black"}#${ply}"
+      s"https://lichess.org/${gameId}${if (asWhite) "" else "/black"}#${ply}"
     }
   )
 
@@ -82,6 +85,7 @@ object Puzzle extends App {
       puzzle.fen.value,
       puzzle.moves.mkString(" "),
       puzzle.rating,
+      puzzle.ratingDev,
       puzzle.popularity,
       puzzle.themes.sorted.mkString(" "),
       puzzle.gameUrl

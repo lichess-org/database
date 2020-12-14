@@ -43,15 +43,15 @@
           </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follow:</p>
-          <pre>PuzzleId, FEN, Moves, Rating, Popularity, Themes, GameUrl</pre>
+          <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,Themes,GameUrl</pre>
           <h3 id="puzzle_sample">Sample</h3>
-          <pre>0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,2,advantage middlegame short,lichess.org/4MWQCxQ6/black#32
-000tp,4r3/5pk1/1p3np1/3p3p/2qQ4/P4N1P/1P3RP1/7K w - - 6 34,d4b6 f6e4 h1g1 e4f2,1687,-5,crushing endgame short trappedPiece,lichess.org/GeXqsW90#67
-001cv,6k1/5p1p/3p2pP/3Pr1b1/1pp5/7R/PP6/1K1R4 w - - 0 34,d1d4 e5e1 d4d1 e1d1 b1c2 d1c1,1043,-15,endgame long mate mateIn3 queensideAttack,lichess.org/Wn5Xtz5X#67
-001u3,2r3k1/p1q2pp1/Q3p2p/b1Np4/2nP1P2/4P1P1/5K1P/2B1N3 b - - 3 33,c7b6 a6c8 g8h7 c8b7,1268,2,advantage hangingPiece kingsideAttack middlegame short,lichess.org/BBn6ipaK/black#66
-00206,r3kb1r/pppqpn1p/5p2/3p1bpQ/2PP4/4P1B1/PP3PPP/RN2KB1R w KQkq - 1 11,b1c3 f5g4 h5g4 d7g4,1236,-5,advantage opening short trappedPiece,lichess.org/MbJRo6PT#21
-002Cw,r7/2p2r1k/p2p1q1p/Pp1P4/1P2P3/2PQ4/6R1/R5K1 b - - 2 28,f7g7 e4e5 f6g6 g2g6,1315,-5,crushing discoveredAttack endgame short,lichess.org/lxiSa85s/black#56
-002E4,8/8/kpq5/p4pQp/P7/7P/3r2P1/4R2K b - - 10 48,c6a4 g5d2,1406,-5,crushing endgame hangingPiece oneMove,lichess.org/JwMca3Nw/black#96</pre>
+          <pre>0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,300,2,advantage middlegame short,https://lichess.org/4MWQCxQ6/black#32
+000tp,4r3/5pk1/1p3np1/3p3p/2qQ4/P4N1P/1P3RP1/7K w - - 6 34,d4b6 f6e4 h1g1 e4f2,1687,113,-5,crushing endgame short trappedPiece,https://lichess.org/GeXqsW90#67
+001cv,6k1/5p1p/3p2pP/3Pr1b1/1pp5/7R/PP6/1K1R4 w - - 0 34,d1d4 e5e1 d4d1 e1d1 b1c2 d1c1,1043,221,-15,endgame long mate mateIn3 queensideAttack,https://lichess.org/Wn5Xtz5X#67
+001u3,2r3k1/p1q2pp1/Q3p2p/b1Np4/2nP1P2/4P1P1/5K1P/2B1N3 b - - 3 33,c7b6 a6c8 g8h7 c8b7,1268,98,2,advantage hangingPiece kingsideAttack middlegame short,https://lichess.org/BBn6ipaK/black#66
+00206,r3kb1r/pppqpn1p/5p2/3p1bpQ/2PP4/4P1B1/PP3PPP/RN2KB1R w KQkq - 1 11,b1c3 f5g4 h5g4 d7g4,1236,220-5,advantage opening short trappedPiece,https://lichess.org/MbJRo6PT#21
+002Cw,r7/2p2r1k/p2p1q1p/Pp1P4/1P2P3/2PQ4/6R1/R5K1 b - - 2 28,f7g7 e4e5 f6g6 g2g6,1315,198,-5,crushing discoveredAttack endgame short,https://lichess.org/lxiSa85s/black#56
+002E4,8/8/kpq5/p4pQp/P7/7P/3r2P1/4R2K b - - 10 48,c6a4 g5d2,1406,160,-5,crushing endgame hangingPiece oneMove,https://lichess.org/JwMca3Nw/black#96</pre>
           <h3 id="puzzle_notes">Notes</h3>
             <p>
               Moves are in UCI format. Use a chess library to convert then to SAN, for display.
