@@ -6,7 +6,7 @@ import scala.util.Try
 import scala.language.postfixOps
 
 import chess.variant.Variant
-import chess.{ ToOptionOpsFromOption => _, _ }
+import chess._
 import chess.format.Uci
 import org.lichess.compression.clock.{ Encoder => ClockEncoder }
 
@@ -60,7 +60,7 @@ object BinaryFormat {
         )
       }.fold(
         e => throw e,
-        some
+        Some(_)
       )
   }
 
@@ -70,24 +70,14 @@ object BinaryFormat {
     private val size = 16
     private val buckets =
       List(10, 50, 100, 150, 200, 300, 400, 500, 600, 800, 1000, 1500, 2000, 3000, 4000, 6000)
-    private val encodeCutoffs = (buckets zip buckets).tail.view.map {
-      case (i1, i2) => (i1 + i2) / 2
+    private val encodeCutoffs = (buckets zip buckets).tail.view.map { case (i1, i2) =>
+      (i1 + i2) / 2
     }.toVector
 
     private val decodeMap: Map[Int, MT] =
       buckets.zipWithIndex.view.map(x => x._2 -> x._1).toMap
 
-    def write(mts: Vector[Centis]): ByteArray = {
-      def enc(mt: Centis) = encodeCutoffs.search(mt.centis).insertionPoint
-      (mts
-        .grouped(2)
-        .map {
-          case Vector(a, b) => (enc(a) << 4) + enc(b)
-          case Vector(a)    => enc(a) << 4
-        })
-        .map(_.toByte)
-        .toArray
-    }
+    def write(mts: Vector[Centis]): ByteArray = ???
 
     def read(ba: ByteArray, turns: Int): Vector[Centis] = {
       def dec(x: Int) = decodeMap get x getOrElse decodeMap(size - 1)
@@ -203,9 +193,9 @@ object BinaryFormat {
         case (acc, (true, p))  => acc + (1 << (3 - p))
       }
 
-      def posInt(pos: Pos): Int = ((pos.x - 1) << 3) + pos.y - 1
-      val lastMoveInt = clmt.lastMove.map(_.origDest).fold(0) {
-        case (o, d) => (posInt(o) << 6) + posInt(d)
+      def posInt(pos: Pos): Int = (pos.file.index << 3) + pos.rank.index
+      val lastMoveInt = clmt.lastMove.map(_.origDest).fold(0) { case (o, d) =>
+        (posInt(o) << 6) + posInt(d)
       }
       Array((castleInt << 4) + (lastMoveInt >> 8) toByte, lastMoveInt.toByte)
     }
@@ -215,14 +205,12 @@ object BinaryFormat {
       doRead(ints(0), ints(1))
     }
 
-    private def posAt(x: Int, y: Int) = Pos.posAt(x + 1, y + 1)
-
     private def doRead(b1: Int, b2: Int) =
       CastleLastMove(
         castles = Castles(b1 > 127, (b1 & 64) != 0, (b1 & 32) != 0, (b1 & 16) != 0),
         lastMove = for {
-          orig ← posAt((b1 & 15) >> 1, ((b1 & 1) << 2) + (b2 >> 6))
-          dest ← posAt((b2 & 63) >> 3, b2 & 7)
+          orig <- Pos.at((b1 & 15) >> 1, ((b1 & 1) << 2) + (b2 >> 6))
+          dest <- Pos.at((b2 & 63) >> 3, b2 & 7)
           if orig != Pos.A1 || dest != Pos.A1
         } yield Uci.Move(orig, dest)
       )
@@ -230,32 +218,35 @@ object BinaryFormat {
 
   object piece {
 
-    private val groupedPos = Pos.all grouped 2 collect {
-      case List(p1, p2) => (p1, p2)
+    private val groupedPos = Pos.all grouped 2 collect { case List(p1, p2) =>
+      (p1, p2)
     } toArray
 
     def write(pieces: PieceMap): ByteArray = {
-      def posInt(pos: Pos): Int = (pieces get pos).fold(0) { piece =>
-        piece.color.fold(0, 8) + roleToInt(piece.role)
-      }
-      ByteArray(groupedPos map {
-        case (p1, p2) => ((posInt(p1) << 4) + posInt(p2)).toByte
+      def posInt(pos: Pos): Int =
+        (pieces get pos).fold(0) { piece =>
+          piece.color.fold(0, 8) + roleToInt(piece.role)
+        }
+      ByteArray(groupedPos map { case (p1, p2) =>
+        ((posInt(p1) << 4) + posInt(p2)).toByte
       })
     }
 
     def read(ba: ByteArray, variant: Variant): PieceMap = {
       def splitInts(b: Byte) = {
         val int = b.toInt
-        Array(int >> 4, int & 0x0F)
+        Array(int >> 4, int & 0x0f)
       }
       def intPiece(int: Int): Option[Piece] =
         intToRole(int & 7, variant) map { role =>
-          Piece(Color((int & 8) == 0), role)
+          Piece(Color.fromWhite((int & 8) == 0), role)
         }
       val pieceInts = ba.value flatMap splitInts
-      (Pos.all zip pieceInts).flatMap {
-        case (pos, int) => intPiece(int) map (pos -> _)
-      }.toMap
+      (Pos.all zip pieceInts).view
+        .flatMap { case (pos, int) =>
+          intPiece(int) map (pos -> _)
+        }
+        .to(Map)
     }
 
     // cache standard start position
@@ -273,14 +264,15 @@ object BinaryFormat {
         case 7 if variant.antichess => Some(King)
         case _                      => None
       }
-    private def roleToInt(role: Role): Int = role match {
-      case Pawn   => 6
-      case King   => 1
-      case Queen  => 2
-      case Rook   => 3
-      case Knight => 4
-      case Bishop => 5
-    }
+    private def roleToInt(role: Role): Int =
+      role match {
+        case Pawn   => 6
+        case King   => 1
+        case Queen  => 2
+        case Rook   => 3
+        case Knight => 4
+        case Bishop => 5
+      }
   }
 
   object unmovedRooks {
@@ -293,8 +285,8 @@ object BinaryFormat {
         var white = 0
         var black = 0
         o.pos.foreach { pos =>
-          if (pos.y == 1) white = white | (1 << (8 - pos.x))
-          else black = black | (1 << (8 - pos.x))
+          if (pos.rank == Rank.First) white = white | (1 << (7 - pos.file.index))
+          else black = black | (1 << (7 - pos.file.index))
         }
         Array(white.toByte, black.toByte)
       }
@@ -307,21 +299,21 @@ object BinaryFormat {
     private val whiteStd   = Set(Pos.A1, Pos.H1)
     private val blackStd   = Set(Pos.A8, Pos.H8)
 
-    def read(ba: ByteArray) = UnmovedRooks {
-      var set = Set.empty[Pos]
-      arrIndexes.foreach { i =>
-        val int = ba.value(i).toInt
-        if (int != 0) {
-          if (int == -127) set = if (i == 0) whiteStd else set ++ blackStd
-          else
-            bitIndexes.foreach { j =>
-              if (bitAt(int, j) == 1)
-                set = set + Pos.posAt(8 - j, 1 + 7 * i).get
-            }
+    def read(ba: ByteArray) =
+      UnmovedRooks {
+        var set = Set.empty[Pos]
+        arrIndexes.foreach { i =>
+          val int = ba.value(i).toInt
+          if (int != 0) {
+            if (int == -127) set = if (i == 0) whiteStd else set ++ blackStd
+            else
+              bitIndexes.foreach { j =>
+                if (bitAt(int, j) == 1) set = set + Pos.at(7 - j, 7 * i).get
+              }
+          }
         }
+        set
       }
-      set
-    }
   }
 
   @inline private def toInt(b: Byte): Int = b & 0xff

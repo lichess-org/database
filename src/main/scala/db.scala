@@ -1,14 +1,13 @@
 package lichess
 
 import com.typesafe.config.ConfigFactory
+import org.joda.time._
+import reactivemongo.api._
+import reactivemongo.api.bson._
+import reactivemongo.api.bson.collection.BSONCollection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-
-import reactivemongo.api._
-import reactivemongo.api.collections.bson.BSONCollection
-import reactivemongo.bson._
-
-import org.joda.time._
+import scala.util.Success
 
 final class DB(
     val gameColl: BSONCollection,
@@ -17,12 +16,16 @@ final class DB(
 ) {
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
-  implicit private val lightUserBSONReader = new BSONDocumentReader[LightUser] {
-    def read(doc: BSONDocument) = LightUser(
-      id = doc.getAs[String]("_id").get,
-      name = doc.getAs[String]("username").get,
-      title = doc.getAs[String]("title")
-    )
+  implicit val lightUserBSONReader = new BSONDocumentReader[LightUser] {
+
+    def readDocument(doc: BSONDocument) =
+      Success(
+        LightUser(
+          id = doc.string("_id").get,
+          name = doc.string("username").get,
+          title = doc.string("title")
+        )
+      )
   }
 
   def users(gs: Seq[lila.game.Game]): Future[Seq[Users]] =
@@ -31,7 +34,7 @@ final class DB(
         BSONDocument(
           "_id" -> BSONDocument("$in" -> gs.flatMap(_.userIds).distinct)
         ),
-        userProj
+        Some(userProj)
       )
       .cursor[LightUser](readPreference = ReadPreference.secondary)
       .collect[List](Int.MaxValue, Cursor.ContOnError[List[LightUser]]())
@@ -52,10 +55,12 @@ object DB {
   val dbName   = "lichess"
   val collName = "game5"
 
-  val uri       = config.getString("db.uri")
-  val driver    = new AsyncDriver(Some(config.getConfig("mongo-async-driver ")))
-  val parsedUri = MongoConnection.fromString(uri)
-  val conn      = parsedUri.flatMap(driver.connect)
+  val uri    = config.getString("db.uri")
+  val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver ")))
+  val conn =
+    MongoConnection.fromString(uri) flatMap { parsedUri =>
+      driver.connect(parsedUri, Some("lichess-db"))
+    }
 
   def get: Future[(DB, () => Unit)] =
     conn.flatMap(_.database(dbName)).map { db =>
@@ -70,25 +75,4 @@ object DB {
         })
       )
     }
-
-  implicit object BSONDateTimeHandler extends BSONHandler[BSONDateTime, DateTime] {
-    def read(time: BSONDateTime) = new DateTime(time.value, DateTimeZone.UTC)
-    def write(jdtime: DateTime)  = BSONDateTime(jdtime.getMillis)
-  }
-
-  def debug(v: BSONValue): String = v match {
-    case d: BSONDocument => debugDoc(d)
-    case d: BSONArray    => debugArr(d)
-    case BSONString(x)   => x
-    case BSONInteger(x)  => x.toString
-    case BSONDouble(x)   => x.toString
-    case BSONBoolean(x)  => x.toString
-    case v               => v.toString
-  }
-  def debugArr(doc: BSONArray): String =
-    doc.values.toList.map(debug).mkString("[", ", ", "]")
-  def debugDoc(doc: BSONDocument): String =
-    (doc.elements.toList map {
-      case BSONElement(k, v) => s"$k: ${debug(v)}"
-    }).mkString("{", ", ", "}")
 }

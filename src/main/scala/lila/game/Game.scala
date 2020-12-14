@@ -76,11 +76,11 @@ case class Game(
 
   def opponent(c: Color): Player = player(!c)
 
-  lazy val firstColor = Color(whitePlayer before blackPlayer)
+  lazy val firstColor = Color.fromWhite(whitePlayer before blackPlayer)
   def firstPlayer     = player(firstColor)
   def secondPlayer    = player(!firstColor)
 
-  def turnColor = Color((turns & 1) == 0)
+  def turnColor = Color.fromPly(turns)
 
   def turnOf(p: Player): Boolean = p == player
   def turnOf(c: Color): Boolean  = c == turnColor
@@ -126,8 +126,8 @@ case class Game(
       // the last recorded time is in the history for turnColor.
       val noLastInc = finished && (history.size <= playedTurns) == (color != turnColor)
 
-      pairs map {
-        case (first, second) => {
+      pairs map { case (first, second) =>
+        {
           val d = first - second
           if (pairs.hasNext || !noLastInc) d + inc else d
         } nonNeg
@@ -264,7 +264,7 @@ case class Game(
   def onePlayerHasMoved    = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
 
-  def startColor = Color(chess.startedAtTurn % 2 == 0)
+  def startColor = Color.fromPly(chess.startedAtTurn)
 
   def playerMoves(color: Color): Int =
     if (color == startColor) (playedTurns + 1) / 2
@@ -435,18 +435,20 @@ object CastleLastMove {
 
   def init = CastleLastMove(Castles.all, None)
 
-  import reactivemongo.bson._
+  import reactivemongo.api.bson._
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  implicit private[game] val castleLastMoveBSONHandler =
-    new BSONHandler[BSONBinary, CastleLastMove] {
-      def read(bin: BSONBinary) = BinaryFormat.castleLastMove read {
-        ByteArrayBSONHandler read bin
+  implicit private[game] val castleLastMoveBSONHandler = new BSONHandler[CastleLastMove] {
+    def readTry(bson: BSONValue) =
+      bson match {
+        case bin: BSONBinary => ByteArrayBSONHandler readTry bin map BinaryFormat.castleLastMove.read
+        case b               => lila.db.BSON.handlerBadType(b)
       }
-      def write(clmt: CastleLastMove) = ByteArrayBSONHandler write {
+    def writeTry(clmt: CastleLastMove) =
+      ByteArrayBSONHandler writeTry {
         BinaryFormat.castleLastMove write clmt
       }
-    }
+  }
 }
 
 case class ClockHistory(

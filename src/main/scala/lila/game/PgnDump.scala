@@ -10,7 +10,7 @@ object PgnDump {
 
   def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
     val ts           = tags(game, users, initialFen)
-    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< fen }
+    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< FEN(fen) }
     val moves2: PgnMoves =
       if (fenSituation.fold(false)(_.situation.color.black)) ".." +: game.pgnMoves
       else game.pgnMoves
@@ -79,9 +79,14 @@ object PgnDump {
       },
       if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
       if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
-      Some(Tag(_.TimeControl, game.clock.fold("-") { c =>
-        s"${c.limit.roundSeconds}+${c.increment.roundSeconds}"
-      })),
+      Some(
+        Tag(
+          _.TimeControl,
+          game.clock.fold("-") { c =>
+            s"${c.limit.roundSeconds}+${c.increment.roundSeconds}"
+          }
+        )
+      ),
       Some(
         Tag(
           _.Termination, {
@@ -97,7 +102,7 @@ object PgnDump {
           }
         )
       ),
-      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.fold(Forsyth.initial)(_.value)))
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.getOrElse(Forsyth.initial)))
       else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
@@ -110,23 +115,22 @@ object PgnDump {
       clocks: Vector[Centis],
       startColor: Color
   ): List[chessPgn.Turn] =
-    (moves grouped 2).zipWithIndex.toList map {
-      case (moves, index) =>
-        val clockOffset = startColor.fold(0, 1)
-        chessPgn.Turn(
-          number = index + from,
-          white = moves.headOption filter (".." !=) map { san =>
-            chessPgn.Move(
-              san = san,
-              secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
-            )
-          },
-          black = moves lift 1 map { san =>
-            chessPgn.Move(
-              san = san,
-              secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds)
-            )
-          }
-        )
+    (moves grouped 2).zipWithIndex.toList map { case (moves, index) =>
+      val clockOffset = startColor.fold(0, 1)
+      chessPgn.Turn(
+        number = index + from,
+        white = moves.headOption filter (".." !=) map { san =>
+          chessPgn.Move(
+            san = san,
+            secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
+          )
+        },
+        black = moves lift 1 map { san =>
+          chessPgn.Move(
+            san = san,
+            secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds)
+          )
+        }
+      )
     } filterNot (_.isEmpty)
 }

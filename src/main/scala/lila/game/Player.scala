@@ -57,7 +57,7 @@ object Player {
     val name              = "na"
   }
 
-  import reactivemongo.bson._
+  import reactivemongo.api.bson._
   import lila.db.BSON
 
   type Id      = String
@@ -96,7 +96,5 @@ object Player {
                 berserk = r boolD berserk,
                 name = r strO name
               )
-
-    def writes(w: BSON.Writer, o: Builder) = BSONDocument()
   }
 }

@@ -19,7 +19,7 @@ case class Info(
 
   def turn = 1 + (ply - 1) / 2
 
-  def color = Color(ply % 2 == 1)
+  def color = Color.fromWhite(ply % 2 == 1)
 
   def hasVariation  = variation.nonEmpty
   def dropVariation = copy(variation = Nil, eval = eval.dropBest)
@@ -66,8 +66,8 @@ object Info {
   }
 
   def decodeList(str: String, fromPly: Int): Option[List[Info]] = {
-    str.split(listSeparator).toList.zipWithIndex map {
-      case (infoStr, index) => decode(index + 1 + fromPly, infoStr)
+    str.split(listSeparator).toList.zipWithIndex map { case (infoStr, index) =>
+      decode(index + 1 + fromPly, infoStr)
     }
   }.sequence
 

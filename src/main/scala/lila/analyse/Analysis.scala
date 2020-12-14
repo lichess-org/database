@@ -16,11 +16,10 @@ case class Analysis(
   type InfoAdvices = List[(Info, Option[Advice])]
 
   lazy val infoAdvices: InfoAdvices = {
-    (Info.start(startPly) :: infos) sliding 2 collect {
-      case List(prev, info) =>
-        info -> {
-          if (info.hasVariation) Advice(prev, info) else None
-        }
+    (Info.start(startPly) :: infos) sliding 2 collect { case List(prev, info) =>
+      info -> {
+        if (info.hasVariation) Advice(prev, info) else None
+      }
     }
   }.toList
 
@@ -51,7 +50,7 @@ case class Analysis(
 object Analysis {
 
   import lila.db.BSON
-  import reactivemongo.bson._
+  import reactivemongo.api.bson._
 
   type ID = String
 
@@ -70,6 +69,5 @@ object Analysis {
         date = r date "date"
       )
     }
-    def writes(w: BSON.Writer, o: Analysis) = ???
   }
 }
