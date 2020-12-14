@@ -30,6 +30,7 @@ object Puzzle extends App {
       rating: Int,
       ratingDev: Int,
       popularity: Int,
+      plays: Int,
       themes: List[String],
       gameUrl: String
   )
@@ -60,6 +61,7 @@ object Puzzle extends App {
     rating     <- glicko.double("r")
     rd         <- glicko.double("d")
     popularity <- doc.int("vote")
+    plays      <- doc.int("plays")
     themes     <- doc.getAsOpt[List[String]]("themes")
     gameId     <- doc.string("gameId")
   } yield PuzzleLine(
@@ -69,6 +71,7 @@ object Puzzle extends App {
     rating = rating.toInt,
     ratingDev = rd.toInt,
     popularity = popularity,
+    plays = plays,
     themes = themes,
     gameUrl = {
       val asWhite = fen.color.contains(chess.White)
@@ -87,6 +90,7 @@ object Puzzle extends App {
       puzzle.rating,
       puzzle.ratingDev,
       puzzle.popularity,
+      puzzle.plays,
       puzzle.themes.sorted.mkString(" "),
       puzzle.gameUrl
     ).mkString(",")
