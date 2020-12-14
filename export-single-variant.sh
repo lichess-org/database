@@ -8,7 +8,7 @@ bz2file="$file.bz2"
 
 echo "Export $variant games of $month to $file"
 
-sbt "run $month $dir/$file $variant"
+sbt "runMain lichess.Main $month $dir/$file $variant"
 
 cd "$dir"
 

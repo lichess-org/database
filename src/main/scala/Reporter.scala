@@ -44,11 +44,14 @@ object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.W
           }
         }
 
-        setHandler(out, new OutHandler {
-          override def onPull() = {
-            pull(in)
+        setHandler(
+          out,
+          new OutHandler {
+            override def onPull() = {
+              pull(in)
+            }
           }
-        })
+        )
 
         //       override def onUpstreamFinish(): Unit = {
         //         println("finished?")

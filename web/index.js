@@ -102,15 +102,21 @@ function replaceVariant(variant, tableTemplate) {
   };
 }
 
+function replaceNbPuzzles(template) {
+  return fs.readFile(sourceDir + '/puzzle-count.txt', { encoding: 'utf8' }).then(c => 
+    template.replace('<!-- nbPuzzles -->', numberFormat(c))
+  );
+}
+
 process.on('unhandledRejection', r => console.log(r));
 
 Promise.all([
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(tableTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' })
-]).then(arr => {
-  const rv = function(variant) { return replaceVariant(variant, arr[1]); };
-  return rv('standard')(arr[0])
+]).then(([index, table, style]) => {
+  const rv = variant => replaceVariant(variant, table);
+  return rv('standard')(index)
     .then(rv('antichess'))
     .then(rv('atomic'))
     .then(rv('chess960'))
@@ -119,7 +125,8 @@ Promise.all([
     .then(rv('kingOfTheHill'))
     .then(rv('racingKings'))
     .then(rv('threeCheck'))
+    .then(replaceNbPuzzles)
     .then(rendered => {
-      return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, arr[2]));
+      return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, style));
     });
 });

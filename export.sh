@@ -3,6 +3,8 @@
 month=${1}
 dir=${2}
 
+./export-puzzle.sh $dir
+
 export_variant() {
     echo "---------------------------"
     mkdir -p $dir/$1

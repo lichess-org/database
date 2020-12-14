@@ -4,7 +4,7 @@
   "description": "lichess.org game database",
   "main": "index.js",
   "scripts": {
-    "run": "node index.js"
+    "build": "node index.js"
   },
   "author": "Thibault Duplessis",
   "license": "ISC",

@@ -181,14 +181,15 @@ nav a.on {
   border-color: #888;
 }
 
-#variant_games, #variant_games:target ~ #standard_games {
+#puzzles, #variant_games, #puzzles:target ~ #standard_games , #variant_games:target ~ #standard_games {
   display: none;
 }
-#variant_games:target, #standard_games:target, #standard_games {
+#puzzles:target, #variant_games:target, #standard_games:target, #standard_games {
   display: block;
 }
 
-#standard_games nav {
+#standard_games nav,
+#puzzles nav {
   margin-bottom: 50px;
 }
 

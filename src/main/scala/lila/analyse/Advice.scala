@@ -22,10 +22,10 @@ sealed trait Advice {
         case MateAdvice(seq, _, _, _) => seq.desc
         case CpAdvice(judgment, _, _) => judgment.toString
       }) + "." + {
-      info.variation.headOption.filter(_ => withBestMove).fold("") { move =>
-        s" Best move was $move."
+        info.variation.headOption.filter(_ => withBestMove).fold("") { move =>
+          s" Best move was $move."
+        }
       }
-    }
 
   def evalComment: Option[String] =
     Some {
@@ -61,7 +61,7 @@ private[analyse] object CpAdvice {
       cp     ← prev.cp map (_.ceiled.centipawns)
       infoCp ← info.cp map (_.ceiled.centipawns)
       delta = {
-        val d = (infoCp - cp)
+        val d = infoCp - cp
         info.color.fold(-d, d)
       }
       judgment ← cpJudgments find { case (d, n) => d <= delta } map (_._2)

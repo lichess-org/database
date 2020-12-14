@@ -55,8 +55,8 @@ object DB {
   val dbName   = "lichess"
   val collName = "game5"
 
-  val uri    = config.getString("db.uri")
-  val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver ")))
+  val uri    = config.getString("db.game.uri")
+  val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
   val conn =
     MongoConnection.fromString(uri) flatMap { parsedUri =>
       driver.connect(parsedUri, Some("lichess-db"))

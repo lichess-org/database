@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300" rel="stylesheet">
     <style><!-- style --></style>
-    <title>lichess.org game database</title>
+    <title>lichess.org open database</title>
   </head>
 
   <body>
@@ -17,14 +17,52 @@
             <a href="https://lichess.org">
               lichess.org
             </a>
-            <strong>game database</strong>
+            <strong>open database</strong>
           </h1>
         </header>
-
+        <section id="puzzles" class="panel">
+          <nav>
+            <a href="#standard_games">Standard Chess</a>
+            <a href="#variant_games">Variants</a>
+            <a href="#puzzles" class="on">Puzzles</a>
+          </nav>
+          <p>
+            <strong><!-- nbPuzzles --></strong> original chess puzzles, rated and tagged.
+            <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
+          <p>
+            Generating these chess puzzles took more than 25 years of CPU time.<br />
+            We went through a hundred million of Lichess analysed games,
+            and re-analyzed interesting positions with Stockfish 12 NNEU at 40 meganodes.
+            The resulting puzzles were then automatically tagged.
+            Finally, player input defined their quality and rating.
+          </p>
+          <p>
+            <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
+          </p>
+          <p>
+            This puzzle database will be complete by March 20201, then updated every month.
+          </p>
+          <h3 id="puzzle_format">Format</h3>
+          <p>Puzzles are formatted as standard CSV. The fields are as follow:</p>
+          <pre>
+            PuzzleId, FEN, Moves, Rating, Popularity, Themes, GameUrl
+          </pre>
+          <h3 id="puzzle_sample">Sample</h3>
+          <pre>
+0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,2,advantage middlegame short,lichess.org/4MWQCxQ6/black#32
+000tp,4r3/5pk1/1p3np1/3p3p/2qQ4/P4N1P/1P3RP1/7K w - - 6 34,d4b6 f6e4 h1g1 e4f2,1687,-5,crushing endgame short trappedPiece,lichess.org/GeXqsW90#67
+001cv,6k1/5p1p/3p2pP/3Pr1b1/1pp5/7R/PP6/1K1R4 w - - 0 34,d1d4 e5e1 d4d1 e1d1 b1c2 d1c1,1043,-15,endgame long mate mateIn3 queensideAttack,lichess.org/Wn5Xtz5X#67
+001u3,2r3k1/p1q2pp1/Q3p2p/b1Np4/2nP1P2/4P1P1/5K1P/2B1N3 b - - 3 33,c7b6 a6c8 g8h7 c8b7,1268,2,advantage hangingPiece kingsideAttack middlegame short,lichess.org/BBn6ipaK/black#66
+00206,r3kb1r/pppqpn1p/5p2/3p1bpQ/2PP4/4P1B1/PP3PPP/RN2KB1R w KQkq - 1 11,b1c3 f5g4 h5g4 d7g4,1236,-5,advantage opening short trappedPiece,lichess.org/MbJRo6PT#21
+002Cw,r7/2p2r1k/p2p1q1p/Pp1P4/1P2P3/2PQ4/6R1/R5K1 b - - 2 28,f7g7 e4e5 f6g6 g2g6,1315,-5,crushing discoveredAttack endgame short,lichess.org/lxiSa85s/black#56
+002E4,8/8/kpq5/p4pQp/P7/7P/3r2P1/4R2K b - - 10 48,c6a4 g5d2,1406,-5,crushing endgame hangingPiece oneMove,lichess.org/JwMca3Nw/black#96
+          </pre>
+        </section>
         <section id="variant_games" class="panel">
           <nav>
             <a href="#standard_games">Standard Chess</a>
             <a href="#variant_games" class="on">Variants</a>
+            <a href="#puzzles">Puzzles</a>
           </nav>
           <h3>Antichess</h3>
           <!-- table-antichess -->
@@ -43,113 +81,116 @@
           <h3>Three-check</h3>
           <!-- table-threeCheck -->
         </section>
-        <section id="standard_games" class="panel">
-          <nav>
-            <a href="#standard_games" class="on">Standard Chess</a>
-            <a href="#variant_games">Variants</a>
-          </nav>
-          <!-- table-standard -->
-        </section>
+        <div id="standard_games" class="panel">
+          <section>
+            <nav>
+              <a href="#standard_games" class="on">Standard Chess</a>
+              <a href="#variant_games">Variants</a>
+              <a href="#puzzles">Puzzles</a>
+            </nav>
+            <!-- table-standard -->
+          </section>
 
-        <section>
-          <h3 id="sample">Sample</h3>
-          <pre>[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
-[Site "https://lichess.org/PpwPOZMq"]
-[White "Abbot"]
-[Black "Costello"]
-[Result "0-1"]
-[UTCDate "2017.04.01"]
-[UTCTime "11:32:01"]
-[WhiteElo "2100"]
-[BlackElo "2000"]
-[WhiteRatingDiff "-4"]
-[BlackRatingDiff "+1"]
-[WhiteTitle "FM"]
-[ECO "B30"]
-[Opening "Sicilian Defense: Old Sicilian"]
-[TimeControl "300+0"]
-[Termination "Time forfeit"]
+          <section>
+            <h3 id="sample">Sample</h3>
+            <pre>[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
+  [Site "https://lichess.org/PpwPOZMq"]
+  [White "Abbot"]
+  [Black "Costello"]
+  [Result "0-1"]
+  [UTCDate "2017.04.01"]
+  [UTCTime "11:32:01"]
+  [WhiteElo "2100"]
+  [BlackElo "2000"]
+  [WhiteRatingDiff "-4"]
+  [BlackRatingDiff "+1"]
+  [WhiteTitle "FM"]
+  [ECO "B30"]
+  [Opening "Sicilian Defense: Old Sicilian"]
+  [TimeControl "300+0"]
+  [Termination "Time forfeit"]
 
-1. e4 { [%eval 0.17] [%clk 0:00:30] } 1... c5 { [%eval 0.19] [%clk 0:00:30] }
-2. Nf3 { [%eval 0.25] [%clk 0:00:29] } 2... Nc6 { [%eval 0.33] [%clk 0:00:30] }
-3. Bc4 { [%eval -0.13] [%clk 0:00:28] } 3... e6 { [%eval -0.04] [%clk 0:00:30] }
-4. c3 { [%eval -0.4] [%clk 0:00:27] } 4... b5? { [%eval 1.18] [%clk 0:00:30] }
-5. Bb3?! { [%eval 0.21] [%clk 0:00:26] } 5... c4 { [%eval 0.32] [%clk 0:00:29] }
-6. Bc2 { [%eval 0.2] [%clk 0:00:25] } 6... a5 { [%eval 0.6] [%clk 0:00:29] }
-7. d4 { [%eval 0.29] [%clk 0:00:23] } 7... cxd3 { [%eval 0.6] [%clk 0:00:27] }
-8. Qxd3 { [%eval 0.12] [%clk 0:00:22] } 8... Nf6 { [%eval 0.52] [%clk 0:00:26] }
-9. e5 { [%eval 0.39] [%clk 0:00:21] } 9... Nd5 { [%eval 0.45] [%clk 0:00:25] }
-10. Bg5?! { [%eval -0.44] [%clk 0:00:18] } 10... Qc7 { [%eval -0.12] [%clk 0:00:23] }
-11. Nbd2?? { [%eval -3.15] [%clk 0:00:14] } 11... h6 { [%eval -2.99] [%clk 0:00:23] }
-12. Bh4 { [%eval -3.0] [%clk 0:00:11] } 12... Ba6? { [%eval -0.12] [%clk 0:00:23] }
-13. b3?? { [%eval -4.14] [%clk 0:00:02] } 13... Nf4? { [%eval -2.73] [%clk 0:00:21] } 0-1</pre>
-        </section>
+  1. e4 { [%eval 0.17] [%clk 0:00:30] } 1... c5 { [%eval 0.19] [%clk 0:00:30] }
+  2. Nf3 { [%eval 0.25] [%clk 0:00:29] } 2... Nc6 { [%eval 0.33] [%clk 0:00:30] }
+  3. Bc4 { [%eval -0.13] [%clk 0:00:28] } 3... e6 { [%eval -0.04] [%clk 0:00:30] }
+  4. c3 { [%eval -0.4] [%clk 0:00:27] } 4... b5? { [%eval 1.18] [%clk 0:00:30] }
+  5. Bb3?! { [%eval 0.21] [%clk 0:00:26] } 5... c4 { [%eval 0.32] [%clk 0:00:29] }
+  6. Bc2 { [%eval 0.2] [%clk 0:00:25] } 6... a5 { [%eval 0.6] [%clk 0:00:29] }
+  7. d4 { [%eval 0.29] [%clk 0:00:23] } 7... cxd3 { [%eval 0.6] [%clk 0:00:27] }
+  8. Qxd3 { [%eval 0.12] [%clk 0:00:22] } 8... Nf6 { [%eval 0.52] [%clk 0:00:26] }
+  9. e5 { [%eval 0.39] [%clk 0:00:21] } 9... Nd5 { [%eval 0.45] [%clk 0:00:25] }
+  10. Bg5?! { [%eval -0.44] [%clk 0:00:18] } 10... Qc7 { [%eval -0.12] [%clk 0:00:23] }
+  11. Nbd2?? { [%eval -3.15] [%clk 0:00:14] } 11... h6 { [%eval -2.99] [%clk 0:00:23] }
+  12. Bh4 { [%eval -3.0] [%clk 0:00:11] } 12... Ba6? { [%eval -0.12] [%clk 0:00:23] }
+  13. b3?? { [%eval -4.14] [%clk 0:00:02] } 13... Nf4? { [%eval -2.73] [%clk 0:00:21] } 0-1</pre>
+          </section>
 
-        <section>
-          <h3 id="notes">Notes</h3>
-          <p>
-            About 6% of the games include Stockfish analysis evaluations:
-            <code>[%eval 2.35]</code> (235 centipawn advantage),
-            <code>[%eval #-4]</code> (getting mated in 4),
-            always from White's point of view.
-          </p>
-          <p>
-            In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.
-          </p>
-          <p>
-            The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
-          </p>
-          <p>
-            The <code>Round</code> and <code>Date</code> tags are omitted (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead).
-          </p>
-          <p>
-            Variant games  have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
-          </p>
-        </section>
+          <section>
+            <h3 id="notes">Notes</h3>
+            <p>
+              About 6% of the games include Stockfish analysis evaluations:
+              <code>[%eval 2.35]</code> (235 centipawn advantage),
+              <code>[%eval #-4]</code> (getting mated in 4),
+              always from White's point of view.
+            </p>
+            <p>
+              In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.
+            </p>
+            <p>
+              The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
+            </p>
+            <p>
+              The <code>Round</code> and <code>Date</code> tags are omitted (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead).
+            </p>
+            <p>
+              Variant games  have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
+            </p>
+          </section>
 
-        <section>
-          <h3 id="issues">Known issues</h3>
-          <ul>
-            <li>
-              July 2020 (especially 31th), August 2020 (up to 16th):
-              Many games, especially variant games, may have
-              <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
-              in the opening (up to 15 plies).
-            </li>
-            <li>
-              December 2016 (up to and especially 9th):
-              Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">incorrect evaluations</a>.
-            </li>
-            <li>
-              Before 2016: In some cases,
-              <a href="https://github.com/ornicar/lichess-db/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
-            </li>
-            <li>
-              June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
-            </li>
-            <li>
-              Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
-            </li>
-          </ul>
-        </section>
+          <section>
+            <h3 id="issues">Known issues</h3>
+            <ul>
+              <li>
+                July 2020 (especially 31th), August 2020 (up to 16th):
+                Many games, especially variant games, may have
+                <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
+                in the opening (up to 15 plies).
+              </li>
+              <li>
+                December 2016 (up to and especially 9th):
+                Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">incorrect evaluations</a>.
+              </li>
+              <li>
+                Before 2016: In some cases,
+                <a href="https://github.com/ornicar/lichess-db/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
+              </li>
+              <li>
+                June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
+              </li>
+              <li>
+                Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
+              </li>
+            </ul>
+          </section>
 
-        <section>
-          <h3 id="extract" >Extract bz2 files</h3>
-          <p>
-            Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
-            Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
-          </p>
-        </section>
+          <section>
+            <h3 id="extract" >Extract bz2 files</h3>
+            <p>
+              Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
+              Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
+            </p>
+          </section>
 
-        <section>
-          <h3 id="open-pgn-files" >Open PGN files</h3>
-          <p>
-            Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
-            Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
-            or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
-            or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
-          </p>
-        </section>
+          <section>
+            <h3 id="open-pgn-files" >Open PGN files</h3>
+            <p>
+              Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
+              Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
+              or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
+              or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
+            </p>
+          </section>
+        </div>
 
         <section>
           <h3 id="related-projects" >Related projects</h3>
