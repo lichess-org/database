@@ -36,13 +36,6 @@
             <strong><!-- nbPuzzles --></strong> original chess puzzles, rated and tagged.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
-            Generating these chess puzzles took more than 25 years of CPU time.<br />
-            We went through a hundred million of Lichess analysed games,
-            and re-analyzed interesting positions with Stockfish 12 NNEU at 40 meganodes.
-            The resulting puzzles were then automatically tagged.
-            Finally, player input defined their quality and rating.
-          </p>
-          <p>
             <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
           </p>
           <p>
@@ -61,11 +54,6 @@
 002E4,8/8/kpq5/p4pQp/P7/7P/3r2P1/4R2K b - - 10 48,c6a4 g5d2,1406,-5,crushing endgame hangingPiece oneMove,lichess.org/JwMca3Nw/black#96</pre>
           <h3 id="puzzle_notes">Notes</h3>
             <p>
-              FEN is the position before the opponent makes their move.<br>
-              The position to present to the player is after applying the first move to that FEN.<br>
-              The second move is the beginning of the solution.
-            </p>
-            <p>
               Moves are in UCI format. Use a chess library to convert then to SAN, for display.
             </p>
             <p>
@@ -74,7 +62,19 @@
               An exception is made for mates in one: there can be several. Any move that checkmates should win the puzzle.
             </p>
             <p>
+              FEN is the position before the opponent makes their move.<br>
+              The position to present to the player is after applying the first move to that FEN.<br>
+              The second move is the beginning of the solution.
+            </p>
+            <p>
               You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/puzzle/translation/source/puzzleTheme.xml">this file</a>.
+            </p>
+            <p>
+              Generating these chess puzzles took more than 25 years of CPU time.<br />
+              We went through a hundred million of Lichess analysed games,
+              and re-analyzed interesting positions with Stockfish 12 NNEU at 40 meganodes.
+              The resulting puzzles were then automatically tagged.
+              Finally, player input defined their quality and rating.
             </p>
         </section>
         <section id="variant_games" class="panel">
