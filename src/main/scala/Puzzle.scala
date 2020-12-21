@@ -37,6 +37,8 @@ object Puzzle extends App {
 
   val path = args.lift(1).getOrElse("out/lichess_db_puzzle.csv")
 
+  println(s"Exporting to $path")
+
   private val config = ConfigFactory.load()
   val dbName         = "puzzler"
   val collName       = "puzzle2_puzzle"

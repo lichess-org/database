@@ -4,7 +4,7 @@ dir=${1}
 file="lichess_db_puzzle.csv"
 bz2file="$file.bz2"
 
-echo "Export puzzles"
+echo "Export puzzles to $dir/$file"
 
 sbt "runMain lichess.Puzzle $dir/$file"
 
