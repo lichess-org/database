@@ -75,7 +75,7 @@
             <p>
               Generating these chess puzzles took more than 25 years of CPU time.<br />
               We went through 150,000,000 analysed games from the Lichess database,
-              and re-analyzed interesting positions with Stockfish 12 NNEU at 40 meganodes.
+              and re-analyzed interesting positions with Stockfish 12 NNUE at 40 meganodes.
               The resulting puzzles were then automatically tagged.
               Finally, player input defined their quality and rating.
             </p>
