@@ -57,7 +57,7 @@
 003YT,r1bqk1nr/1pp2ppp/p1pb4/4p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 b kq - 0 6,d8f6 d4e5 d6e5 c1g5 f6d6 f3e5 d6d1 f1d1,1387,500,-5,0,advantage fork opening veryLong,https://lichess.org/TAffogpQ/black#12</pre>
           <h3 id="puzzle_notes">Notes</h3>
             <p>
-              Moves are in UCI format. Use a chess library to convert then to SAN, for display.
+              Moves are in UCI format. Use a chess library to convert them to SAN, for display.
             </p>
             <p>
               All player moves of the solution are "only moves". 
