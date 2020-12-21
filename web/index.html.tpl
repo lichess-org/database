@@ -39,7 +39,7 @@
             <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
           </p>
           <p>
-            This puzzle database will be complete by March 20201, then updated every month.
+            This puzzle database will be complete by March 2021, then updated every month.
           </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follow:</p>
