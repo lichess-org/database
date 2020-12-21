@@ -103,7 +103,7 @@ function replaceVariant(variant, tableTemplate) {
 }
 
 function replaceNbPuzzles(template) {
-  return fs.readFile(sourceDir + '/puzzle-count.txt', { encoding: 'utf8' }).then(c => 
+  return fs.readFile(sourceDir + '/out/puzzle-count.txt', { encoding: 'utf8' }).then(c => 
     template.replace('<!-- nbPuzzles -->', numberFormat(c))
   );
 }

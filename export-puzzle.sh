@@ -10,7 +10,7 @@ sbt "runMain lichess.Puzzle $dir/$file"
 
 cd "$dir"
 
-echo "Counting puzzles in $bz2file"
+echo "Counting puzzles in $file"
 
 puzzles=$(grep --count -F '' "$file")
 echo "$puzzles" > puzzle-count.txt
