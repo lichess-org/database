@@ -35,7 +35,7 @@ object Puzzle extends App {
       gameUrl: String
   )
 
-  val path = args.lift(1).getOrElse("out/lichess_db_puzzle.csv")
+  val path = args.headOption.getOrElse("out/lichess_db_puzzle.csv")
 
   println(s"Exporting to $path")
 
