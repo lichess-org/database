@@ -79,12 +79,10 @@
               The resulting puzzles were then automatically tagged.
               Finally, player input defined their quality and rating.
             </p>
-          <h3 id="puzzle_notes">"v1" Puzzles</h3>
+          <h3 id="puzzle_v1">"v1" Puzzles</h3>
             <p>
-              If you are looking for our old "v1" puzzles (used before
-              2020-12-22), you can find
-              the <a href="https://database.lichess.org/puzzlesv1/">raw
-                database dump here</a>.<br />
+              If you are looking for our old "v1" puzzles (used before 2020-12-22),
+              you can <a href="https://database.lichess.org/puzzlesv1/">download the raw database dump</a>.<br />
               Load the dump in your local MongoDB installation and explore them.<br />
               You might also be interested in <a href="https://github.com/clarkerubber/Python-Puzzle-Creator">the old puzzle generator</a>.
             </p>
