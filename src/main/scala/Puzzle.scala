@@ -62,7 +62,7 @@ object Puzzle extends App {
     glicko     <- doc.child("glicko")
     rating     <- glicko.double("r")
     rd         <- glicko.double("d")
-    popularity <- doc.int("vote")
+    popularity <- doc.double("vote")
     plays      <- doc.int("plays")
     themes     <- doc.getAsOpt[List[String]]("themes")
     gameId     <- doc.string("gameId")
@@ -72,7 +72,7 @@ object Puzzle extends App {
     moves = moves.split(' ').toList,
     rating = rating.toInt,
     ratingDev = rd.toInt,
-    popularity = popularity,
+    popularity = math.round(popularity * 100).toInt,
     plays = plays,
     themes = themes,
     gameUrl = {
