@@ -79,10 +79,10 @@
               The resulting puzzles were then automatically tagged.
               Finally, player input defined their quality and rating.
             </p>
-          <h3 id="puzzle_v1">Old puzzles</h3>
+          <h3 id="puzzle_v1">Old puzzles (v1)</h3>
             <p>
-              For historical reasons, you may want to <a href="https://database.lichess.org/lichess_db_puzzle_v1.json.bz2">donwload the old "v1" puzzles</a>.
-              Here's also a <a href="https://github.com/kraktus/lichessPuzzlesV1toV2/blob/master/index_conversion.csv">table of puzzle IDs conversion</a> for 8400 v1 puzzles that made it to v2.
+              For historical reasons, you may want to <a href="https://database.lichess.org/lichess_db_puzzle_v1.json.bz2">download the old "v1" puzzles</a>.
+              Here's also a <a href="https://github.com/kraktus/lichessPuzzlesV1toV2/blob/master/index_conversion.csv">table of puzzle IDs conversion</a> for 8400 old v1 puzzles that made it to v2.
             </p>
         </section>
         <section id="variant_games" class="panel">
