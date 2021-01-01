@@ -20,8 +20,8 @@ variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill raci
 
 for variant in $variants; do
   export_variant $variant
-  gen_site()
+  gen_site
 done
 
 ./export-puzzle.sh $dir
-gen_site()
+gen_site
