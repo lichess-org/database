@@ -3,7 +3,12 @@
 month=${1}
 dir=${2}
 
-./export-puzzle.sh $dir
+gen_site() {
+  echo "Generating website"
+  cd web
+  nodejs index.js $dir
+  cd ..
+}
 
 export_variant() {
     echo "---------------------------"
@@ -15,9 +20,8 @@ variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill raci
 
 for variant in $variants; do
   export_variant $variant
+  gen_site()
 done
 
-echo "Generating website"
-
-cd web
-nodejs index.js $dir
+./export-puzzle.sh $dir
+gen_site()
