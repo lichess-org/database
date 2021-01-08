@@ -122,6 +122,8 @@
             <h3 id="sample">Sample</h3>
             <pre>[Event "Rated Bullet tournament https://lichess.org/tournament/yc1WW2Ox"]
 [Site "https://lichess.org/PpwPOZMq"]
+[Date "2017.04.01"]
+[Round "-"]
 [White "Abbot"]
 [Black "Costello"]
 [Result "0-1"]
@@ -167,9 +169,6 @@
               The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
             </p>
             <p>
-              The <code>Round</code> and <code>Date</code> tags are omitted (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead).
-            </p>
-            <p>
               Variant games  have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
             </p>
           </section>
@@ -177,6 +176,19 @@
           <section>
             <h3 id="issues">Known issues</h3>
             <ul>
+              <li>
+                December 2020, January 2020: Many variant games have been
+                <a href="https://github.com/niklasf/fishnet/issues/147">mistakenly analyzed using standard NNUE</a>,
+                leading to incorrect evaluations.
+              </li>
+              <li>
+                Up to December 2020:
+                Some exports are missing the redundant (but stricly speaking mandatory)
+                <code>Round</code> tag (always <code>-</code>),
+                <code>Date</code> tag (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead),
+                and <a href="https://github.com/ornicar/lichess-db/issues/31">black move numbers after comments</a>.
+                This may be fixed by a future re-export.
+              </li>
               <li>
                 July 2020 (especially 31th), August 2020 (up to 16th):
                 Many games, especially variant games, may have
