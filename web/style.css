@@ -90,6 +90,8 @@ pre code { padding: 0; color: #f2f2f2; background-color: #303030; border: none; 
 
 ul, ol, dl { margin-bottom: 20px; }
 
+span.sep { color: #e0e0e0; }
+
 /* COMMON STYLES */
 hr { height: 1px; padding-bottom: 1em; margin-top: 1em; line-height: 1px; background: transparent url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAp0AAAABCAQAAAA2592kAAAASUlEQVR4Aa2SMQ4AIAwCy/8fjYO75jzdOFCblEzmdOIpJ5tpLVySFUkxkdKegK3fOfD75Fck/5CifPlr/Cb607tes32WN4S1bQG4FyUDSe/XhgAAAABJRU5ErkJggg==') 50% 0 no-repeat; border: none; }
 

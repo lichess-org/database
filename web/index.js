@@ -20,11 +20,9 @@ function fileInfo(gameCounts, variant, n) {
   return fs.stat(path).then(s => {
     const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.bz2/, '$1');
     const m = moment(dateStr);
-    const shortName = n.replace(/.+(\d{4}-\d{2}.+)$/, '$1');
     const hasClock = m.unix() >= clockSince.unix();
     return {
       name: n,
-      shortName: shortName,
       path: path,
       size: s.size,
       date: m,
@@ -48,7 +46,7 @@ function getFiles(variant) {
   return function(gameCounts) {
     return fs.readdir(sourceDir + '/' + variant).then(items => {
       return Promise.all(
-        items.filter(n => n.includes('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n))
+        items.filter(n => n.endsWith('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n))
       );
     }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
   }
@@ -61,7 +59,7 @@ function renderTable(files, variant) {
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
     <td class="center">${f.clock ? '✔' : ''}</td>
-    <td><a href="${variant}/${f.name}">${f.shortName}</a></td>
+    <td><a href="${variant}/${f.name}">.pgn.bz2</a> <span class="sep">/</span> <a href="${variant}/${f.name}.torrent">.torrent</a></td>
     </tr>`;
   }).join('\n');
 }
