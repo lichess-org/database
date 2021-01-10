@@ -177,7 +177,7 @@
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
-                December 2020, January 2020: Many variant games have been
+                December 2020, January 2021: Many variant games have been
                 <a href="https://github.com/niklasf/fishnet/issues/147">mistakenly analyzed using standard NNUE</a>,
                 leading to incorrect evaluations.
               </li>
