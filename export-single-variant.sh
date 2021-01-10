@@ -31,4 +31,7 @@ grep -v -F "$bz2file" sha256sums.txt > sha256sums.txt.new || touch sha256sums.tx
 sha256sum "$bz2file" | tee --append sha256sums.txt.new
 mv sha256sums.txt.new sha256sums.txt
 
+echo "Creating torrent for $bz2file"
+mktorrent --web-seed "https://database.lichess.org/$variant/$bz2file" --piece-length 20 "$bz2file"
+
 echo "Done!"
