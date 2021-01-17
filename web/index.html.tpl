@@ -275,6 +275,9 @@
             <li>
               <a href="https://github.com/welyab/chess960-win-by-position-setup">Chess960 Win by Position Setup</a>
             </li>
+            <li>
+              <a href="https://www.reddit.com/r/chess/comments/kzb9f5/selected_opening_usage_in_17_billion_lichess/">Selected Opening Usage by Game Rating</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
