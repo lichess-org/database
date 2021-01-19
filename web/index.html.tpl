@@ -70,7 +70,7 @@
               The second move is the beginning of the solution.
             </p>
             <p>
-              You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/puzzle/translation/source/puzzleTheme.xml">this file</a>.
+              You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
             </p>
             <p>
               Generating these chess puzzles took more than 25 years of CPU time.<br />
