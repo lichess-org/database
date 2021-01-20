@@ -38,9 +38,6 @@
           <p>
             <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
           </p>
-          <p>
-            This puzzle database will be complete by March 2021, then updated every month.
-          </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follow:</p>
           <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl</pre>
@@ -78,11 +75,6 @@
               and re-analyzed interesting positions with Stockfish 12 NNUE at 40 meganodes.
               The resulting puzzles were then automatically tagged.
               Finally, player input defined their quality and rating.
-            </p>
-          <h3 id="puzzle_v1">Old puzzles (v1)</h3>
-            <p>
-              For historical reasons, you may want to <a href="https://database.lichess.org/lichess_db_puzzle_v1.json.bz2">download the old "v1" puzzles</a>.
-              Here's also a <a href="https://github.com/kraktus/lichessPuzzlesV1toV2/blob/master/index_conversion.csv">table of puzzle IDs conversion</a> for 8400 old v1 puzzles that made it to v2.
             </p>
         </section>
         <section id="variant_games" class="panel">
