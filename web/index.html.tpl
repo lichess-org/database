@@ -275,10 +275,10 @@
             </li>
             <li>
               <a href="https://www.tryit.in/blindfoldpuzzles/">Blindfold puzzles (using the puzzle DB)</a>
-            <li>
+            </li>
             <li>
               <a href="https://chesscup.org/">Puzzle battle (using the puzzle DB)</a>
-            <li>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
