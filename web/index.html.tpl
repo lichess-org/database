@@ -273,6 +273,12 @@
             <li>
               <a href="https://www.kaggle.com/ironicninja/visualizing-chess-game-length-and-piece-movement">Chess Visualization Project</a>
             </li>
+            <li>
+              <a href="https://www.tryit.in/blindfoldpuzzles/">Blindfold puzzles (using the puzzle DB)</a>
+            <li>
+            <li>
+              <a href="https://chesscup.org/">Puzzle battle (using the puzzle DB)</a>
+            <li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
