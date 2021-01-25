@@ -39,7 +39,7 @@
             <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
           </p>
           <h3 id="puzzle_format">Format</h3>
-          <p>Puzzles are formatted as standard CSV. The fields are as follow:</p>
+          <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
           <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl</pre>
           <h3 id="puzzle_sample">Sample</h3>
           <pre>0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1426,500,2,0,advantage endgame short,https://lichess.org/F8M8OS71#53
