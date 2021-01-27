@@ -182,7 +182,7 @@
                 This may be fixed by a future re-export.
               </li>
               <li>
-                July 2020 (especially 31th), August 2020 (up to 16th):
+                July 2020 (especially 31st), August 2020 (up to 16th):
                 Many games, especially variant games, may have
                 <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
                 in the opening (up to 15 plies).
