@@ -74,7 +74,8 @@
               We went through 150,000,000 analysed games from the Lichess database,
               and re-analyzed interesting positions with Stockfish 12 NNUE at 40 meganodes.
               The resulting puzzles were then automatically tagged.
-              Finally, player input defined their quality and rating.
+              To determine the rating, each attempt to solve is considered as a Glicko2 rated game between the player and the puzzle.
+              Finally, player votes refine the tags and define popularity.
             </p>
         </section>
         <section id="variant_games" class="panel">
