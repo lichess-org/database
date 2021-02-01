@@ -18,7 +18,7 @@ echo "$puzzles" > puzzle-count.txt
 echo "Compressing $puzzles puzzles to $bz2file"
 
 rm -f $bz2file
-pbzip2 -p2 $file
+pbzip2 -p4 $file
 
 echo "Check summing $bz2file"
 touch sha256sums.txt

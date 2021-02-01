@@ -23,7 +23,7 @@ mv counts.txt.new counts.txt
 echo "Compressing $games games to $bz2file"
 
 rm -f $bz2file
-pbzip2 -p2 $file
+pbzip2 -p6 $file
 
 echo "Check summing $bz2file"
 touch sha256sums.txt
