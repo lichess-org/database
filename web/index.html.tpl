@@ -280,6 +280,9 @@
             <li>
               <a href="https://chesscup.org/">Puzzle battle (using the puzzle DB)</a>
             </li>
+            <li>
+              <a href="https://web.chessdigits.com/articles/when-should-you-resign">When should you resign?</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
