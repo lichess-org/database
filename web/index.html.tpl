@@ -170,6 +170,10 @@
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
+                9th February 2021: Some games were
+                <a href="https://lichess.org/forum/lichess-feedback/bug-with-game-completion-today-between-724-and-804">resigned or lost on time, even after the game ended</a>.
+              </li>
+              <li>
                 December 2020, January 2021: Many variant games have been
                 <a href="https://github.com/niklasf/fishnet/issues/147">mistakenly analyzed using standard NNUE</a>,
                 leading to incorrect evaluations.
