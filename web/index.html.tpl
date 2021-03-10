@@ -287,6 +287,9 @@
             <li>
               <a href="https://web.chessdigits.com/articles/when-should-you-resign">When should you resign?</a>
             </li>
+            <li>
+              <a href="https://github.com/Paul566/chessOpeningStats">Popularity and win rate of chess openings</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
