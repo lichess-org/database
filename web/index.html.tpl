@@ -170,6 +170,9 @@
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
+                12th March 2021: Some games have incorrect results due to a database outage in the aftermath of a <a href="https://lichess.org/forum/lichess-feedback/fire-in-a-lichess-datacenter">datacenter fire</a>.
+              </li>
+              <li>
                 9th February 2021: Some games were
                 <a href="https://lichess.org/forum/lichess-feedback/bug-with-game-completion-today-between-724-and-804">resigned even after the game ended</a>.
               </li>
