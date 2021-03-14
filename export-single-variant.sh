@@ -32,6 +32,6 @@ sha256sum "$bz2file" | tee --append sha256sums.txt.new
 mv sha256sums.txt.new sha256sums.txt
 
 echo "Creating torrent for $bz2file"
-mktorrent --web-seed "https://database.lichess.org/$variant/$bz2file" --piece-length 20 "$bz2file"
+mktorrent --web-seed "https://database.lichess.org/$variant/$bz2file" --piece-length 20 --announce "udp://tracker.torrent.eu.org:451" "$bz2file"
 
 echo "Done!"
