@@ -9,7 +9,6 @@
       <th>Month</th>
       <th class="right">Size</th>
       <th class="right">Games</th>
-      <th class="center">Clock</th>
       <th>Download</th>
     </tr>
   </thead>

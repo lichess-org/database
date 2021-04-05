@@ -27,7 +27,7 @@ function fileInfo(gameCounts, variant, n) {
       size: s.size,
       date: m,
       clock: hasClock,
-      games: parseInt(gameCounts[n]) || 0
+      games: parseInt(gameCounts[n]) || 0,
     };
   });
 }
@@ -35,33 +35,39 @@ function fileInfo(gameCounts, variant, n) {
 function getGameCounts(variant) {
   return fs.readFile(sourceDir + '/' + variant + '/counts.txt', { encoding: 'utf8' }).then(c => {
     var gameCounts = {};
-    c.split('\n').map(l => l.trim()).forEach(line => {
-      if (line !== '') gameCounts[line.split(' ')[0]] = line.split(' ')[1];
-    });
+    c.split('\n')
+      .map(l => l.trim())
+      .forEach(line => {
+        if (line !== '') gameCounts[line.split(' ')[0]] = line.split(' ')[1];
+      });
     return gameCounts;
   });
 }
 
 function getFiles(variant) {
-  return function(gameCounts) {
-    return fs.readdir(sourceDir + '/' + variant).then(items => {
-      return Promise.all(
-        items.filter(n => n.endsWith('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n))
-      );
-    }).then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
-  }
+  return function (gameCounts) {
+    return fs
+      .readdir(sourceDir + '/' + variant)
+      .then(items => {
+        return Promise.all(items.filter(n => n.endsWith('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n)));
+      })
+      .then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
+  };
 }
 
 function renderTable(files, variant) {
-  return files.map(f => {
-    return `<tr>
+  return files
+    .map(f => {
+      return `<tr>
     <td>${f.date.format('YYYY - MMMM')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
-    <td class="center">${f.clock ? '✔' : ''}</td>
-    <td><a href="${variant}/${f.name}">.pgn.bz2</a> <span class="sep">/</span> <a href="${variant}/${f.name}.torrent">.torrent</a></td>
+    <td><a href="${variant}/${f.name}">.pgn.bz2</a> <span class="sep">/</span> <a href="${variant}/${
+        f.name
+      }.torrent">.torrent</a></td>
     </tr>`;
-  }).join('\n');
+    })
+    .join('\n');
 }
 
 function renderTotal(files) {
@@ -75,25 +81,29 @@ function renderTotal(files) {
 }
 
 function renderList(files, variant) {
-  return files.map(f => {
-    return `https://database.lichess.org/${variant}/${f.name}`;
-  }).join('\n');
+  return files
+    .map(f => {
+      return `https://database.lichess.org/${variant}/${f.name}`;
+    })
+    .join('\n');
 }
 
 function processVariantAndReturnTable(variant, template) {
-  return getGameCounts(variant).then(getFiles(variant)).then(files => {
-    return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
-      return template
-        .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
-        .replace(/<!-- files -->/, renderTable(files, variant))
-        .replace(/<!-- total -->/, renderTotal(files))
-        .replace(/<!-- variant -->/g, variant);
+  return getGameCounts(variant)
+    .then(getFiles(variant))
+    .then(files => {
+      return fs.writeFile(sourceDir + '/' + variant + '/' + listFile, renderList(files, variant)).then(_ => {
+        return template
+          .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
+          .replace(/<!-- files -->/, renderTable(files, variant))
+          .replace(/<!-- total -->/, renderTotal(files))
+          .replace(/<!-- variant -->/g, variant);
+      });
     });
-  });
 }
 
 function replaceVariant(variant, tableTemplate) {
-  return function(fullTemplate) {
+  return function (fullTemplate) {
     return processVariantAndReturnTable(variant, tableTemplate).then(tbl => {
       return fullTemplate.replace('<!-- table-' + variant + ' -->', tbl);
     });
@@ -101,9 +111,9 @@ function replaceVariant(variant, tableTemplate) {
 }
 
 function replaceNbPuzzles(template) {
-  return fs.readFile(sourceDir + '/puzzle-count.txt', { encoding: 'utf8' }).then(c => 
-    template.replace('<!-- nbPuzzles -->', numberFormat(c))
-  );
+  return fs
+    .readFile(sourceDir + '/puzzle-count.txt', { encoding: 'utf8' })
+    .then(c => template.replace('<!-- nbPuzzles -->', numberFormat(c)));
 }
 
 process.on('unhandledRejection', r => console.log(r));
@@ -111,7 +121,7 @@ process.on('unhandledRejection', r => console.log(r));
 Promise.all([
   fs.readFile(indexTpl, { encoding: 'utf8' }),
   fs.readFile(tableTpl, { encoding: 'utf8' }),
-  fs.readFile(styleFile, { encoding: 'utf8' })
+  fs.readFile(styleFile, { encoding: 'utf8' }),
 ]).then(([index, table, style]) => {
   const rv = variant => replaceVariant(variant, table);
   return rv('standard')(index)

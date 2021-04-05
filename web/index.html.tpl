@@ -156,13 +156,13 @@
               always from White's point of view.
             </p>
             <p>
-              In files with <strong>✔ Clock</strong>, real-time games include clock states: <code>[%clk 0:01:00]</code>.
-            </p>
-            <p>
               The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
             </p>
             <p>
-              Variant games  have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
+              Games contain clock information as PGN <code>%clk</code> comments since April 2017.
+            </p>
+            <p>
+              Variant games have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
             </p>
           </section>
 
