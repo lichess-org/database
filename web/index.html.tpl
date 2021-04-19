@@ -70,10 +70,11 @@
               You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
             </p>
             <p>
-              Generating these chess puzzles took more than 25 years of CPU time.<br />
-              We went through 150,000,000 analysed games from the Lichess database,
-              and re-analyzed interesting positions with Stockfish 12 NNUE at 40 meganodes.
-              The resulting puzzles were then automatically tagged.
+              <a href="https://github.com/ornicar/lichess-puzzler/tree/master/generator">Generating these chess puzzles</a>
+              took more than 35 years of CPU time.<br />
+              We went through 200,000,000 analysed games from the Lichess database,
+              and re-analyzed interesting positions with Stockfish 12/13 NNUE at 40 meganodes.
+              The resulting puzzles were then <a href="https://github.com/ornicar/lichess-puzzler/tree/master/tagger">automatically tagged</a>.
               To determine the rating, each attempt to solve is considered as a Glicko2 rated game between the player and the puzzle.
               Finally, player votes refine the tags and define popularity.
             </p>
