@@ -294,6 +294,9 @@
             <li>
               <a href="https://github.com/Paul566/chessOpeningStats">Popularity and win rate of chess openings</a>
             </li>
+            <li>
+              <a href="https://github.com/marcusbuffett/chess-tactics-cli">Chess Tactics CLI (using the puzzle DB)</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
