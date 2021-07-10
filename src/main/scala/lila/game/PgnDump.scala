@@ -33,7 +33,7 @@ object PgnDump {
 
   private def player(g: Game, color: Color, users: Users) = {
     val player = g.player(color)
-    player.aiLevel.fold(users(color).name)("lichess AI level " + _)
+    player.aiLevel.fold(users(color).name)("AI level " + _)
   }
 
   private def eventOf(game: Game) = {
@@ -122,13 +122,13 @@ object PgnDump {
         white = moves.headOption filter (".." !=) map { san =>
           chessPgn.Move(
             san = san,
-            secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
+            secondsLeft = clocks lift (index * 2 - clockOffset) map (_.centis)
           )
         },
         black = moves lift 1 map { san =>
           chessPgn.Move(
             san = san,
-            secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds)
+            secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.centis)
           )
         }
       )

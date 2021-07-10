@@ -22,7 +22,7 @@ import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
 import lila.game.BSONHandlers._
 import lila.game.BSONHandlers._
-import lila.game.{ Game, PgnDump, Source => S }
+import lila.game.{ Game, PgnDump, UnivPgn, Source => S }
 import lila.db.dsl._
 
 object Main extends App {
@@ -32,26 +32,11 @@ object Main extends App {
   val path =
     args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
 
-  val variant = Variant
-    .apply(args.lift(2).getOrElse("standard"))
-    .getOrElse(throw new RuntimeException("Invalid variant."))
-
-  val fromWithoutAdjustments =
+  val from =
     new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
-  val to = fromWithoutAdjustments plusMonths 1
+  val to = from plusMonths 1
 
   val hordeStartDate = new DateTime(2015, 4, 11, 10, 0)
-  val from =
-    if (
-      variant == Horde && hordeStartDate
-        .compareTo(fromWithoutAdjustments) > 0
-    ) hordeStartDate
-    else fromWithoutAdjustments
-
-  if (from.compareTo(to) > 0) {
-    System.out.println("Too early for Horde games. Exiting.");
-    System.exit(0);
-  }
 
   println(s"Export $from to $path")
 
@@ -65,19 +50,17 @@ object Main extends App {
   )
 
   lichess.DB.get foreach { case (db, close) =>
-    val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
-
     val query = BSONDocument(
-      "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
-      "ra" -> true,
-      "v"  -> BSONDocument("$exists" -> variant.exotic)
+      "ca" -> BSONDocument("$gte" -> from, "$lt" -> to)
+      // "_id" -> BSONDocument("$in" -> List("XvPAZYmX", "TBpSyJWy", "R3kAcqz2", "2rSVaqhQ"))
+      // "ra" -> BSONDocument("$ne" -> true)
     )
 
     val gameSource = db.gameColl
       .find(query)
       .sort(BSONDocument("ca" -> 1))
       // .cursor[Game.WithInitialFen]()
-      .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondary)
+      .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondaryPreferred)
       .documentSource(
         maxDocs = Int.MaxValue,
         err = Cursor.ContOnError((_, e) => println(e.getMessage))
@@ -86,25 +69,8 @@ object Main extends App {
     val tickSource =
       Source.tick(Reporter.freq, Reporter.freq, None)
 
-    def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
-      g -> chess.Replay
-        .boards(g.pgnMoves, None, g.variant)
-        .fold(
-          err => {
-            println(s"Replay error ${g.id} ${err.toString.take(60)}")
-            false
-          },
-          boards => {
-            if (boards.size == g.pgnMoves.size + 1) true
-            else {
-              println(
-                s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.pgnMoves.size}"
-              )
-              false
-            }
-          }
-        )
-    }
+    def filterGame(g: Game.WithInitialFen) =
+      g.game.variant != Horde || g.game.createdAt.isAfter(hordeStartDate)
 
     type Analysed = (Game.WithInitialFen, Option[Analysis])
     def withAnalysis(gs: Seq[Game.WithInitialFen]): Future[Seq[Analysed]] =
@@ -116,7 +82,7 @@ object Main extends App {
             )
           )
         )
-        .cursor[Analysis](readPreference = ReadPreference.secondary)
+        .cursor[Analysis](readPreference = ReadPreference.secondaryPreferred)
         .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]()) map { as =>
         gs.map { g =>
           g -> as.find(_.id == g.game.id)
@@ -129,41 +95,46 @@ object Main extends App {
         as zip users
       }
 
-    def toPgn(ws: Seq[WithUsers]): Future[Seq[Pgn]] =
-      Future(ws map { case ((g, analysis), users) =>
+//     type WithBerserks = (WithUsers, Berserks)
+//     def withUsers(as: Seq[WithUsers]): Future[Seq[WithBerserks]] =
+//       db.users(as.map(_._1.game)).map { users =>
+//         as zip users
+//       }
+
+    def toPgn(ws: Seq[WithUsers]): Future[Seq[String]] = Future {
+      ws map { case ((g, analysis), users) =>
         val pgn = PgnDump(g.game, users, g.fen)
-        lila.analyse.Annotator(
+        val annotated = lila.analyse.Annotator(
           pgn,
           analysis,
           g.game.winnerColor,
           g.game.status,
           g.game.clock
         )
-      })
+        UnivPgn.render(annotated, analysis)
+      }
+    }
 
-    def pgnSink: Sink[Seq[Pgn], Future[IOResult]] =
-      Flow[Seq[Pgn]]
+    def pgnSink: Sink[Seq[String], Future[IOResult]] =
+      Flow[Seq[String]]
         .map { pgns =>
           // merge analysis & eval comments
           // 1. e4 { [%eval 0.17] } { [%clk 0:00:30] }
           // 1. e4 { [%eval 0.17] [%clk 0:00:30] }
-          val str =
-            pgns.map(_.toString).mkString("\n\n").replace("] } { [", "] [")
+          val str = pgns.mkString("\n\n").replace("] } { [", "] [")
           ByteString(s"$str\n\n")
         }
         .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
-      .filter(_.game.variant == variant)
-      .map(g => Some(g))
+      .map(g => if (filterGame(g)) Some(g) else None)
       .merge(tickSource, eagerComplete = true)
       .via(Reporter)
-      // .mapAsyncUnordered(16)(checkLegality)
-      // .filter(_._2).map(_._1)
-      .grouped(100)
+      .grouped(200)
       .mapAsyncUnordered(16)(withAnalysis)
       .mapAsyncUnordered(16)(withUsers)
+      // .mapAsyncUnordered(16)(withBerserks)
       .mapAsyncUnordered(16)(toPgn)
       .runWith(pgnSink) andThen { case state =>
       close()
