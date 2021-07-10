@@ -5,6 +5,11 @@ dir=${2}
 file="lichess_db_univ_$month.pgn"
 bz2file="$file.bz2"
 
+if test -f "$dir/$bz2file"; then
+  echo "$dir/$bz2file already exists, skipping"
+  exit 0
+fi
+
 echo "Export univ games of $month to $file"
 
 sbt "runMain lichess.Main $month $dir/$file"
