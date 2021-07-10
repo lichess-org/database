@@ -63,7 +63,7 @@ object UnivPgn {
       })
       .mkString
     val clockString: Option[String] =
-      secondsLeft.map(centis => s"[%clk $centis]")
+      secondsLeft.map(centis => s"[%clkc $centis]")
     val commentsOrTime =
       if (comments.nonEmpty || secondsLeft.isDefined || opening.isDefined || result.isDefined)
         List(clockString, opening, result).flatten
