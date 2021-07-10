@@ -300,6 +300,9 @@
             <li>
               <a href="https://cshancock.netlify.app/post/2021-06-23-lichess-puzzles-by-eco/">Lichess puzzles, by ECO</a>
             </li>
+            <li>
+              <a href="https://github.com/brianch/offline-chess-puzzles">Offline puzzles</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
