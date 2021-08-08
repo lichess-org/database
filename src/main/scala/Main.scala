@@ -20,8 +20,7 @@ import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
-import lila.game.BSONHandlers._
-import lila.game.BSONHandlers._
+import lila.game.BSONHandlers
 import lila.game.{ Game, PgnDump, UnivPgn, Source => S }
 import lila.db.dsl._
 
@@ -56,18 +55,25 @@ object Main extends App {
       // "ra" -> BSONDocument("$ne" -> true)
     )
 
-    val gameSource = db.gameColl
+    val docSource = db.gameColl
       .find(query)
       .sort(BSONDocument("ca" -> 1))
       // .cursor[Game.WithInitialFen]()
-      .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondaryPreferred)
+      .cursor[Bdoc](readPreference = ReadPreference.secondaryPreferred)
       .documentSource(
         maxDocs = Int.MaxValue,
-        err = Cursor.ContOnError((_, e) => println(e.getMessage))
+        err = Cursor.ContOnError((_, e) => {
+          println("Cursor error")
+          println(e)
+          println(e.getMessage)
+        })
       )
 
     val tickSource =
       Source.tick(Reporter.freq, Reporter.freq, None)
+
+    def toGame(doc: BSONDocument): Option[Game.WithInitialFen] =
+      BSONHandlers.gameWithInitialFenBSONHandler.readDocument(doc).toOption
 
     def filterGame(g: Game.WithInitialFen) =
       g.game.variant != Horde || g.game.createdAt.isAfter(hordeStartDate)
@@ -126,16 +132,16 @@ object Main extends App {
         }
         .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
-    gameSource
-      .buffer(10000, OverflowStrategy.backpressure)
-      .map(g => if (filterGame(g)) Some(g) else None)
+    docSource
+      .map(doc => toGame(doc) filter filterGame)
+      .buffer(20000, OverflowStrategy.backpressure)
       .merge(tickSource, eagerComplete = true)
       .via(Reporter)
-      .grouped(200)
-      .mapAsyncUnordered(16)(withAnalysis)
-      .mapAsyncUnordered(16)(withUsers)
+      .grouped(300)
+      .mapAsyncUnordered(32)(withAnalysis)
+      .mapAsyncUnordered(32)(withUsers)
       // .mapAsyncUnordered(16)(withBerserks)
-      .mapAsyncUnordered(16)(toPgn)
+      .mapAsyncUnordered(32)(toPgn)
       .runWith(pgnSink) andThen { case state =>
       close()
       system.terminate()
