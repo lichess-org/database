@@ -4,15 +4,16 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300" rel="stylesheet">
+    <!-- <link href="/web/style.css" rel="stylesheet"></link> -->
     <style><!-- style --></style>
     <title>lichess.org open database</title>
   </head>
 
   <body>
     <div id="container">
-      <div class="inner">
+      <div class="big-header">
         <header>
-          <img src="https://lichess1.org/assets/logo/lichess-pad4.svg" alt="Lichess logo" />
+          <img src="https://lichess1.org/assets/logo/lichess-white.svg" alt="Lichess logo" />
           <h1>
             <a href="https://lichess.org">
               lichess.org
@@ -26,6 +27,8 @@
           Use them for research, commercial purpose, publication, anything you like.<br />
           You can download, modify and redistribute them, without asking for permission.<br />
         </p>
+      </div>
+      <div class="content">
         <section id="puzzles" class="panel">
           <nav>
             <a href="#standard_games">Standard Chess</a>
@@ -33,10 +36,10 @@
             <a href="#puzzles" class="on">Puzzles</a>
           </nav>
           <p>
-            <strong><!-- nbPuzzles --></strong> original chess puzzles, rated and tagged.
+            <strong><!-- nbPuzzles --></strong> chess puzzles, rated and tagged.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
-            <a href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
+            <a class="primary" href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
           </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
@@ -308,11 +311,10 @@
             Did you use this database? Please share your results! contact@lichess.org
           </p>
         </section>
-
-        <footer>
-          <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
-        </footer>
       </div>
+      <footer>
+        <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/ornicar/lichess-db">Source code</a>
+      </footer>
     </div>
   </body>
 </html>
