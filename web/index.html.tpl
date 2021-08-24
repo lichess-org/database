@@ -168,6 +168,9 @@
             <p>
               Variant games have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
             </p>
+            <p>
+              Expect uncompressed files to be 9 times larger.
+            </p>
           </section>
 
           <section>
