@@ -112,7 +112,7 @@ object Puzzle extends App {
     .flatMap(_.database(dbName))
     .flatMap {
       _.collection(collName)
-        .find(BSONDocument())
+        .find(BSONDocument("issue" -> BSONDocument("$exists" -> false)))
         .sort(BSONDocument("_id" -> 1))
         .cursor[Bdoc]()
         // .cursor[Bdoc](readPreference = ReadPreference.secondary)
