@@ -309,6 +309,9 @@
             <li>
               <a href="https://github.com/brianch/offline-chess-puzzles">Offline puzzles</a>
             </li>
+            <li>
+              <a href="https://www.reddit.com/r/chess/comments/pn2f45/whats_the_difficulty_of_the_tactics_that_people/">What's the difficulty of the tactics that people actually spot during their games?</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
