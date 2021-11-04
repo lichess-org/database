@@ -249,10 +249,10 @@
               <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
             </li>
             <li>
-              <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
+              <a href="https://database.nikonoel.fr/">Elite database (2400+)</a>
             </li>
             <li>
-              <a href="https://database.nikonoel.fr/">Elite database (2400+)</a>
+              <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
             </li>
             <li>
               <a href="https://www.chessroots.com">ChessRoots visual opening explorer</a>
@@ -315,6 +315,9 @@
             </li>
             <li>
               <a href="https://www.reddit.com/r/chess/comments/pn2f45/whats_the_difficulty_of_the_tactics_that_people/">What's the difficulty of the tactics that people actually spot during their games?</a>
+            </li>
+            <li>
+              <a href="https://chessmadra.com/">Puzzle visualization trainer</a>
             </li>
           </ul>
           <p>
