@@ -102,7 +102,7 @@ object PgnDump {
           }
         )
       ),
-      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.getOrElse(Forsyth.initial)))
+      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.getOrElse(game.variant.initialFen)))
       else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
