@@ -322,6 +322,9 @@
             <li>
               <a href="https://tusharmurali.github.io/chess-memory/">Puzzle memory trainer</a>
             </li>
+            <li>
+              <a href="https://www.chesspecker.com">Chesspecker - puzzle repetition training</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
