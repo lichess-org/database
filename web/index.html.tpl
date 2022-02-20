@@ -172,9 +172,20 @@
             <p>
               Variant games have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
             </p>
+          </section>
+
+          <section>
+            <h3 id="notes">Decompressing .bz2</h3>
             <p>
               Expect uncompressed files to be 9 times larger.
             </p>
+            <p>
+              bz2 is partially decompressable, so you can start downloading and then cancel at any point. You will be able to decompress the partial download if you only want a smaller set of game data.
+            </p>
+            <p>
+              You can also decompress the data on-the-fly without having to create large temporary files. This example shows how you can pipe the contents to a Python script for analyzing using <code>bzcat</code>.
+            </p>
+            <pre>$ bzcat lichess_db.pgn.bz2 | python script.py</pre>
           </section>
 
           <section>
