@@ -175,7 +175,7 @@
           </section>
 
           <section>
-            <h3 id="bz2">Decompressing .bz2</h3>
+            <h3 id="bz2">Decompress .bz2</h3>
             <p>
               Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
               Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
