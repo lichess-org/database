@@ -177,6 +177,10 @@
           <section>
             <h3 id="bz2">Decompressing .bz2</h3>
             <p>
+              Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
+              Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
+            </p>
+            <p>
               Expect uncompressed files to be 9 times larger.
             </p>
             <p>
@@ -232,14 +236,6 @@
                 Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
               </li>
             </ul>
-          </section>
-
-          <section>
-            <h3 id="extract" >Extract bz2 files</h3>
-            <p>
-              Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
-              Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
-            </p>
           </section>
 
           <section>
