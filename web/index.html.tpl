@@ -193,6 +193,16 @@
           </section>
 
           <section>
+            <h3 id="open-pgn-files" >Open PGN files</h3>
+            <p>
+              Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
+              Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
+              or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
+              or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
+            </p>
+          </section>
+
+          <section>
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
@@ -236,16 +246,6 @@
                 Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
               </li>
             </ul>
-          </section>
-
-          <section>
-            <h3 id="open-pgn-files" >Open PGN files</h3>
-            <p>
-              Traditional PGN databases, like SCID or ChessBase, fail to open large PGN files.
-              Until they fix it, you can <a href="https://github.com/cyanfish/pgnsplit">split the PGN files</a>,
-              or use programmatic APIs such as <a href="https://github.com/niklasf/python-chess">python-chess</a>
-              or <a href="https://github.com/mcostalba/scoutfish">Scoutfish</a>.
-            </p>
           </section>
         </div>
 
