@@ -325,6 +325,9 @@
             <li>
               <a href="https://www.chesspecker.com">Chesspecker - puzzle repetition training</a>
             </li>
+            <li>
+              <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do Variants Help You Play Better Chess?</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
