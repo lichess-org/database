@@ -175,7 +175,7 @@
           </section>
 
           <section>
-            <h3 id="notes">Decompressing .bz2</h3>
+            <h3 id="bz2">Decompressing .bz2</h3>
             <p>
               Expect uncompressed files to be 9 times larger.
             </p>
