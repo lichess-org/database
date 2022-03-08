@@ -335,6 +335,9 @@
             <li>
               <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do Variants Help You Play Better Chess?</a>
             </li>
+            <li>
+              <a href="https://github.com/ornicar/lichess-db/blob/master/web/chess-social-networks-paper.pdf">Online Chess Social Networks</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
