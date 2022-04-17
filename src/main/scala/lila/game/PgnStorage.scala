@@ -1,14 +1,14 @@
 package lila.game
 
-import chess._
+import chess.*
 import chess.format.Uci
 import lila.db.ByteArray
 
 sealed trait PgnStorage
 
-private object PgnStorage {
+private object PgnStorage:
 
-  case object OldBin extends PgnStorage {
+  case object OldBin extends PgnStorage:
 
     def encode(pgnMoves: PgnMoves) =
       ByteArray {
@@ -17,18 +17,17 @@ private object PgnStorage {
 
     def decode(bytes: ByteArray, plies: Int): PgnMoves =
       format.pgn.Binary.readMoves(bytes.value.toList, plies).get.toVector
-  }
 
-  case object Huffman extends PgnStorage {
+  case object Huffman extends PgnStorage:
 
-    import org.lichess.compression.game.{ Encoder, Piece => JavaPiece, Role => JavaRole }
-    import scala.jdk.CollectionConverters._
+    import org.lichess.compression.game.{ Encoder, Piece as JavaPiece, Role as JavaRole }
+    import scala.jdk.CollectionConverters.*
 
     def encode(pgnMoves: PgnMoves) =
       ByteArray {
         Encoder.encode(pgnMoves.toArray)
       }
-    def decode(bytes: ByteArray, plies: Int): Decoded = {
+    def decode(bytes: ByteArray, plies: Int): Decoded =
       val decoded      = Encoder.decode(bytes.value, plies)
       val unmovedRooks = decoded.unmovedRooks.asScala.view.flatMap(chessPos).to(Set)
       Decoded(
@@ -47,21 +46,18 @@ private object PgnStorage {
         ),
         halfMoveClock = decoded.halfMoveClock
       )
-    }
 
     private def chessPos(sq: Integer): Option[Pos] = Pos(sq)
     private def chessRole(role: JavaRole): Role =
-      role match {
+      role match
         case JavaRole.PAWN   => Pawn
         case JavaRole.KNIGHT => Knight
         case JavaRole.BISHOP => Bishop
         case JavaRole.ROOK   => Rook
         case JavaRole.QUEEN  => Queen
         case JavaRole.KING   => King
-      }
     private def chessPiece(piece: JavaPiece): Piece =
       Piece(Color.fromWhite(piece.white), chessRole(piece.role))
-  }
 
   case class Decoded(
       pgnMoves: PgnMoves,
@@ -72,4 +68,3 @@ private object PgnStorage {
       castles: Castles,  // irrelevant after game ends
       halfMoveClock: Int // irrelevant after game ends
   )
-}

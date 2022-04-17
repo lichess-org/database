@@ -6,21 +6,31 @@ import chess.{
   CheckCount,
   Clock,
   Color,
-  Game => ChessGame,
-  History => ChessHistory,
+  Game as ChessGame,
+  History as ChessHistory,
   Mode,
   Status,
   UnmovedRooks,
   White
 }
 import lila.db.BSON
-import lila.db.dsl._
+import lila.db.dsl.*
 import org.joda.time.DateTime
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 import scala.util.Try
 
-object BSONHandlers {
-  import lila.db.ByteArray.ByteArrayBSONHandler
+object BSONHandlers:
+
+  private[game] given BSONHandler[CastleLastMove] = new BSONHandler[CastleLastMove] {
+    def readTry(bson: BSONValue) =
+      bson match
+        case bin: BSONBinary => lila.db.ByteArray.bsonHandler readTry bin map BinaryFormat.castleLastMove.read
+        case b               => lila.db.BSON.handlerBadType(b)
+    def writeTry(clmt: CastleLastMove) =
+      lila.db.ByteArray.bsonHandler writeTry {
+        BinaryFormat.castleLastMove write clmt
+      }
+  }
 
   given BSONHandler[Status] = tryHandler[Status](
     { case BSONInteger(v) =>
@@ -30,7 +40,7 @@ object BSONHandlers {
     x => BSONInteger(x.id)
   )
 
-  private[game] given BSONHandler[UnmovedRooks] = tryHandler[UnmovedRooks](
+  given BSONHandler[UnmovedRooks] = tryHandler[UnmovedRooks](
     { case bin: BSONBinary => ByteArrayBSONHandler.readTry(bin) map BinaryFormat.unmovedRooks.read },
     x => ByteArrayBSONHandler.writeTry(BinaryFormat.unmovedRooks write x).get
   )
@@ -56,7 +66,7 @@ object BSONHandlers {
       )
     }
 
-  implicit val gameBSONHandler: BSON[Game] = new BSON[Game] {
+  given BSON[Game] with
 
     import Game.{ BSONFields => F }
     import Player.playerBSONHandler
@@ -174,18 +184,14 @@ object BSONHandlers {
         )
       )
     }
-  }
 
   import chess.format.FEN
-  implicit val gameWithInitialFenBSONHandler: BSON[Game.WithInitialFen] =
-    new BSON[Game.WithInitialFen] {
-      def reads(r: BSON.Reader): Game.WithInitialFen = {
-        Game.WithInitialFen(
-          gameBSONHandler.reads(r),
-          (r strO Game.BSONFields.initialFen).map(FEN.apply)
-        )
-      }
-    }
+  given BSON[Game.WithInitialFen] with
+    def reads(r: BSON.Reader): Game.WithInitialFen =
+      Game.WithInitialFen(
+        gameBSONHandler.reads(r),
+        (r strO Game.BSONFields.initialFen).map(FEN.apply)
+      )
 
   private def clockHistory(
       color: Color,
@@ -214,4 +220,3 @@ object BSONHandlers {
           case b => lila.db.BSON.handlerBadType(b)
         }
     }
-}

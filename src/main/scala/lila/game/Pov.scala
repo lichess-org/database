@@ -2,7 +2,7 @@ package lila.game
 
 import chess.Color
 
-case class Pov(game: Game, color: Color) {
+case class Pov(game: Game, color: Color):
 
   def player = game player color
 
@@ -30,9 +30,8 @@ case class Pov(game: Game, color: Color) {
   def loss = game lostBy color
 
   override def toString = ref.toString
-}
 
-object Pov {
+object Pov:
 
   def apply(game: Game): List[Pov] = game.players.map { apply(game, _) }
 
@@ -52,18 +51,15 @@ object Pov {
 
   def opponentOfUserId(game: Game, userId: String): Option[Player] =
     ofUserId(game, userId) map (_.opponent)
-}
 
-case class PovRef(gameId: String, color: Color) {
+case class PovRef(gameId: String, color: Color):
 
   def unary_! = PovRef(gameId, !color)
 
   override def toString = s"$gameId/${color.name}"
-}
 
 case class PlayerRef(gameId: String, playerId: String)
 
-object PlayerRef {
+object PlayerRef:
 
   def apply(fullId: String): PlayerRef = PlayerRef(Game takeGameId fullId, Game takePlayerId fullId)
-}

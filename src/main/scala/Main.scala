@@ -20,7 +20,7 @@ import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
-import lila.game.BSONHandlers._
+import lila.game.BSONHandlers.given
 import lila.game.BSONHandlers._
 import lila.game.{ Game, PgnDump, Source => S }
 import lila.db.dsl._

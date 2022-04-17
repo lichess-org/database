@@ -10,12 +10,11 @@ sealed abstract class PerfType(
     val name: String,
     val title: String,
     val iconChar: Char
-) {
+):
 
   def iconString = iconChar.toString
-}
 
-object PerfType {
+object PerfType:
 
   case object UltraBullet
       extends PerfType(
@@ -243,4 +242,3 @@ object PerfType {
     List(Bullet, Blitz, Rapid, Classical, Correspondence)
 
   def isGame(pt: PerfType) = !nonGame.contains(pt)
-}

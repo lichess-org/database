@@ -15,7 +15,7 @@ case class Player(
     provisional: Boolean = false,
     berserk: Boolean = false,
     name: Option[String] = None
-) {
+):
 
   def playerUser = userId flatMap { uid =>
     rating map { PlayerUser(uid, _, ratingDiff) }
@@ -31,19 +31,17 @@ case class Player(
 
   def goBerserk = copy(berserk = true)
 
-  def before(other: Player) = ((rating, id), (other.rating, other.id)) match {
+  def before(other: Player) = ((rating, id), (other.rating, other.id)) match
     case ((Some(a), _), (Some(b), _)) if a != b => a > b
     case ((Some(_), _), (None, _))              => true
     case ((None, _), (Some(_), _))              => false
     case ((_, a), (_, b))                       => a < b
-  }
 
   def ratingAfter = rating map (_ + ratingDiff.getOrElse(0))
-}
 
-object Player {
+object Player:
 
-  object BSONFields {
+  object BSONFields:
 
     val aiLevel           = "ai"
     val isOfferingDraw    = "od"
@@ -55,9 +53,8 @@ object Player {
     val provisional       = "p"
     val berserk           = "be"
     val name              = "na"
-  }
 
-  import reactivemongo.api.bson._
+  import reactivemongo.api.bson.*
   import lila.db.BSON
 
   type Id      = String
@@ -67,13 +64,12 @@ object Player {
 
   private def safeRange(range: Range, name: String)(userId: Option[String])(v: Int): Option[Int] =
     if (range contains v) Some(v)
-    else {
+    else
       println(s"Player $userId $name=$v (range: ${range.min}-${range.max})")
       None
-    }
 
-  private val ratingRange     = safeRange(0 to 4000, "rating") _
-  private val ratingDiffRange = safeRange(-1000 to 1000, "ratingDiff") _
+  private val ratingRange     = safeRange(0 to 4000, "rating")
+  private val ratingDiffRange = safeRange(-1000 to 1000, "ratingDiff")
 
   given BSON[Builder] with
     import BSONFields.*
@@ -94,4 +90,3 @@ object Player {
                 berserk = r boolD berserk,
                 name = r strO name
               )
-}

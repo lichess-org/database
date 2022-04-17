@@ -3,11 +3,10 @@ package lila.db
 import alleycats.Zero
 import dsl.*
 import org.joda.time.DateTime
-import ornicar.scalalib.Zero
 import reactivemongo.api.bson.*
 import scala.util.Try
 
-abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T] {
+abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T]:
 
   val logMalformed = true
 
@@ -16,9 +15,8 @@ abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with B
   def write(obj: T): Bdoc = ???
 
   def writeTry(obj: T): Try[Bdoc] = ???
-}
 
-abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
+abstract class BSONReadOnly[T] extends BSONDocumentReader[T]:
 
   import BSON.*
 
@@ -30,11 +28,10 @@ abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
     }
 
   def read(doc: Bdoc) = readDocument(doc).get
-}
 
-object BSON extends Handlers {
+object BSON extends Handlers:
 
-  final class Reader(val doc: Bdoc) {
+  final class Reader(val doc: Bdoc):
 
     def get[A: BSONReader](k: String): A =
       doc.getAsTry[A](k).get
@@ -47,8 +44,8 @@ object BSON extends Handlers {
     def getsD[A: BSONReader](k: String) =
       doc.getAsOpt[List[A]](k) getOrElse Nil
 
-    def str(k: String)                         = get[String](k)(BSONStringHandler)
-    def strO(k: String)                        = getO[String](k)(BSONStringHandler)
+    def str(k: String)                         = get[String](k)(using BSONStringHandler)
+    def strO(k: String)                        = getO[String](k)(using BSONStringHandler)
     def strD(k: String)                        = strO(k) getOrElse ""
     def int(k: String)                         = get[Int](k)
     def intO(k: String)                        = getO[Int](k)
@@ -71,12 +68,11 @@ object BSON extends Handlers {
     def intsD(k: String)                       = getO[List[Int]](k) getOrElse Nil
     def strsD(k: String)                       = getO[List[String]](k) getOrElse Nil
 
-    def contains = doc.contains _
+    def contains = doc.contains
 
     def debug = BSON debug doc
-  }
 
-  def debug(v: BSONValue): String = v match {
+  def debug(v: BSONValue): String = v match
     case d: Bdoc        => debugDoc(d)
     case d: Barr        => debugArr(d)
     case BSONString(x)  => x
@@ -84,7 +80,6 @@ object BSON extends Handlers {
     case BSONDouble(x)  => x.toString
     case BSONBoolean(x) => x.toString
     case v              => v.toString
-  }
   def debugArr(doc: Barr): String = doc.values.toList.map(debug).mkString("[", ", ", "]")
   def debugDoc(doc: Bdoc): String =
     (doc.elements.toList map {
@@ -93,4 +88,3 @@ object BSON extends Handlers {
     }).mkString("{", ", ", "}")
 
   def hashDoc(doc: Bdoc): String = debugDoc(doc).replace(" ", "")
-}

@@ -4,7 +4,7 @@ package analyse
 import chess.format.pgn.{ Glyphs, Move, Pgn, Tag, Turn }
 import chess.{ Clock, Color, Status }
 
-object Annotator {
+object Annotator:
 
   def apply(
       p: Pgn,
@@ -52,4 +52,3 @@ object Annotator {
       },
       turn plyOf advice.color
     )
-}

@@ -1,19 +1,19 @@
 package lila.db
 
 import org.joda.time.DateTime
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 import scala.util.{ Failure, Success, Try }
 import reactivemongo.api.bson.exceptions.TypeDoesNotMatchException
 
-trait Handlers {
+trait Handlers:
 
   given BSONHandler[DateTime] = quickHandler[DateTime](
-    { case v: BSONDateTime => new DateTime(v.value) },
+    { case v: BSONDateTime => DateTime(v.value) },
     v => BSONDateTime(v.getMillis)
   )
 
   def quickHandler[T](read: PartialFunction[BSONValue, T], write: T => BSONValue): BSONHandler[T] =
-    new BSONHandler[T] {
+    BSONHandler[T] {
       def readTry(bson: BSONValue) =
         read
           .andThen(Success(_))
@@ -25,7 +25,7 @@ trait Handlers {
     }
 
   def tryHandler[T](read: PartialFunction[BSONValue, Try[T]], write: T => BSONValue): BSONHandler[T] =
-    new BSONHandler[T] {
+    BSONHandler[T] {
       def readTry(bson: BSONValue) =
         read.applyOrElse(
           bson,
@@ -38,16 +38,15 @@ trait Handlers {
     Failure(TypeDoesNotMatchException("BSONValue", b.getClass.getSimpleName))
 
   def handlerBadValue[T](msg: String): Try[T] =
-    Failure(new IllegalArgumentException(msg))
+    Failure(IllegalArgumentException(msg))
 
   def stringMapHandler[V](implicit
       reader: BSONReader[Map[String, V]],
       writer: BSONWriter[Map[String, V]]
   ) =
-    new BSONHandler[Map[String, V]] {
+    BSONHandler[Map[String, V]] {
       def readTry(bson: BSONValue)    = reader readTry bson
       def writeTry(v: Map[String, V]) = writer writeTry v
     }
 
   given BSONHandler[chess.Color] = BSONBooleanHandler.as[chess.Color](chess.Color.fromWhite, _.white)
-}

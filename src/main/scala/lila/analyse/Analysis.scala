@@ -11,7 +11,7 @@ case class Analysis(
     uid: Option[String], // requester lichess ID
     by: Option[String],  // analyser lichess ID
     date: DateTime
-) {
+):
 
   type InfoAdvices = List[(Info, Option[Advice])]
 
@@ -45,17 +45,16 @@ case class Analysis(
 
   def nbEmptyInfos       = infos.count(_.isEmpty)
   def emptyRatio: Double = nbEmptyInfos.toDouble / infos.size
-}
 
-object Analysis {
+object Analysis:
 
   import lila.db.BSON
-  import reactivemongo.api.bson._
+  import reactivemongo.api.bson.*
 
   type ID = String
 
   given BSON[Analysis] = new BSON[Analysis] {
-    def reads(r: BSON.Reader) = {
+    def reads(r: BSON.Reader) =
       val startPly = r intD "ply"
       val raw      = r str "data"
       Analysis(
@@ -68,6 +67,4 @@ object Analysis {
         by = r strO "by",
         date = r date "date"
       )
-    }
   }
-}

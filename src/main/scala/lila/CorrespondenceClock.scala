@@ -7,7 +7,7 @@ case class CorrespondenceClock(
     increment: Int,
     whiteTime: Float,
     blackTime: Float
-) {
+):
 
   def daysPerTurn = increment / 60 / 60 / 24
 
@@ -21,4 +21,3 @@ case class CorrespondenceClock(
   def estimateTotalTime = increment * 40 / 2
 
   def incrementHours = increment / 60 / 60
-}

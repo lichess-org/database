@@ -1,15 +1,15 @@
 package lichess
 
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.stream.stage._
-import scala.concurrent.duration._
+import akka.stream.*
+import akka.stream.scaladsl.*
+import akka.stream.stage.*
+import scala.concurrent.duration.*
 
 import lila.game.Game
 import org.joda.time.DateTime
-import org.joda.time.format._
+import org.joda.time.format.*
 
-object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.WithInitialFen]] {
+object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.WithInitialFen]]:
 
   val freq = 2.seconds
 
@@ -61,4 +61,3 @@ object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.W
     )
 
   }
-}

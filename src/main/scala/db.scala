@@ -13,7 +13,7 @@ final class DB(
     val gameColl: BSONCollection,
     val analysisColl: BSONCollection,
     val userColl: BSONCollection
-) {
+):
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
 
@@ -45,9 +45,8 @@ final class DB(
           Users(of(g.whitePlayer), of(g.blackPlayer))
         }
       }
-}
 
-object DB {
+object DB:
 
   private val config = ConfigFactory.load()
 
@@ -74,4 +73,3 @@ object DB {
         })
       )
     }
-}

@@ -8,12 +8,10 @@ private[game] case class Metadata(
     tournamentId: Option[String],
     simulId: Option[String],
     analysed: Boolean
-) {
+):
 
   def isEmpty = this == Metadata.empty
-}
 
-private[game] object Metadata {
+private[game] object Metadata:
 
   val empty = Metadata(None, None, None, false)
-}

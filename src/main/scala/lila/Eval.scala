@@ -6,18 +6,17 @@ case class Eval(
     cp: Option[Eval.Cp],
     mate: Option[Eval.Mate],
     best: Option[Uci.Move]
-) {
+):
 
   def isEmpty = cp.isEmpty && mate.isEmpty
 
   def dropBest = copy(best = None)
 
   def invert = copy(cp = cp.map(_.invert), mate = mate.map(_.invert))
-}
 
-object Eval {
+object Eval:
 
-  case class Score(value: Either[Cp, Mate]) extends AnyVal {
+  case class Score(value: Either[Cp, Mate]) extends AnyVal:
 
     def cp: Option[Cp]     = value.left.toOption
     def mate: Option[Mate] = value.right.toOption
@@ -27,17 +26,15 @@ object Eval {
 
     def invert                  = copy(value = value.left.map(_.invert).right.map(_.invert))
     def invertIf(cond: Boolean) = if (cond) invert else this
-  }
 
-  object Score {
+  object Score:
 
     def cp(x: Cp): Score     = Score(Left(x))
     def mate(y: Mate): Score = Score(Right(y))
 
     val checkmate: Either[Cp, Mate] = Right(Mate(0))
-  }
 
-  case class Cp(value: Int) extends AnyVal with Ordered[Cp] {
+  case class Cp(value: Int) extends AnyVal with Ordered[Cp]:
 
     def centipawns = value
 
@@ -55,16 +52,14 @@ object Eval {
     def compare(other: Cp) = value compare other.value
 
     def signum: Int = Math.signum(value).toInt
-  }
 
-  object Cp {
+  object Cp:
 
     val CEILING = 1000
 
     val initial = Cp(15)
-  }
 
-  case class Mate(value: Int) extends AnyVal with Ordered[Mate] {
+  case class Mate(value: Int) extends AnyVal with Ordered[Mate]:
 
     def moves = value
 
@@ -77,9 +72,7 @@ object Eval {
 
     def positive = value > 0
     def negative = value < 0
-  }
 
   val initial = Eval(Some(Cp.initial), None, None)
 
   val empty = Eval(None, None, None)
-}

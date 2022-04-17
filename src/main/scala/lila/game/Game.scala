@@ -1,6 +1,6 @@
 package lila.game
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 import scala.language.postfixOps
 
 import chess.Color.{ Black, White }
@@ -14,8 +14,8 @@ import chess.{
   CheckCount,
   Clock,
   Color,
-  Game => ChessGame,
-  History => ChessHistory,
+  Game as ChessGame,
+  History as ChessHistory,
   Mode,
   MoveOrDrop,
   Pos,
@@ -41,7 +41,7 @@ case class Game(
     createdAt: DateTime = DateTime.now,
     movedAt: DateTime = DateTime.now,
     metadata: Metadata
-) {
+):
   def situation = chess.situation
   def board     = chess.situation.board
   def history   = chess.situation.board.history
@@ -52,10 +52,9 @@ case class Game(
 
   val players = List(whitePlayer, blackPlayer)
 
-  def player(color: Color): Player = color match {
+  def player(color: Color): Player = color match
     case White => whitePlayer
     case Black => blackPlayer
-  }
 
   def player(playerId: String): Option[Player] =
     players find (_.id == playerId)
@@ -101,10 +100,9 @@ case class Game(
 
   def hasChat = !isTournament && !isSimul && nonAi
 
-  def everyOther[A](l: List[A]): List[A] = l match {
+  def everyOther[A](l: List[A]): List[A] = l match
     case a :: b :: tail => a :: everyOther(tail)
     case _              => l
-  }
 
   def moveTimes(color: Color): Option[List[Centis]] = {
     for {
@@ -149,12 +147,11 @@ case class Game(
   def bothClockStates: Option[Vector[Centis]] =
     clockHistory.map(_ bothClockStates startColor)
 
-  def pgnMoves(color: Color): PgnMoves = {
+  def pgnMoves(color: Color): PgnMoves =
     val pivot = if (color == startColor) 0 else 1
     pgnMoves.zipWithIndex.collect {
       case (e, i) if (i % 2) == pivot => e
     }
-  }
 
   def lastMoveKeys: Option[String] = history.lastMove map {
     case Uci.Drop(target, _) => s"$target$target"
@@ -283,11 +280,10 @@ case class Game(
 
   def userRatings = playerMaps(_.rating)
 
-  def averageUsersRating = userRatings match {
+  def averageUsersRating = userRatings match
     case a :: b :: Nil => Some((a + b) / 2)
     case a :: Nil      => Some((a + 1500) / 2)
     case _             => None
-  }
 
   def source = metadata.source
 
@@ -318,9 +314,8 @@ case class Game(
 
   def perfKey  = PerfPicker.key(this)
   def perfType = lila.rating.PerfType(perfKey)
-}
 
-object Game {
+object Game:
 
   type ID = String
 
@@ -386,7 +381,7 @@ object Game {
 
   private[game] val emptyCheckCount = CheckCount(0, 0)
 
-  object BSONFields {
+  object BSONFields:
 
     val id                = "_id"
     val whitePlayer       = "p0"
@@ -426,35 +421,17 @@ object Game {
     val winnerId          = "wid"
     val initialFen        = "if"
     val checkAt           = "ck"
-  }
-}
 
 case class CastleLastMove(castles: Castles, lastMove: Option[Uci])
 
-object CastleLastMove {
+object CastleLastMove:
 
   def init = CastleLastMove(Castles.all, None)
-
-  import reactivemongo.api.bson._
-  import lila.db.ByteArray.ByteArrayBSONHandler
-
-  private[game] given BSONHandler[CastleLastMove] = new BSONHandler[CastleLastMove] {
-    def readTry(bson: BSONValue) =
-      bson match {
-        case bin: BSONBinary => ByteArrayBSONHandler readTry bin map BinaryFormat.castleLastMove.read
-        case b               => lila.db.BSON.handlerBadType(b)
-      }
-    def writeTry(clmt: CastleLastMove) =
-      ByteArrayBSONHandler writeTry {
-        BinaryFormat.castleLastMove write clmt
-      }
-  }
-}
 
 case class ClockHistory(
     white: Vector[Centis] = Vector.empty,
     black: Vector[Centis] = Vector.empty
-) {
+):
 
   def update(color: Color, f: Vector[Centis] => Vector[Centis]): ClockHistory =
     color.fold(copy(white = f(white)), copy(black = f(black)))
@@ -476,4 +453,3 @@ case class ClockHistory(
       firstMoveBy.fold(white, black),
       firstMoveBy.fold(black, white)
     )
-}
