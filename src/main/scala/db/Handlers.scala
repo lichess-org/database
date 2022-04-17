@@ -7,7 +7,7 @@ import reactivemongo.api.bson.exceptions.TypeDoesNotMatchException
 
 trait Handlers {
 
-  implicit val BSONJodaDateTimeHandler = quickHandler[DateTime](
+  given BSONHandler[DateTime] = quickHandler[DateTime](
     { case v: BSONDateTime => new DateTime(v.value) },
     v => BSONDateTime(v.getMillis)
   )
@@ -49,5 +49,5 @@ trait Handlers {
       def writeTry(v: Map[String, V]) = writer writeTry v
     }
 
-  implicit val colorBoolHandler = BSONBooleanHandler.as[chess.Color](chess.Color.fromWhite, _.white)
+  given BSONHandler[chess.Color] = BSONBooleanHandler.as[chess.Color](chess.Color.fromWhite, _.white)
 }

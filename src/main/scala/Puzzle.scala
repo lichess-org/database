@@ -46,8 +46,8 @@ object Puzzle extends App {
   val uri    = config.getString("db.puzzle.uri")
   val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer(
+  given system: ActorSystem = ActorSystem()
+  given materializer: Materializer = ActorMaterializer(
     ActorMaterializerSettings(system)
       .withInputBuffer(
         initialSize = 32,

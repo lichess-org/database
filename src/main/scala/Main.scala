@@ -55,8 +55,8 @@ object Main extends App {
 
   println(s"Export $from to $path")
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer(
+  given system: ActorSystem = ActorSystem()
+  given materializer: Materializer = ActorMaterializer(
     ActorMaterializerSettings(system)
       .withInputBuffer(
         initialSize = 32,

@@ -39,7 +39,7 @@ object BSON extends Handlers {
       doc.getAsTry[A](k).get
     def getO[A: BSONReader](k: String): Option[A] =
       doc.getAsOpt[A](k)
-    def getD[A](k: String)(implicit zero: Zero[A], reader: BSONReader[A]): A =
+    def getD[A](k: String)(using zero: Zero[A], reader: BSONReader[A]): A =
       doc.getAsOpt[A](k) getOrElse zero.zero
     def getD[A: BSONReader](k: String, default: => A): A =
       doc.getAsOpt[A](k) getOrElse default

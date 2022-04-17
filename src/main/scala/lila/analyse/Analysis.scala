@@ -54,7 +54,7 @@ object Analysis {
 
   type ID = String
 
-  implicit val analysisBSONHandler = new BSON[Analysis] {
+  given BSON[Analysis] = new BSON[Analysis] {
     def reads(r: BSON.Reader) = {
       val startPly = r intD "ply"
       val raw      = r str "data"

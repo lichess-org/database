@@ -2,16 +2,16 @@ package lila.game
 
 import chess.variant.{ Crazyhouse, Variant }
 import chess.{
-  CheckCount,
-  Color,
-  Clock,
-  White,
   Black,
-  Status,
-  Mode,
-  UnmovedRooks,
+  CheckCount,
+  Clock,
+  Color,
+  Game => ChessGame,
   History => ChessHistory,
-  Game => ChessGame
+  Mode,
+  Status,
+  UnmovedRooks,
+  White
 }
 import lila.db.BSON
 import lila.db.dsl._
@@ -22,7 +22,7 @@ import scala.util.Try
 object BSONHandlers {
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  implicit val StatusBSONHandler = tryHandler[Status](
+  given BSONHandler[States] = tryHandler[Status](
     { case BSONInteger(v) =>
       Status(v)
         .fold[Try[Status]](scala.util.Failure(new Exception(s"No such status: $v")))(scala.util.Success.apply)
@@ -30,12 +30,12 @@ object BSONHandlers {
     x => BSONInteger(x.id)
   )
 
-  implicit private[game] val unmovedRooksHandler = tryHandler[UnmovedRooks](
+  private[game] given BSONHandler[UnmovedRooks] = tryHandler[UnmovedRooks](
     { case bin: BSONBinary => ByteArrayBSONHandler.readTry(bin) map BinaryFormat.unmovedRooks.read },
     x => ByteArrayBSONHandler.writeTry(BinaryFormat.unmovedRooks write x).get
   )
 
-  implicit private[game] val crazyhouseDataBSONHandler =
+  private[game] given BSONHandler[Crazyhouse.Data] =
     new BSON[Crazyhouse.Data] {
 
       import Crazyhouse._

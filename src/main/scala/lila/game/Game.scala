@@ -8,20 +8,20 @@ import chess.format.{ FEN, Uci }
 import chess.opening.{ FullOpening, FullOpeningDB }
 import chess.variant.{ Crazyhouse, Variant }
 import chess.{
-  History => ChessHistory,
-  CheckCount,
-  Castles,
   Board,
+  Castles,
+  Centis,
+  CheckCount,
+  Clock,
+  Color,
+  Game => ChessGame,
+  History => ChessHistory,
+  Mode,
   MoveOrDrop,
   Pos,
-  Game => ChessGame,
-  Clock,
-  Status,
-  Color,
-  Mode,
   PositionHash,
-  UnmovedRooks,
-  Centis
+  Status,
+  UnmovedRooks
 }
 import org.joda.time.DateTime
 
@@ -438,7 +438,7 @@ object CastleLastMove {
   import reactivemongo.api.bson._
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  implicit private[game] val castleLastMoveBSONHandler = new BSONHandler[CastleLastMove] {
+  private[game] given BSONHandler[CastleLastMove] = new BSONHandler[CastleLastMove] {
     def readTry(bson: BSONValue) =
       bson match {
         case bin: BSONBinary => ByteArrayBSONHandler readTry bin map BinaryFormat.castleLastMove.read

@@ -25,7 +25,7 @@ object ByteArray {
   def fromHexStr(hexStr: String): Try[ByteArray] =
     Try(ByteArray(hex str2Hex hexStr))
 
-  implicit val ByteArrayBSONHandler = dsl.quickHandler[ByteArray](
+  given BSONHandler[ByteArray] = dsl.quickHandler[ByteArray](
     { case v: BSONBinary => ByteArray(v.byteArray) },
     v => BSONBinary(v.value, subtype)
   )
