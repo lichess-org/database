@@ -22,7 +22,7 @@ import scala.util.Try
 object BSONHandlers {
   import lila.db.ByteArray.ByteArrayBSONHandler
 
-  given BSONHandler[States] = tryHandler[Status](
+  given BSONHandler[Status] = tryHandler[Status](
     { case BSONInteger(v) =>
       Status(v)
         .fold[Try[Status]](scala.util.Failure(new Exception(s"No such status: $v")))(scala.util.Success.apply)

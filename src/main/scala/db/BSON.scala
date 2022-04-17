@@ -1,16 +1,17 @@
 package lila.db
 
-import dsl._
+import alleycats.Zero
+import dsl.*
 import org.joda.time.DateTime
 import ornicar.scalalib.Zero
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 import scala.util.Try
 
 abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T] {
 
   val logMalformed = true
 
-  import BSON._
+  import BSON.*
 
   def write(obj: T): Bdoc = ???
 
@@ -19,7 +20,7 @@ abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with B
 
 abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
 
-  import BSON._
+  import BSON.*
 
   def reads(reader: Reader): T
 

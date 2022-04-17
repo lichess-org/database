@@ -1,9 +1,9 @@
 package lichess
 
 import com.typesafe.config.ConfigFactory
-import org.joda.time._
-import reactivemongo.api._
-import reactivemongo.api.bson._
+import org.joda.time.*
+import reactivemongo.api.*
+import reactivemongo.api.bson.*
 import reactivemongo.api.bson.collection.BSONCollection
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,8 +16,8 @@ final class DB(
 ) {
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
-  implicit val lightUserBSONReader = new BSONDocumentReader[LightUser] {
 
+  given BSONDocumentReader[LightUser] with
     def readDocument(doc: BSONDocument) =
       Success(
         LightUser(
@@ -26,7 +26,6 @@ final class DB(
           title = doc.string("title")
         )
       )
-  }
 
   def users(gs: Seq[lila.game.Game]): Future[Seq[Users]] =
     userColl

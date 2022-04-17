@@ -30,7 +30,8 @@ object ByteArray {
     v => BSONBinary(v.value, subtype)
   )
 
-  implicit def fromBytes(value: Array[Byte]) = new ByteArray(value)
+  given Conversion[Array[Byte], ByteArray] with
+    def apply(bs: Array[Byte]) = ByteArray(bs)
 
   def parseBytes(s: List[String]) = ByteArray(s.map(parseByte).toArray)
 

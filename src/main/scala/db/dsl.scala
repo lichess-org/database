@@ -31,13 +31,11 @@ trait dsl {
   // Helpers
   val $empty: Bdoc = document.asStrict
 
-  def $doc(elements: ElementProducer*): Bdoc = BSONDocument.strict(elements: _*)
+  def $doc(elements: ElementProducer*): Bdoc = BSONDocument.strict(elements*)
 
   def $doc(elements: Iterable[(String, BSONValue)]): Bdoc = BSONDocument.strict(elements)
 
-  def $arr(elements: Producer[BSONValue]*): Barr = {
-    BSONArray(elements: _*)
-  }
+  def $arr(elements: Producer[BSONValue]*): Barr = BSONArray(elements*)
 
   def $id[T: BSONWriter](id: T): Bdoc = $doc("_id" -> id)
 
@@ -146,7 +144,7 @@ trait dsl {
 
   def $exists(value: Boolean) = $doc("$exists" -> value)
 
-  extension (v: Boolean) def produce: BSONValue = BSONBoolean(value)
+  extension (v: Boolean) def produce: BSONValue = BSONBoolean(v)
 
   // implicit final class StringCurrentDateValueProducer(value: String)
   //     extends CurrentDateValueProducer[String] {
