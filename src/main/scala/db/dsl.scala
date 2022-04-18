@@ -189,7 +189,7 @@ trait dsl:
   /** Represents the state of an expression which has a field and a value */
   trait Expression[V] extends ElementBuilder:
     def value: V
-    def toBdoc(implicit writer: BSONWriter[V]) = toBSONDocument(this)
+    def toBdoc(using writer: BSONWriter[V]) = toBSONDocument(this)
 
   /*
    * This type of expressions cannot be cascaded. Examples:

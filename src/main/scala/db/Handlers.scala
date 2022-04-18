@@ -40,7 +40,7 @@ trait Handlers:
   def handlerBadValue[T](msg: String): Try[T] =
     Failure(IllegalArgumentException(msg))
 
-  def stringMapHandler[V](implicit
+  def stringMapHandler[V](using
       reader: BSONReader[Map[String, V]],
       writer: BSONWriter[Map[String, V]]
   ) =
