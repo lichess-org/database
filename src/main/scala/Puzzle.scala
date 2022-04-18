@@ -1,27 +1,27 @@
 package lichess
 
 import akka.actor.ActorSystem
-import akka.stream._
-import akka.stream.scaladsl._
+import akka.stream.*
+import akka.stream.scaladsl.*
 import akka.util.ByteString
 import chess.format.FEN
 import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import com.typesafe.config.ConfigFactory
 import java.nio.file.Paths
-import lila.db.dsl._
-import lila.game.BSONHandlers._
-import lila.game.BSONHandlers._
-import lila.game.{ Game, PgnDump, Source => S }
+import lila.db.dsl.*
+import lila.game.BSONHandlers.*
+import lila.game.BSONHandlers.*
+import lila.game.{ Game, PgnDump, Source as S }
 import org.joda.time.DateTime
 import reactivemongo.akkastream.{ cursorProducer, State }
-import reactivemongo.api._
-import reactivemongo.api.bson._
-import scala.concurrent.duration._
+import reactivemongo.api.*
+import reactivemongo.api.bson.*
+import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object Puzzle extends App {
+object Puzzle extends App:
 
   case class PuzzleLine(
       id: String,
@@ -124,9 +124,8 @@ object Puzzle extends App {
         .buffer(1000, OverflowStrategy.backpressure)
         .mapConcat(d => parseDoc(d).toList)
         .map(toCsvLine)
-        .runWith(csvSink) andThen { case state =>
+        .runWith(csvSink) andThen { _ =>
         driver.close()
         system.terminate()
       }
     }
-}

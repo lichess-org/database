@@ -71,7 +71,7 @@ object Player:
   private val ratingRange     = safeRange(0 to 4000, "rating")
   private val ratingDiffRange = safeRange(-1000 to 1000, "ratingDiff")
 
-  given BSON[Builder] with
+  given bsonHandler: BSON[Builder] with
     import BSONFields.*
     def reads(r: BSON.Reader) =
       color =>

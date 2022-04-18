@@ -1,10 +1,10 @@
-package object lila:
+import ornicar.scalalib.ScalalibExtensions
+
+package object lila extends ScalalibExtensions:
 
   def parseIntOption(str: String): Option[Int] =
-    try
-      Some(java.lang.Integer.parseInt(str))
-    catch
-      case e: NumberFormatException => None
+    try Some(java.lang.Integer.parseInt(str))
+    catch case e: NumberFormatException => None
 
   import scala.util.Try
   implicit final class LilaPimpedTryList[A](list: List[Try[A]]):

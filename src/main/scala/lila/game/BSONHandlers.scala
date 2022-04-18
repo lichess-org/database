@@ -1,4 +1,5 @@
-package lila.game
+package lila
+package game
 
 import chess.variant.{ Crazyhouse, Variant }
 import chess.{
@@ -13,7 +14,7 @@ import chess.{
   UnmovedRooks,
   White
 }
-import lila.db.BSON
+import lila.db.{ BSON, ByteArray }
 import lila.db.dsl.*
 import org.joda.time.DateTime
 import reactivemongo.api.bson.*
@@ -41,39 +42,39 @@ object BSONHandlers:
   )
 
   given BSONHandler[UnmovedRooks] = tryHandler[UnmovedRooks](
-    { case bin: BSONBinary => ByteArrayBSONHandler.readTry(bin) map BinaryFormat.unmovedRooks.read },
-    x => ByteArrayBSONHandler.writeTry(BinaryFormat.unmovedRooks write x).get
+    {
+      case bin: BSONBinary => {
+        ByteArray.bsonHandler.readTry(bin) map BinaryFormat.unmovedRooks.read
+      }
+    },
+    x => ByteArray.bsonHandler.writeTry(BinaryFormat.unmovedRooks write x).get
   )
 
-  private[game] given BSONHandler[Crazyhouse.Data] =
-    new BSON[Crazyhouse.Data] {
+  given BSON[Crazyhouse.Data] with
+    import Crazyhouse.*
+    def reads(r: BSON.Reader) = Crazyhouse.Data(
+      pockets = {
+        val (white, black) = {
+          r.str("p")
+            .flatMap(chess.Piece.fromChar)
+            .toList
+        }.partition(_ is chess.White)
+        Pockets(
+          white = Pocket(white.map(_.role)),
+          black = Pocket(black.map(_.role))
+        )
+      },
+      promoted = r.str("t").flatMap(chess.Pos.piotr).toSet
+    )
 
-      import Crazyhouse._
+  given gameBsonHandler: BSON[Game] with
 
-      def reads(r: BSON.Reader) = Crazyhouse.Data(
-        pockets = {
-          val (white, black) = {
-            r.str("p")
-              .flatMap(chess.Piece.fromChar)
-              .toList
-          }.partition(_ is chess.White)
-          Pockets(
-            white = Pocket(white.map(_.role)),
-            black = Pocket(black.map(_.role))
-          )
-        },
-        promoted = r.str("t").flatMap(chess.Pos.piotr).toSet
-      )
-    }
+    import Game.BSONFields as F
+    import Player.given
 
-  given BSON[Game] with
+    private val emptyPlayerBuilder = Player.bsonHandler read BSONDocument()
 
-    import Game.{ BSONFields => F }
-    import Player.playerBSONHandler
-
-    private val emptyPlayerBuilder = playerBSONHandler.read(BSONDocument())
-
-    def reads(r: BSON.Reader): Game = {
+    def reads(r: BSON.Reader): Game =
 
       val gameVariant   = Variant(r intD F.variant) | chess.variant.Standard
       val startedAtTurn = r intD F.startedAtTurn
@@ -109,11 +110,10 @@ object BSONHandlers:
           color: Color,
           id: Player.Id,
           uid: Player.UserId
-      ): Player = {
-        val builder = r.getO[Player.Builder](field)(playerBSONHandler) | emptyPlayerBuilder
+      ): Player =
+        val builder = r.getO[Player.Builder](field)(using Player.bsonHandler) | emptyPlayerBuilder
         val win     = winC map (_ == color)
         builder(color)(id)(uid)(win)
-      }
       val (whiteId, blackId) = r str F.playerIds splitAt 4
       val wPlayer            = makePlayer(F.whitePlayer, White, whiteId, whiteUid)
       val bPlayer            = makePlayer(F.blackPlayer, Black, blackId, blackUid)
@@ -147,9 +147,9 @@ object BSONHandlers:
           color = turnColor
         ),
         pgnMoves = decoded.pgnMoves,
-        clock = r.getO[Color => Clock](F.clock) {
-          clockBSONReader(createdAt, wPlayer.berserk, bPlayer.berserk)
-        } map (_(turnColor)),
+        clock = r.getO[Color => Clock](F.clock)(
+          using clockBSONReader(createdAt, wPlayer.berserk, bPlayer.berserk)
+        ) map (_(turnColor)),
         turns = plies,
         startedAtTurn = r intD F.startedAtTurn
       )
@@ -183,13 +183,12 @@ object BSONHandlers:
           analysed = r boolD F.analysed
         )
       )
-    }
 
   import chess.format.FEN
   given BSON[Game.WithInitialFen] with
     def reads(r: BSON.Reader): Game.WithInitialFen =
       Game.WithInitialFen(
-        gameBSONHandler.reads(r),
+        gameBsonHandler.reads(r),
         (r strO Game.BSONFields.initialFen).map(FEN.apply)
       )
 
@@ -212,11 +211,10 @@ object BSONHandlers:
   private[game] def clockBSONReader(since: DateTime, whiteBerserk: Boolean, blackBerserk: Boolean) =
     new BSONReader[Color => Clock] {
       def readTry(bson: BSONValue): Try[Color => Clock] =
-        bson match {
+        bson match
           case bin: BSONBinary =>
-            ByteArrayBSONHandler readTry bin map { cl =>
+            ByteArray.bsonHandler readTry bin map { cl =>
               BinaryFormat.clock(since).read(cl, whiteBerserk, blackBerserk)
             }
           case b => lila.db.BSON.handlerBadType(b)
-        }
     }

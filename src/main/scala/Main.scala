@@ -1,43 +1,38 @@
 package lichess
 
-import scala.concurrent.duration._
+import akka.actor.ActorSystem
+import akka.stream.*
+import akka.stream.scaladsl.*
+import akka.util.ByteString
+import chess.format.pgn.Pgn
+import chess.variant.{ Horde, Standard, Variant }
+import java.nio.file.Paths
+import lila.analyse.Analysis
+import lila.analyse.Analysis.given
+import lila.db.dsl.*
+import lila.db.dsl.given
+import lila.game.BSONHandlers.*
+import lila.game.BSONHandlers.given
+import lila.game.{ Game, PgnDump, Source as S }
+import org.joda.time.DateTime
+import reactivemongo.akkastream.{ cursorProducer, State }
+import reactivemongo.api.*
+import reactivemongo.api.bson.*
+import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import reactivemongo.api._
-import reactivemongo.api.bson._
-
-import akka.actor.ActorSystem
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.util.ByteString
-import java.nio.file.Paths
-import reactivemongo.akkastream.{ cursorProducer, State }
-
-import org.joda.time.DateTime
-
-import chess.format.pgn.Pgn
-import chess.variant.{ Horde, Standard, Variant }
-import lila.analyse.Analysis
-import lila.analyse.Analysis.analysisBSONHandler
-import lila.game.BSONHandlers.given
-import lila.game.BSONHandlers._
-import lila.game.{ Game, PgnDump, Source => S }
-import lila.db.dsl._
-
-object Main extends App {
-
-  val fromStr = args.lift(0).getOrElse("2015-01")
+@main def buildGameDb(month: String, others: String*) =
 
   val path =
-    args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
+    others.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", month)
 
   val variant = Variant
-    .apply(args.lift(2).getOrElse("standard"))
+    .apply(others.lift(2).getOrElse("standard"))
     .getOrElse(throw new RuntimeException("Invalid variant."))
 
   val fromWithoutAdjustments =
-    new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
+    new DateTime(month).withDayOfMonth(1).withTimeAtStartOfDay()
   val to = fromWithoutAdjustments plusMonths 1
 
   val hordeStartDate = new DateTime(2015, 4, 11, 10, 0)
@@ -48,10 +43,9 @@ object Main extends App {
     ) hordeStartDate
     else fromWithoutAdjustments
 
-  if (from.compareTo(to) > 0) {
+  if (from.compareTo(to) > 0)
     System.out.println("Too early for Horde games. Exiting.");
     System.exit(0);
-  }
 
   println(s"Export $from to $path")
 
@@ -170,4 +164,3 @@ object Main extends App {
       system.terminate()
     }
   }
-}

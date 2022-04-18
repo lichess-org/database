@@ -13,7 +13,7 @@ trait Handlers:
   )
 
   def quickHandler[T](read: PartialFunction[BSONValue, T], write: T => BSONValue): BSONHandler[T] =
-    BSONHandler[T] {
+    new BSONHandler[T] {
       def readTry(bson: BSONValue) =
         read
           .andThen(Success(_))
@@ -25,7 +25,7 @@ trait Handlers:
     }
 
   def tryHandler[T](read: PartialFunction[BSONValue, Try[T]], write: T => BSONValue): BSONHandler[T] =
-    BSONHandler[T] {
+    new BSONHandler[T] {
       def readTry(bson: BSONValue) =
         read.applyOrElse(
           bson,
@@ -44,7 +44,7 @@ trait Handlers:
       reader: BSONReader[Map[String, V]],
       writer: BSONWriter[Map[String, V]]
   ) =
-    BSONHandler[Map[String, V]] {
+    new BSONHandler[Map[String, V]] {
       def readTry(bson: BSONValue)    = reader readTry bson
       def writeTry(v: Map[String, V]) = writer writeTry v
     }
