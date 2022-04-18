@@ -24,8 +24,7 @@ import scala.concurrent.Future
 
 @main def buildGameDb(month: String, others: String*) =
 
-  val path =
-    others.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", month)
+  val path = others.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", month)
 
   val variant = Variant
     .apply(others.lift(2).getOrElse("standard"))

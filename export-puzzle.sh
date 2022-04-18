@@ -6,7 +6,7 @@ bz2file="$file.bz2"
 
 echo "Export puzzles to $dir/$file"
 
-sbt "runMain lichess.Puzzle $dir/$file"
+sbt "runMain lichess.buildPuzzleDb $dir/$file"
 
 cd "$dir"
 

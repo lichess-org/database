@@ -21,27 +21,27 @@ import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-object Puzzle extends App:
+case class PuzzleLine(
+    id: String,
+    fen: FEN,
+    moves: List[String],
+    rating: Int,
+    ratingDev: Int,
+    popularity: Int,
+    plays: Int,
+    themes: List[String],
+    gameUrl: String
+)
 
-  case class PuzzleLine(
-      id: String,
-      fen: FEN,
-      moves: List[String],
-      rating: Int,
-      ratingDev: Int,
-      popularity: Int,
-      plays: Int,
-      themes: List[String],
-      gameUrl: String
-  )
+@main def buildPuzzleDb(args: String*) =
 
   val path = args.headOption.getOrElse("out/lichess_db_puzzle.csv")
 
   println(s"Exporting to $path")
 
-  private val config = ConfigFactory.load()
-  val dbName         = "puzzler"
-  val collName       = "puzzle2_puzzle"
+  val config   = ConfigFactory.load()
+  val dbName   = "puzzler"
+  val collName = "puzzle2_puzzle"
 
   val uri    = config.getString("db.puzzle.uri")
   val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
