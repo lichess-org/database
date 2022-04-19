@@ -338,6 +338,9 @@
             <li>
               <a href="https://github.com/ornicar/lichess-db/blob/master/web/chess-social-networks-paper.pdf">Online Chess Social Networks</a>
             </li>
+            <li>
+              <a href="https://emiruz.com/post/2022-04-15-lichess1/">Fast thinking on lichess.org</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
