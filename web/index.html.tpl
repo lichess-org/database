@@ -341,6 +341,9 @@
             <li>
               <a href="https://emiruz.com/post/2022-04-15-lichess1/">Fast thinking on lichess.org</a>
             </li>
+            <li>
+              <a href="https://lichess.org/@/jmviz/blog/when-should-you-berserk/rQdcB4QB">When should you berserk?</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
