@@ -58,7 +58,8 @@ import scala.concurrent.Future
   )
 
   lichess.DB.get foreach { case (db, close) =>
-    val sources = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
+    val sources        = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
+    val readPreference = ReadPreference.secondary
 
     val query = BSONDocument(
       "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
@@ -70,7 +71,7 @@ import scala.concurrent.Future
       .find(query)
       .sort(BSONDocument("ca" -> 1))
       // .cursor[Game.WithInitialFen]()
-      .cursor[Game.WithInitialFen](readPreference = ReadPreference.secondary)
+      .cursor[Game.WithInitialFen](readPreference = readPreference)
       .documentSource(
         maxDocs = Int.MaxValue,
         err = Cursor.ContOnError((_, e) => println(e.getMessage))
@@ -109,7 +110,7 @@ import scala.concurrent.Future
             )
           )
         )
-        .cursor[Analysis](readPreference = ReadPreference.secondary)
+        .cursor[Analysis](readPreference = readPreference)
         .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]()) map { as =>
         gs.map { g =>
           g -> as.find(_.id == g.game.id)
