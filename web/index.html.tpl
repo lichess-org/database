@@ -256,6 +256,9 @@
               <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
             </li>
             <li>
+              <a href="https://freopen.org/">World Chess Champion number</a>
+            </li>
+            <li>
               <a href="https://database.nikonoel.fr/">Elite database (2400+)</a>
             </li>
             <li>
