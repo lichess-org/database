@@ -2,7 +2,7 @@ package lila.db
 
 import dsl._
 import org.joda.time.DateTime
-import ornicar.scalalib.Zero
+import alleycats.Zero
 import reactivemongo.api.bson._
 import scala.util.Try
 

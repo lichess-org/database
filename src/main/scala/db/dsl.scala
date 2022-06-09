@@ -16,7 +16,7 @@
 
 package lila.db
 
-import ornicar.scalalib.Zero
+import alleycats.Zero
 import reactivemongo.api._
 import reactivemongo.api.collections.GenericQueryBuilder
 import reactivemongo.api.bson._
@@ -51,7 +51,7 @@ trait dsl {
   // End of Helpers
   //**********************************************************************************************//
 
-  implicit val LilaBSONDocumentZero: Zero[Bdoc] = Zero.instance($empty)
+  implicit val LilaBSONDocumentZero: Zero[Bdoc] = Zero($empty)
 
   //**********************************************************************************************//
   // Top Level Logical Operators
