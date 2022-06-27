@@ -32,8 +32,8 @@ object Puzzle extends App {
       popularity: Int,
       plays: Int,
       themes: List[String],
-      gameUrl: String,
-      opening: Option[String]
+      openings: List[String],
+      gameUrl: String
   )
 
   val path = args.headOption.getOrElse("out/lichess_db_puzzle.csv")
@@ -67,7 +67,7 @@ object Puzzle extends App {
     plays      <- doc.int("plays")
     themes     <- doc.getAsOpt[List[String]]("themes")
     gameId     <- doc.string("gameId")
-    opening = doc.string("opening")
+    openings = doc.getAsOpt[List[String]]("opening")
   } yield PuzzleLine(
     id = id,
     fen = fen,
@@ -84,7 +84,7 @@ object Puzzle extends App {
       }
       s"https://lichess.org/${gameId}${if (asWhite) "" else "/black"}#${ply}"
     },
-    opening = opening
+    openings = openings getOrElse Nil
   )
 
   def toCsvLine(puzzle: PuzzleLine): String =
@@ -98,7 +98,7 @@ object Puzzle extends App {
       puzzle.plays,
       puzzle.themes.sorted.mkString(" "),
       puzzle.gameUrl,
-      puzzle.opening getOrElse ""
+      puzzle.openings.mkString(",")
     ).mkString(",")
 
   def csvSink: Sink[String, Future[IOResult]] =
