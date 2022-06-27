@@ -45,16 +45,10 @@
           <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
           <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningFamily,OpeningVariation</pre>
           <h3 id="puzzle_sample">Sample</h3>
-          <pre>0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1426,500,100,0,advantage endgame short,https://lichess.org/F8M8OS71#53
-0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,500,-100,0,advantage middlegame short,https://lichess.org/4MWQCxQ6/black#32,Sicilian_Defense
-000tp,4r3/5pk1/1p3np1/3p3p/2qQ4/P4N1P/1P3RP1/7K w - - 6 34,d4b6 f6e4 h1g1 e4f2,1687,500,95,0,crushing endgame short trappedPiece,https://lichess.org/GeXqsW90#67
-001cv,6k1/5p1p/3p2pP/3Pr1b1/1pp5/7R/PP6/1K1R4 w - - 0 34,d1d4 e5e1 d4d1 e1d1 b1c2 d1c1,1043,500,-15,0,endgame long mate mateIn3 queensideAttack,https://lichess.org/Wn5Xtz5X#67
-001u3,2r3k1/p1q2pp1/Q3p2p/b1Np4/2nP1P2/4P1P1/5K1P/2B1N3 b - - 3 33,c7b6 a6c8 g8h7 c8b7,1268,500,-99,0,advantage hangingPiece kingsideAttack middlegame short,https://lichess.org/BBn6ipaK/black#66
-00206,r3kb1r/pppqpn1p/5p2/3p1bpQ/2PP4/4P1B1/PP3PPP/RN2KB1R w KQkq - 1 11,b1c3 f5g4 h5g4 d7g4,1236,500,23,0,advantage opening short trappedPiece,https://lichess.org/MbJRo6PT#21,English_Opening
-002Cw,r7/2p2r1k/p2p1q1p/Pp1P4/1P2P3/2PQ4/6R1/R5K1 b - - 2 28,f7g7 e4e5 f6g6 g2g6,1315,500,-5,0,crushing discoveredAttack endgame short,https://lichess.org/lxiSa85s/black#56
-002E4,8/8/kpq5/p4pQp/P7/7P/3r2P1/4R2K b - - 10 48,c6a4 g5d2,1406,500,-5,0,crushing endgame hangingPiece oneMove,https://lichess.org/JwMca3Nw/black#96
-002rj,2k5/p1pp1p2/1p3Bb1/7p/1nP3PP/1P2rP2/PK6/3R1B1R w - - 7 22,f1g2 e3e2 d1d2 e2d2,960,500,-5,0,advantage fork middlegame short,https://lichess.org/JbCsF5hm#43
-003YT,r1bqk1nr/1pp2ppp/p1pb4/4p3/3PP3/5N2/PPP2PPP/RNBQ1RK1 b kq - 0 6,d8f6 d4e5 d6e5 c1g5 f6d6 f3e5 d6d1 f1d1,1387,500,-5,0,advantage fork opening veryLong,https://lichess.org/TAffogpQ/black#12,Reti_Opening</pre>
+          <pre>00sHx,q3k1nr/1pp1nQpp/3p4/1P2p3/4P3/B1PP1b2/B5PP/5K2 b k - 0 17,e8d7 a2e6 d7d8 f7f8,1760,80,83,72,mate mateIn2 middlegame short,https://lichess.org/yyznGmXs/black#34,Italian_Game,Italian_Game_Classical_Variation
+00sJ9,r3r1k1/p4ppp/2p2n2/1p6/3P1qb1/2NQR3/PPB2PP1/R1B3K1 w - - 5 18,e3g3 e8e1 g1h2 e1c1 a1c1 f4h6 h2g1 h6c1,2671,105,87,325,advantage attraction fork middlegame sacrifice veryLong,https://lichess.org/gyFeQsOE#35,French_Defense,French_Defense_Exchange_Variation
+00sJb,Q1b2r1k/p2np2p/5bp1/q7/5P2/4B3/PPP3PP/2KR1B1R w - - 1 17,d1d7 a5e1 d7d1 e1e3 c1b1 e3b6,2235,76,97,64,advantage fork long,https://lichess.org/kiuvTFoE#33,Sicilian_Defense,Sicilian_Defense_Dragon_Variation
+00sO1,1k1r4/pp3pp1/2p1p3/4b3/P3n1P1/8/KPP2PN1/3rBR1R b - - 2 31,b8c7 e1a5 b7b6 f1d1,998,85,94,293,advantage discoveredAttack master middlegame short,https://lichess.org/vsfFkG0s/black#62,</pre>
           <h3 id="puzzle_notes">Notes</h3>
             <p>
               Moves are in UCI format. Use a chess library to convert them to SAN, for display.
