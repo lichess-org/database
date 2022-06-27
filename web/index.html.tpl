@@ -43,7 +43,7 @@
           </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
-          <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,Opening</pre>
+          <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningFamily,OpeningVariation</pre>
           <h3 id="puzzle_sample">Sample</h3>
           <pre>0000D,5rk1/1p3ppp/pq3b2/8/8/1P1Q1N2/P4PPP/3R2K1 w - - 2 27,d3d6 f8d8 d6d8 f6d8,1426,500,100,0,advantage endgame short,https://lichess.org/F8M8OS71#53
 0009B,r2qr1k1/b1p2ppp/pp4n1/P1P1p3/4P1n1/B2P2Pb/3NBP1P/RN1QR1K1 b - - 1 16,b6c5 e2g4 h3g4 d1g4,1500,500,-100,0,advantage middlegame short,https://lichess.org/4MWQCxQ6/black#32,Sicilian_Defense
@@ -77,7 +77,7 @@
               You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
             </p>
             <p>
-              The <code>Opening</code> field is only set for puzzles starting before move 20.
+              The <code>Opening</code> fields are only set for puzzles starting before move 20.
               Here's the <a href="https://github.com/lichess-org/lila/blob/master/modules/puzzle/src/main/PuzzleOpening.scala#L85">list of possible openings</a>.
             </p>
             <p>
