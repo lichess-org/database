@@ -331,7 +331,7 @@
               <a href="https://www.reddit.com/r/chess/comments/pn2f45/whats_the_difficulty_of_the_tactics_that_people/">What's the difficulty of the tactics that people actually spot during their games?</a>
             </li>
             <li>
-              <a href="https://chessmadra.com/">Puzzle visualization trainer</a>
+              <a href="https://chessmadra.com/">Repertoire builder and visualization trainer </a>
             </li>
             <li>
               <a href="https://tusharmurali.github.io/chess-memory/">Puzzle memory trainer</a>
