@@ -56,6 +56,8 @@ object Puzzle extends App {
       )
   )
 
+  private val hiddenThemes = Set("checkFirst")
+
   def parseDoc(doc: Bdoc): Option[PuzzleLine] = for {
     id         <- doc.string("_id")
     fen        <- doc.string("fen").map(FEN.apply)
@@ -76,7 +78,7 @@ object Puzzle extends App {
     ratingDev = rd.toInt,
     popularity = math.round(popularity * 100).toInt,
     plays = plays,
-    themes = themes,
+    themes = themes.filterNot(hiddenThemes.contains),
     gameUrl = {
       val asWhite = fen.color.contains(chess.White)
       val ply = fen.fullMove.fold(0) { fm =>
