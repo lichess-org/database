@@ -39,7 +39,7 @@
             <strong><!-- nbPuzzles --></strong> chess puzzles, rated and tagged.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
-            <a class="primary" href="lichess_db_puzzle.csv.bz2">Download lichess_db_puzzle.csv.bz2</a>
+            <a class="primary" href="lichess_db_puzzle.csv.zst">Download lichess_db_puzzle.csv.zst</a>
           </p>
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
@@ -179,21 +179,21 @@
           </section>
 
           <section>
-            <h3 id="bz2">Decompress .bz2</h3>
+            <h3 id="zst">Decompress .zst</h3>
             <p>
-              Unix: <code>pbzip2 -d filename.pgn.bz2</code> (faster than <code>bunzip2</code>)<br />
+              Unix: <code>pzstd -d filename.pgn.zst</code> (faster than <code>unzstd</code>)<br />
               Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
             </p>
             <p>
-              Expect uncompressed files to be 9 times larger.
+              Expect uncompressed files to be about 7.1 times larger.
             </p>
             <p>
-              bz2 is partially decompressable, so you can start downloading and then cancel at any point. You will be able to decompress the partial download if you only want a smaller set of game data.
+              ZStandard archives are partially decompressable, so you can start downloading and then cancel at any point. You will be able to decompress the partial download if you only want a smaller set of game data.
             </p>
             <p>
-              You can also decompress the data on-the-fly without having to create large temporary files. This example shows how you can pipe the contents to a Python script for analyzing using <code>bzcat</code>.
+              You can also decompress the data on-the-fly without having to create large temporary files. This example shows how you can pipe the contents to a Python script for analyzing using <code>zstdcat</code>.
             </p>
-            <pre>$ bzcat lichess_db.pgn.bz2 | python script.py</pre>
+            <pre>$ zstdcat lichess_db.pgn.zst | python script.py</pre>
           </section>
 
           <section>
@@ -223,7 +223,7 @@
               </li>
               <li>
                 Up to December 2020:
-                Some exports are missing the redundant (but stricly speaking mandatory)
+                Some exports are missing the redundant (but strictly speaking mandatory)
                 <code>Round</code> tag (always <code>-</code>),
                 <code>Date</code> tag (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead),
                 and <a href="https://github.com/ornicar/lichess-db/issues/31">black move numbers after comments</a>.

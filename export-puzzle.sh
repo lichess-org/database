@@ -2,7 +2,7 @@
 
 dir=${1}
 file="lichess_db_puzzle.csv"
-bz2file="$file.bz2"
+compressed_file="$file.zst"
 
 echo "Export puzzles to $dir/$file"
 
@@ -15,15 +15,15 @@ echo "Counting puzzles in $file"
 puzzles=$(grep --count -F '' "$file")
 echo "$puzzles" > puzzle-count.txt
 
-echo "Compressing $puzzles puzzles to $bz2file"
+echo "Compressing $puzzles puzzles to $compressed_file"
 
-rm -f $bz2file
-pbzip2 -p4 $file
+rm -f $compressed_file
+pzstd -p4 -19 --verbose $file
 
-echo "Check summing $bz2file"
+echo "Check summing $compressed_file"
 touch sha256sums.txt
-grep -v -F "$bz2file" sha256sums.txt > sha256sums.txt.new || touch sha256sums.txt.new
-sha256sum "$bz2file" | tee --append sha256sums.txt.new
+grep -v -F "$compressed_file" sha256sums.txt > sha256sums.txt.new || touch sha256sums.txt.new
+sha256sum "$compressed_file" | tee --append sha256sums.txt.new
 mv sha256sums.txt.new sha256sums.txt
 
 echo "Done!"

@@ -18,7 +18,7 @@ function numberFormat(n) {
 function fileInfo(gameCounts, variant, n) {
   const path = sourceDir + '/' + variant + '/' + n;
   return fs.stat(path).then(s => {
-    const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.bz2/, '$1');
+    const dateStr = n.replace(/.+(\d{4}-\d{2})\.pgn\.zst/, '$1');
     const m = moment(dateStr);
     const hasClock = m.unix() >= clockSince.unix();
     return {
@@ -49,7 +49,7 @@ function getFiles(variant) {
     return fs
       .readdir(sourceDir + '/' + variant)
       .then(items => {
-        return Promise.all(items.filter(n => n.endsWith('.pgn.bz2')).map(n => fileInfo(gameCounts, variant, n)));
+        return Promise.all(items.filter(n => n.endsWith('.pgn.zst')).map(n => fileInfo(gameCounts, variant, n)));
       })
       .then(items => items.sort((a, b) => b.date.unix() - a.date.unix()));
   };
@@ -62,7 +62,7 @@ function renderTable(files, variant) {
     <td>${f.date.format('YYYY - MMMM')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
-    <td><a href="${variant}/${f.name}">.pgn.bz2</a> <span class="sep">/</span> <a href="${variant}/${
+    <td><a href="${variant}/${f.name}">.pgn.zst</a> <span class="sep">/</span> <a href="${variant}/${
         f.name
       }.torrent">.torrent</a></td>
     </tr>`;
