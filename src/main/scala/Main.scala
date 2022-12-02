@@ -64,7 +64,7 @@ object Main extends App {
       )
   )
 
-  lichess.DB.get foreach { case (db, close) =>
+  val process = lichess.DB.get flatMap { case (db, close) =>
     val sources        = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
     val readPreference = ReadPreference.secondary
 
@@ -166,9 +166,10 @@ object Main extends App {
       .mapAsyncUnordered(16)(withAnalysis)
       .mapAsyncUnordered(16)(withUsers)
       .mapAsyncUnordered(16)(toPgn)
-      .runWith(pgnSink) andThen { case state =>
-      close()
-      system.terminate()
-    }
+      .runWith(pgnSink)
   }
+
+  scala.concurrent.Await.result(process, Duration.Inf)
+  println("done")
+  system.terminate()
 }
