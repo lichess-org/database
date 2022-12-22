@@ -209,6 +209,8 @@
               <li>
                 9th February 2021: Some games were
                 <a href="https://lichess.org/forum/lichess-feedback/bug-with-game-completion-today-between-724-and-804">resigned even after the game ended</a>.
+                In variants, additional moves could be played after the end
+                of the game.
               </li>
               <li>
                 December 2020, January 2021: Many variant games have been
