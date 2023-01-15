@@ -204,6 +204,9 @@
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
+                December 2022: Some <a href="https://github.com/lichess-org/lila/commit/3a742bcbb9504ca471e3c4baf6fe7ab25fc46441">Antichess games were recorded with bullet ratings</a>.
+              </li>
+              <li>
                 12th March 2021: Some games have incorrect results due to a database outage in the aftermath of a <a href="https://lichess.org/forum/lichess-feedback/fire-in-a-lichess-datacenter">datacenter fire</a>.
               </li>
               <li>
