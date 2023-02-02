@@ -1,4 +1,4 @@
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.10"
 name := "lichess-db"
 organization := "org.lichess"
 version := "1.3"
