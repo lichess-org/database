@@ -8,7 +8,7 @@ compressed_file="$file.zst"
 
 echo "Export $variant games of $month to $file"
 
-sbt "runMain lichess.Main $month $dir/$file $variant"
+nice -n19 sbt "runMain lichess.Main $month $dir/$file $variant"
 
 cd "$dir"
 
@@ -23,7 +23,7 @@ mv counts.txt.new counts.txt
 echo "Compressing $games games to $compressed_file"
 
 rm -f $compressed_file
-pzstd -p6 -19 --verbose $file
+pzstd -p2 -19 --verbose $file
 
 echo "Check summing $compressed_file"
 touch sha256sums.txt

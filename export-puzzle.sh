@@ -6,7 +6,7 @@ compressed_file="$file.zst"
 
 echo "Export puzzles to $dir/$file"
 
-sbt "runMain lichess.Puzzle $dir/$file"
+nice -n19 sbt "runMain lichess.Puzzle $dir/$file"
 
 cd "$dir"
 
@@ -18,7 +18,7 @@ echo "$puzzles" > puzzle-count.txt
 echo "Compressing $puzzles puzzles to $compressed_file"
 
 rm -f $compressed_file
-pzstd -p4 -19 --verbose $file
+nice -n19 pzstd -p2 -19 --verbose $file
 
 echo "Check summing $compressed_file"
 touch sha256sums.txt
