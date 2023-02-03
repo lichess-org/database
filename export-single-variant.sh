@@ -25,6 +25,8 @@ echo "Compressing $games games to $compressed_file"
 rm -f $compressed_file
 pzstd -p2 -19 --verbose $file
 
+rm $file
+
 echo "Check summing $compressed_file"
 touch sha256sums.txt
 grep -v -F "$compressed_file" sha256sums.txt > sha256sums.txt.new || touch sha256sums.txt.new
