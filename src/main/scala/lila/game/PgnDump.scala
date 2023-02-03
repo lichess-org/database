@@ -102,7 +102,8 @@ object PgnDump {
           }
         )
       ),
-      if (!game.variant.standardInitialPosition) Some(Tag(_.FEN, initialFen.getOrElse(game.variant.initialFen)))
+      if (!game.variant.standardInitialPosition)
+        Some(Tag(_.FEN, initialFen.getOrElse(game.variant.initialFen)))
       else None,
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
@@ -119,7 +120,7 @@ object PgnDump {
       val clockOffset = startColor.fold(0, 1)
       chessPgn.Turn(
         number = index + from,
-        white = moves.headOption filter (".." !=) map { san =>
+        white = moves.headOption.filter(".." != _).map { san =>
           chessPgn.Move(
             san = san,
             secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
