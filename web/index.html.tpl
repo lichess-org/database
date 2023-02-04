@@ -176,7 +176,7 @@
             <h3 id="zst">Decompress .zst</h3>
             <p>
               Unix: <code>pzstd -d filename.pgn.zst</code> (faster than <code>unzstd</code>)<br />
-              Windows: use <a href="http://www.7-zip.org/download.html">7zip</a>
+              Windows: use <a href="https://peazip.github.io/">PeaZip</a>
             </p>
             <p>
               Expect uncompressed files to be about 7.1 times larger.
