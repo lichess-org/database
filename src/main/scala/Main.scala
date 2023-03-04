@@ -131,28 +131,26 @@ object Main extends App {
       }
 
     def toPgn(ws: Seq[WithUsers]): Future[Seq[Pgn]] =
-      Future(ws map { case ((g, analysis), users) =>
-        val pgn = PgnDump(g.game, users, g.fen)
-        lila.analyse.Annotator(
-          pgn,
-          analysis,
-          g.game.winnerColor,
-          g.game.status,
-          g.game.clock
-        )
-      })
+      Future {
+        val str = ws
+          .map { case ((g, analysis), users) =>
+            val pgn = PgnDump(g.game, users, g.fen)
+            lila.analyse.Annotator(
+              pgn,
+              analysis,
+              g.game.winnerColor,
+              g.game.status,
+              g.game.clock
+            )
+          }
+          .map(_.toString)
+          .mkString("\n\n")
+          .replace("] } { [", "] [")
+        ByteString(s"$str\n\n")
+      }
 
-    def pgnSink: Sink[Seq[Pgn], Future[IOResult]] =
-      Flow[Seq[Pgn]]
-        .map { pgns =>
-          // merge analysis & eval comments
-          // 1. e4 { [%eval 0.17] } { [%clk 0:00:30] }
-          // 1. e4 { [%eval 0.17] [%clk 0:00:30] }
-          val str =
-            pgns.map(_.toString).mkString("\n\n").replace("] } { [", "] [")
-          ByteString(s"$str\n\n")
-        }
-        .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
+    def pgnSink: Sink[String, Future[IOResult]] =
+      Flow[Seq[Pgn]].toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
