@@ -18,7 +18,7 @@ echo "$puzzles" > puzzle-count.txt
 echo "Compressing $puzzles puzzles to $compressed_file"
 
 rm -f $compressed_file
-nice -n19 pzstd -p2 -19 --verbose $file
+nice -n19 pzstd -p8 -19 --verbose $file
 
 echo "Check summing $compressed_file"
 touch sha256sums.txt

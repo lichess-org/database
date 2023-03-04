@@ -165,7 +165,7 @@ object Main extends App {
       .grouped(100)
       .mapAsyncUnordered(16)(withAnalysis)
       .mapAsyncUnordered(16)(withUsers)
-      .mapAsyncUnordered(4)(toPgn)
+      .mapAsyncUnordered(16)(toPgn)
       .runWith(pgnSink)
   }
 
