@@ -9,12 +9,12 @@ import lila.game.Game
 import org.joda.time.DateTime
 import org.joda.time.format._
 
-object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.WithInitialFen]] {
+object Reporter extends GraphStage[FlowShape[Option[Seq[Game.WithInitialFen]], Seq[Game.WithInitialFen]]] {
 
   val freq = 2.seconds
 
-  val in             = Inlet[Option[Game.WithInitialFen]]("reporter.in")
-  val out            = Outlet[Game.WithInitialFen]("reporter.out")
+  val in             = Inlet[Option[Seq[Game.WithInitialFen]]]("reporter.in")
+  val out            = Outlet[Seq[Game.WithInitialFen]]("reporter.out")
   override val shape = FlowShape.of(in, out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
@@ -30,10 +30,10 @@ object Reporter extends GraphStage[FlowShape[Option[Game.WithInitialFen], Game.W
       new InHandler {
         override def onPush() = {
           grab(in) match {
-            case Some(g) => {
-              counter += 1
-              date = Some(g.game.createdAt)
-              push(out, g)
+            case Some(gs) => {
+              counter += gs.size
+              date = Some(gs.head.game.createdAt)
+              push(out, gs)
             }
             case None => {
               val gps = (counter - prev) / freq.toSeconds

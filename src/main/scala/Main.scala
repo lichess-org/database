@@ -106,7 +106,11 @@ object Main extends App {
         )
     }
 
-    def bsonRead(doc: BSONDocument) = Future { gameWithInitialFenBSONHandler.read(doc) }
+    def bsonRead(variant: Variant)(docs: Seq[BSONDocument]) = Future {
+      docs
+        .map(gameWithInitialFenBSONHandler.read)
+        .filter(_.game.variant == variant)
+    }
 
     type Analysed = (Game.WithInitialFen, Option[Analysis])
     def withAnalysis(gs: Seq[Game.WithInitialFen]): Future[Seq[Analysed]] =
@@ -155,14 +159,13 @@ object Main extends App {
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
-      .mapAsyncUnordered(12)(bsonRead)
-      .filter(_.game.variant == variant)
+      .grouped(64)
+      .mapAsyncUnordered(12)(bsonRead(variant))
       .map(g => Some(g))
       .merge(tickSource, eagerComplete = true)
       .via(Reporter)
       // .mapAsyncUnordered(16)(checkLegality)
       // .filter(_._2).map(_._1)
-      .grouped(64)
       .mapAsyncUnordered(16)(withAnalysis)
       .mapAsyncUnordered(16)(withUsers)
       .mapAsyncUnordered(12)(toPgn)
