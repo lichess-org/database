@@ -23,7 +23,7 @@ mv counts.txt.new counts.txt
 echo "Compressing $games games to $compressed_file"
 
 rm -f $compressed_file
-nice -n19 pzstd -p8 -19 --verbose $file
+nice -n19 pzstd -p10 -19 --verbose $file
 
 rm $file
 
