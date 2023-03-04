@@ -130,7 +130,7 @@ object Main extends App {
         as zip users
       }
 
-    def toPgn(ws: Seq[WithUsers]): Future[Seq[Pgn]] =
+    def toPgn(ws: Seq[WithUsers]): Future[ByteString] =
       Future {
         val str = ws
           .map { case ((g, analysis), users) =>
@@ -149,8 +149,8 @@ object Main extends App {
         ByteString(s"$str\n\n")
       }
 
-    def pgnSink: Sink[String, Future[IOResult]] =
-      Flow[Seq[Pgn]].toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
+    def pgnSink: Sink[ByteString, Future[IOResult]] =
+      Flow[ByteString].toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
