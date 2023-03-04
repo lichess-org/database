@@ -155,7 +155,7 @@ object Main extends App {
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
-      .mapAsyncUnordered(24)(bsonRead)
+      .mapAsyncUnordered(12)(bsonRead)
       .filter(_.game.variant == variant)
       .map(g => Some(g))
       .merge(tickSource, eagerComplete = true)
@@ -163,9 +163,9 @@ object Main extends App {
       // .mapAsyncUnordered(16)(checkLegality)
       // .filter(_._2).map(_._1)
       .grouped(64)
-      .mapAsyncUnordered(24)(withAnalysis)
-      .mapAsyncUnordered(24)(withUsers)
-      .mapAsyncUnordered(24)(toPgn)
+      .mapAsyncUnordered(16)(withAnalysis)
+      .mapAsyncUnordered(16)(withUsers)
+      .mapAsyncUnordered(12)(toPgn)
       .runWith(pgnSink)
   }
 
