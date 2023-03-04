@@ -77,8 +77,7 @@ object Main extends App {
     val gameSource = db.gameColl
       .find(query)
       .sort(BSONDocument("ca" -> 1))
-      // .cursor[Game.WithInitialFen]()
-      .cursor[Game.WithInitialFen](readPreference = readPreference)
+      .cursor[BSONDocument](readPreference = readPreference)
       .documentSource(
         maxDocs = Int.MaxValue,
         err = Cursor.ContOnError((_, e) => println(e.getMessage))
@@ -106,6 +105,8 @@ object Main extends App {
           }
         )
     }
+
+    def bsonRead(doc: BSONDocument) = Future { gameWithInitialFenBSONHandler.read(doc) }
 
     type Analysed = (Game.WithInitialFen, Option[Analysis])
     def withAnalysis(gs: Seq[Game.WithInitialFen]): Future[Seq[Analysed]] =
@@ -154,16 +155,17 @@ object Main extends App {
 
     gameSource
       .buffer(10000, OverflowStrategy.backpressure)
+      .mapAsyncUnordered(24)(bsonRead)
       .filter(_.game.variant == variant)
       .map(g => Some(g))
       .merge(tickSource, eagerComplete = true)
       .via(Reporter)
       // .mapAsyncUnordered(16)(checkLegality)
       // .filter(_._2).map(_._1)
-      .grouped(100)
-      .mapAsyncUnordered(16)(withAnalysis)
-      .mapAsyncUnordered(16)(withUsers)
-      .mapAsyncUnordered(16)(toPgn)
+      .grouped(64)
+      .mapAsyncUnordered(24)(withAnalysis)
+      .mapAsyncUnordered(24)(withUsers)
+      .mapAsyncUnordered(24)(toPgn)
       .runWith(pgnSink)
   }
 
