@@ -32,7 +32,7 @@ object Reporter extends GraphStage[FlowShape[Option[Seq[Game.WithInitialFen]], S
           grab(in) match {
             case Some(gs) => {
               counter += gs.size
-              date = Some(gs.head.game.createdAt)
+              date = gs.headOption.map(_.game.createdAt) orElse date
               push(out, gs)
             }
             case None => {
