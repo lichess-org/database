@@ -54,7 +54,7 @@
               Moves are in UCI format. Use a chess library to convert them to SAN, for display.
             </p>
             <p>
-              All player moves of the solution are "only moves". 
+              All player moves of the solution are "only moves".
               I.e. playing any other move would considerably worsen the player position.
               An exception is made for mates in one: there can be several. Any move that checkmates should win the puzzle.
             </p>
@@ -72,13 +72,13 @@
             </p>
             <p>
               The <code>Opening</code> fields are only set for puzzles starting before move 20.
-              Here's the <a href="https://github.com/lichess-org/lila/blob/master/modules/puzzle/src/main/PuzzleOpening.scala#L85">list of possible openings</a>.
+              Here's the <a href="https://github.com/lichess-org/chess-openings">list of possible openings</a>.
             </p>
             <p>
               <a href="https://github.com/ornicar/lichess-puzzler/tree/master/generator">Generating these chess puzzles</a>
-              took more than 35 years of CPU time.<br />
-              We went through 200,000,000 analysed games from the Lichess database,
-              and re-analyzed interesting positions with Stockfish 12/13 NNUE at 40 meganodes.
+              took more than 50 years of CPU time.<br />
+              We went through 300,000,000 analysed games from the Lichess database,
+              and re-analyzed interesting positions with Stockfish 12/13/14/15 NNUE at 40 meganodes.
               The resulting puzzles were then <a href="https://github.com/ornicar/lichess-puzzler/tree/master/tagger">automatically tagged</a>.
               To determine the rating, each attempt to solve is considered as a Glicko2 rated game between the player and the puzzle.
               Finally, player votes refine the tags and define popularity.
