@@ -100,7 +100,7 @@ object Puzzle extends App {
       puzzle.plays,
       puzzle.themes.sorted.mkString(" "),
       puzzle.gameUrl,
-      puzzle.openings.mkString(",")
+      puzzle.openings.mkString(" ")
     ).mkString(",")
 
   def csvSink: Sink[String, Future[IOResult]] =
