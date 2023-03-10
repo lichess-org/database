@@ -110,7 +110,7 @@ object Puzzle extends App {
       }
       .toMat(FileIO.toPath(Paths.get(path)))(Keep.right)
 
-  MongoConnection
+  val process = MongoConnection
     .fromString(uri)
     .flatMap { parsedUri =>
       driver.connect(parsedUri, Some("lichess-puzzle"))
@@ -130,9 +130,10 @@ object Puzzle extends App {
         .buffer(1000, OverflowStrategy.backpressure)
         .mapConcat(d => parseDoc(d).toList)
         .map(toCsvLine)
-        .runWith(csvSink) andThen { case state =>
-        driver.close()
-        system.terminate()
-      }
+        .runWith(csvSink)
     }
+
+  scala.concurrent.Await.result(process, Duration.Inf)
+  println("done")
+  system.terminate()
 }
