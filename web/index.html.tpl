@@ -65,7 +65,7 @@
             </p>
             <p>
               Popularity is a number between 100 (best) and -100 (worst).<br>
-              It is calculated as <code>(upvotes - downvotes)/(upvotes + downvotes)</code>, although votes are weigthed by various factors such as whether the puzzle was solved successfully or the solver's puzzle rating in comparison to the puzzle's.
+              It is calculated as <code>100 * (upvotes - downvotes)/(upvotes + downvotes)</code>, although votes are weigthed by various factors such as whether the puzzle was solved successfully or the solver's puzzle rating in comparison to the puzzle's.
             </p>
             <p>
               You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
