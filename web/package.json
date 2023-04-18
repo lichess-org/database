@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "^3.0.1",
-    "moment": "^2.29.2",
+    "moment": "^2.29.4",
     "pretty-bytes": "^4.0.2"
   }
 }
