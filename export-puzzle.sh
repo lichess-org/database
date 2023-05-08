@@ -12,7 +12,7 @@ cd "$dir"
 
 echo "Counting puzzles in $file"
 
-puzzles=$(grep --count -F '' "$file")
+puzzles=$(tail -n +2 "$file" | wc -l)
 echo "$puzzles" > puzzle-count.txt
 
 echo "Compressing $puzzles puzzles to $compressed_file"

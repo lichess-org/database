@@ -130,6 +130,7 @@ object Puzzle extends App {
         .buffer(1000, OverflowStrategy.backpressure)
         .mapConcat(d => parseDoc(d).toList)
         .map(toCsvLine)
+        .prepend(Source(List("PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags")))
         .runWith(csvSink)
     }
 
