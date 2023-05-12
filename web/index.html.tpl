@@ -350,6 +350,9 @@
             <li>
               <a href="https://lichess.org/@/jmviz/blog/when-should-you-berserk/rQdcB4QB">When should you berserk?</a>
             </li>
+            <li>
+              <a href="https://mcognetta.github.io/posts/lichess-combined-puzzle-game-db/">Combined puzzle and game database</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
