@@ -140,8 +140,8 @@ object Evals:
       .flatMap {
         _.collection(collName)
           .find($doc("_id" -> $doc("$not" -> BSONRegex(":", "")))) // no variant
-          // .cursor[Entry]()
-          .cursor[Entry](readPreference = ReadPreference.secondary)
+          .cursor[Entry]()
+          // .cursor[Entry](readPreference = ReadPreference.secondary)
           .documentSource(
             // maxDocs = 1000,
             maxDocs = Int.MaxValue,
