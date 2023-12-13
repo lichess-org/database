@@ -29,7 +29,8 @@ object Evals:
   case class Pv(score: Score, moves: NonEmptyList[Uci])
   case class Eval(pvs: NonEmptyList[Pv], knodes: Int, depth: Int)
   case class Id(variant: Variant, smallFen: String)
-  case class Entry(_id: Id, evals: List[Eval])
+  case class Entry(_id: Id, evals: List[Eval]):
+    def fen = chess.format.SmallFen(_id.smallFen).garbageInefficientReadBackIntoFen
 
   /*
     val base = fen.value.split(' ').take(4).mkString("").filter { c =>
@@ -164,7 +165,7 @@ object Evals:
 
     def toJson: Flow[Entry, JsObject, NotUsed] = Flow[Entry].map: entry =>
       Json.obj(
-        "fen" -> entry._id,
+        "fen" -> entry.fen.value,
         "evals" -> entry.evals.map: eval =>
           Json.obj(
             "pvs" -> eval.pvs.toList.map: pv =>
