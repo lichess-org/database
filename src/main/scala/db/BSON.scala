@@ -1,16 +1,16 @@
-package lila.db
+package lila
+package db
 
-import dsl._
-import org.joda.time.DateTime
+import dsl.*
 import alleycats.Zero
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 import scala.util.Try
 
 abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T] {
 
   val logMalformed = true
 
-  import BSON._
+  import BSON.*
 
   def write(obj: T): Bdoc = ???
 
@@ -19,7 +19,7 @@ abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with B
 
 abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
 
-  import BSON._
+  import BSON.*
 
   def reads(reader: Reader): T
 
@@ -46,31 +46,31 @@ object BSON extends Handlers {
     def getsD[A: BSONReader](k: String) =
       doc.getAsOpt[List[A]](k) getOrElse Nil
 
-    def str(k: String)                         = get[String](k)(BSONStringHandler)
-    def strO(k: String)                        = getO[String](k)(BSONStringHandler)
-    def strD(k: String)                        = strO(k) getOrElse ""
-    def int(k: String)                         = get[Int](k)
-    def intO(k: String)                        = getO[Int](k)
-    def intD(k: String)                        = intO(k) getOrElse 0
-    def double(k: String)                      = get[Double](k)
-    def doubleO(k: String)                     = getO[Double](k)
-    def floatO(k: String)                      = getO[Float](k)
-    def bool(k: String)                        = get[Boolean](k)
-    def boolO(k: String)                       = getO[Boolean](k)
-    def boolD(k: String)                       = boolO(k) getOrElse false
-    def date(k: String)                        = get[DateTime](k)
-    def dateO(k: String)                       = getO[DateTime](k)
-    def dateD(k: String, default: => DateTime) = getD(k, default)
-    def bytes(k: String)                       = get[ByteArray](k)
-    def bytesO(k: String)                      = getO[ByteArray](k)
-    def bytesD(k: String)                      = bytesO(k) getOrElse ByteArray.empty
-    def nInt(k: String)                        = get[BSONNumberLike](k).toInt.get
-    def nIntO(k: String): Option[Int]          = getO[BSONNumberLike](k) flatMap (_.toInt.toOption)
-    def nIntD(k: String): Int                  = nIntO(k) getOrElse 0
-    def intsD(k: String)                       = getO[List[Int]](k) getOrElse Nil
-    def strsD(k: String)                       = getO[List[String]](k) getOrElse Nil
+    inline def str(k: String)                 = get[String](k)(using BSONStringHandler)
+    inline def strO(k: String)                = getO[String](k)(using BSONStringHandler)
+    def strD(k: String)                       = strO(k) getOrElse ""
+    def int(k: String)                        = get[Int](k)
+    def intO(k: String)                       = getO[Int](k)
+    def intD(k: String)                       = intO(k) getOrElse 0
+    def double(k: String)                     = get[Double](k)
+    def doubleO(k: String)                    = getO[Double](k)
+    def floatO(k: String)                     = getO[Float](k)
+    def bool(k: String)                       = get[Boolean](k)
+    def boolO(k: String)                      = getO[Boolean](k)
+    def boolD(k: String)                      = boolO(k) getOrElse false
+    def date(k: String)                       = get[Instant](k)
+    def dateO(k: String)                      = getO[Instant](k)
+    def dateD(k: String, default: => Instant) = getD(k, default)
+    def bytes(k: String)                      = get[ByteArray](k)
+    def bytesO(k: String)                     = getO[ByteArray](k)
+    def bytesD(k: String)                     = bytesO(k) getOrElse ByteArray.empty
+    def nInt(k: String)                       = get[BSONNumberLike](k).toInt.get
+    def nIntO(k: String): Option[Int]         = getO[BSONNumberLike](k) flatMap (_.toInt.toOption)
+    def nIntD(k: String): Int                 = nIntO(k) getOrElse 0
+    def intsD(k: String)                      = getO[List[Int]](k) getOrElse Nil
+    def strsD(k: String)                      = getO[List[String]](k) getOrElse Nil
 
-    def contains = doc.contains _
+    export doc.contains
 
     def debug = BSON debug doc
   }

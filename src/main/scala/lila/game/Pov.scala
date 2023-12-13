@@ -4,15 +4,13 @@ import chess.Color
 
 case class Pov(game: Game, color: Color) {
 
-  def player = game player color
+  def player = game players color
 
   def playerId = player.id
 
   def gameId = game.id
 
-  def opponent = game player !color
-
-  def isFirstPlayer = game.firstPlayer.color == color
+  def opponent = game players !color
 
   def unary_! = Pov(game, !color)
 
@@ -22,8 +20,6 @@ case class Pov(game: Game, color: Color) {
   def withColor(c: Color) = copy(color = c)
 
   lazy val isMyTurn = game.started && game.playable && game.turnColor == color
-
-  def hasMoved = game playerHasMoved color
 
   def win = game wonBy color
 

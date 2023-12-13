@@ -2,15 +2,13 @@ package lila.analyse
 
 import chess.Color
 
-import org.joda.time.DateTime
-
 case class Analysis(
     id: String,
     infos: List[Info],
     startPly: Int,
     uid: Option[String], // requester lichess ID
     by: Option[String],  // analyser lichess ID
-    date: DateTime
+    date: Instant
 ) {
 
   type InfoAdvices = List[(Info, Option[Advice])]
@@ -50,7 +48,7 @@ case class Analysis(
 object Analysis {
 
   import lila.db.BSON
-  import reactivemongo.api.bson._
+  import reactivemongo.api.bson.*
 
   type ID = String
 

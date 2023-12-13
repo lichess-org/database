@@ -1,13 +1,14 @@
 package lichess
 
-import akka.stream._
-import akka.stream.scaladsl._
-import akka.stream.stage._
-import scala.concurrent.duration._
+import akka.stream.*
+import akka.stream.scaladsl.*
+import akka.stream.stage.*
+import scala.concurrent.duration.*
+import java.time.format.{ DateTimeFormatter, FormatStyle }
+import java.time.Instant
+import ornicar.scalalib.time.*
 
 import lila.game.Game
-import org.joda.time.DateTime
-import org.joda.time.format._
 
 object Reporter extends GraphStage[FlowShape[Option[Seq[Game.WithInitialFen]], Seq[Game.WithInitialFen]]] {
 
@@ -19,11 +20,11 @@ object Reporter extends GraphStage[FlowShape[Option[Seq[Game.WithInitialFen]], S
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
 
-    private val formatter = DateTimeFormat forStyle "MS"
+    private val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
-    private var counter                = 0
-    private var prev                   = 0
-    private var date: Option[DateTime] = None
+    private var counter               = 0
+    private var prev                  = 0
+    private var date: Option[Instant] = None
 
     setHandler(
       in,

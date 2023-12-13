@@ -1,18 +1,34 @@
-scalaVersion := "2.13.10"
-name := "lichess-db"
-organization := "org.lichess"
-version := "1.3"
-resolvers += "lila-maven" at "https://raw.githubusercontent.com/ornicar/lila-maven/master"
-
-val akkaVersion = "2.6.19"
-
-libraryDependencies += "org.reactivemongo"  %% "reactivemongo"            % "1.0.10"
-libraryDependencies += "org.reactivemongo"  %% "reactivemongo-akkastream" % "1.0.10"
-libraryDependencies += "com.github.ornicar" %% "scalalib"                 % "7.1.0"
-libraryDependencies += "org.lichess"        %% "scalachess"               % "10.4.10"
-libraryDependencies += "com.typesafe.akka"  %% "akka-actor"               % akkaVersion
-libraryDependencies += "com.typesafe.akka"  %% "akka-stream"              % akkaVersion
-libraryDependencies += "com.typesafe.akka"  %% "akka-slf4j"               % akkaVersion
-/* libraryDependencies += "ch.qos.logback"     % "logback-classic"           % "1.2.3" */
-libraryDependencies += "joda-time"    % "joda-time"   % "2.10.14"
-libraryDependencies += "org.lichess" %% "compression" % "1.6"
+inThisBuild(
+  Seq(
+    scalaVersion  := "3.3.1",
+    versionScheme := Some("early-semver"),
+    version       := "2.0",
+    run / javaOptions += "-Dconfig.override_with_env_vars=true"
+  )
+)
+lazy val app = project
+  .in(file("."))
+  .settings(
+    name         := "lichess-db",
+    organization := "org.lichess",
+    scalacOptions -= "-Xfatal-warnings",
+    scalacOptions ++= Seq(
+      "-source:future",
+      "-rewrite",
+      "-new-syntax",
+      "-explain",
+      "-Wunused:all",
+      "-release:21"
+    ),
+    resolvers ++= Seq("lila-maven" at "https://raw.githubusercontent.com/lichess-org/lila-maven/master"),
+    libraryDependencies ++= Seq(
+      "org.reactivemongo"  %% "reactivemongo"            % "1.1.0-RC11",
+      "org.reactivemongo"  %% "reactivemongo-akkastream" % "1.1.0-RC11",
+      "com.github.ornicar" %% "scalalib"                 % "9.5.5",
+      "org.lichess"        %% "scalachess"               % "15.6.11",
+      "com.typesafe.akka"  %% "akka-actor"               % "2.6.20",
+      "com.typesafe.akka"  %% "akka-stream"              % "2.6.20",
+      "com.typesafe.akka"  %% "akka-slf4j"               % "2.6.20",
+      "org.lichess"        %% "compression"              % "1.10"
+    )
+  )

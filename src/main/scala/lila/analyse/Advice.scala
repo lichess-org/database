@@ -1,7 +1,7 @@
 package lila.analyse
 
 import chess.format.pgn.Glyph
-import lila.tree.Eval._
+import lila.tree.Eval.*
 
 sealed trait Advice {
   def judgment: Advice.Judgment
@@ -96,7 +96,7 @@ private[analyse] object MateAdvice {
     def prevCp                 = prev.cp.map(invertCp).fold(0)(_.centipawns)
     def nextCp                 = info.cp.map(invertCp).fold(0)(_.centipawns)
     MateSequence(prev.mate map invertMate, info.mate map invertMate) map { sequence =>
-      import Advice.Judgment._
+      import Advice.Judgment.*
       val judgment = sequence match {
         case MateCreated if prevCp < -999 => Inaccuracy
         case MateCreated if prevCp < -700 => Mistake

@@ -1,29 +1,27 @@
 package lichess
 
-import scala.concurrent.duration._
+import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-import reactivemongo.api._
-import reactivemongo.api.bson._
+import reactivemongo.api.*
+import reactivemongo.api.bson.*
 
 import akka.actor.ActorSystem
-import akka.stream._
-import akka.stream.scaladsl._
+import akka.stream.*
+import akka.stream.scaladsl.*
 import akka.util.ByteString
 import java.nio.file.Paths
 import reactivemongo.akkastream.{ cursorProducer, State }
-
-import org.joda.time.DateTime
 
 import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
-import lila.game.BSONHandlers._
-import lila.game.BSONHandlers._
-import lila.game.{ Game, PgnDump, Source => S }
-import lila.db.dsl._
+import lila.game.BSONHandlers.*
+import lila.game.{ Game, PgnDump, Source as S }
+import lila.db.dsl.*
+import java.time.{ Instant, LocalDateTime }
 
 object Main extends App {
 
@@ -33,30 +31,27 @@ object Main extends App {
     args.lift(1).getOrElse("out/lichess_db_%.pgn").replace("%", fromStr)
 
   val variant = Variant
-    .apply(args.lift(2).getOrElse("standard"))
+    .apply(Variant.LilaKey(args.lift(2).getOrElse("standard")))
     .getOrElse(throw new RuntimeException("Invalid variant."))
 
-  val fromWithoutAdjustments =
-    new DateTime(fromStr).withDayOfMonth(1).withTimeAtStartOfDay()
-  val to = fromWithoutAdjustments plusMonths 1
+  val fromWithoutAdjustments = LocalDateTime.parse(fromStr)
+  val to                     = fromWithoutAdjustments plusMonths 1
 
-  val hordeStartDate = new DateTime(2015, 4, 11, 10, 0)
+  val hordeStartDate = java.time.LocalDateTime.of(2015, 4, 11, 10, 0)
   val from =
-    if (
-      variant == Horde && hordeStartDate
-        .compareTo(fromWithoutAdjustments) > 0
-    ) hordeStartDate
+    if variant == Horde && hordeStartDate.isAfter(fromWithoutAdjustments)
+    then hordeStartDate
     else fromWithoutAdjustments
 
-  if (from.compareTo(to) > 0) {
+  if (!from.isBefore(to)) {
     System.out.println("Too early for Horde games. Exiting.");
     System.exit(0);
   }
 
   println(s"Export $from to $path")
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer(
+  given system: ActorSystem = ActorSystem()
+  given ActorMaterializer = ActorMaterializer(
     ActorMaterializerSettings(system)
       .withInputBuffer(
         initialSize = 32,
@@ -64,7 +59,7 @@ object Main extends App {
       )
   )
 
-  val process = lichess.DB.get flatMap { case (db, close) =>
+  val process = lichess.DB.get flatMap { (db, close) =>
     val sources        = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
     val readPreference = ReadPreference.secondary
 
@@ -88,17 +83,17 @@ object Main extends App {
 
     def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
       g -> chess.Replay
-        .boards(g.pgnMoves, None, g.variant)
+        .boards(g.sans, None, g.variant)
         .fold(
           err => {
             println(s"Replay error ${g.id} ${err.toString.take(60)}")
             false
           },
           boards => {
-            if (boards.size == g.pgnMoves.size + 1) true
+            if (boards.size == g.sans.size + 1) true
             else {
               println(
-                s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.pgnMoves.size}"
+                s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.sans.size}"
               )
               false
             }

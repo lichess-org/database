@@ -1,75 +1,71 @@
 package lila.game
 
-import chess._
+import chess.*
 import chess.format.Uci
+import chess.format.pgn.SanStr
+import chess.bitboard.Bitboard
+import chess.bitboard.Board as BBoard
+
 import lila.db.ByteArray
 
 sealed trait PgnStorage
 
-private object PgnStorage {
+private object PgnStorage:
 
-  case object OldBin extends PgnStorage {
+  case object OldBin:
 
-    def encode(pgnMoves: PgnMoves) =
-      ByteArray {
-        format.pgn.Binary.writeMoves(pgnMoves).get
-      }
+    def encode(sans: Vector[SanStr]) =
+      ByteArray:
+        format.pgn.Binary.writeMoves(sans).get
 
-    def decode(bytes: ByteArray, plies: Int): PgnMoves =
-      format.pgn.Binary.readMoves(bytes.value.toList, plies).get.toVector
-  }
+    def decode(bytes: ByteArray, plies: Ply): Vector[SanStr] =
+      format.pgn.Binary.readMoves(bytes.value.toList, plies.value).get.toVector
 
-  case object Huffman extends PgnStorage {
+  case object Huffman:
 
-    import org.lichess.compression.game.{ Encoder, Piece => JavaPiece, Role => JavaRole }
-    import scala.jdk.CollectionConverters._
+    import org.lichess.compression.game.{ Board as JavaBoard, Encoder }
+    import scala.jdk.CollectionConverters.*
 
-    def encode(pgnMoves: PgnMoves) =
-      ByteArray {
-        Encoder.encode(pgnMoves.toArray)
-      }
-    def decode(bytes: ByteArray, plies: Int): Decoded = {
-      val decoded      = Encoder.decode(bytes.value, plies)
-      val unmovedRooks = decoded.unmovedRooks.asScala.view.flatMap(chessPos).to(Set)
+    def encode(sans: Vector[SanStr]) =
+      ByteArray:
+        Encoder.encode(SanStr raw sans.toArray)
+
+    def decode(bytes: ByteArray, plies: Ply, id: String): Decoded =
+      val decoded =
+        try Encoder.decode(bytes.value, plies.value)
+        catch
+          case e: java.nio.BufferUnderflowException =>
+            println(s"Can't decode game $id PGN")
+            throw e
       Decoded(
-        pgnMoves = decoded.pgnMoves.toVector,
-        pieces = decoded.pieces.asScala.view.flatMap { case (k, v) =>
-          chessPos(k).map(_ -> chessPiece(v))
-        }.toMap,
-        positionHashes = decoded.positionHashes,
-        unmovedRooks = UnmovedRooks(unmovedRooks),
+        sans = SanStr from decoded.pgnMoves.toVector,
+        board = chessBoard(decoded.board),
+        positionHashes = PositionHash(decoded.positionHashes),
+        unmovedRooks = UnmovedRooks(decoded.board.castlingRights),
         lastMove = Option(decoded.lastUci) flatMap Uci.apply,
-        castles = Castles(
-          whiteKingSide = unmovedRooks(Pos.H1),
-          whiteQueenSide = unmovedRooks(Pos.A1),
-          blackKingSide = unmovedRooks(Pos.H8),
-          blackQueenSide = unmovedRooks(Pos.A8)
-        ),
-        halfMoveClock = decoded.halfMoveClock
+        castles = Castles(decoded.board.castlingRights),
+        halfMoveClock = HalfMoveClock(decoded.halfMoveClock)
       )
-    }
 
-    private def chessPos(sq: Integer): Option[Pos] = Pos(sq)
-    private def chessRole(role: JavaRole): Role =
-      role match {
-        case JavaRole.PAWN   => Pawn
-        case JavaRole.KNIGHT => Knight
-        case JavaRole.BISHOP => Bishop
-        case JavaRole.ROOK   => Rook
-        case JavaRole.QUEEN  => Queen
-        case JavaRole.KING   => King
-      }
-    private def chessPiece(piece: JavaPiece): Piece =
-      Piece(Color.fromWhite(piece.white), chessRole(piece.role))
-  }
+    private def chessBoard(b: JavaBoard): BBoard =
+      BBoard(
+        occupied = Bitboard(b.occupied),
+        white = Bitboard(b.white),
+        black = Bitboard(b.black),
+        pawns = Bitboard(b.pawns),
+        knights = Bitboard(b.knights),
+        bishops = Bitboard(b.bishops),
+        rooks = Bitboard(b.rooks),
+        queens = Bitboard(b.queens),
+        kings = Bitboard(b.kings)
+      )
 
   case class Decoded(
-      pgnMoves: PgnMoves,
-      pieces: PieceMap,
+      sans: Vector[SanStr],
+      board: BBoard,
       positionHashes: PositionHash, // irrelevant after game ends
       unmovedRooks: UnmovedRooks,   // irrelevant after game ends
       lastMove: Option[Uci],
-      castles: Castles,  // irrelevant after game ends
-      halfMoveClock: Int // irrelevant after game ends
+      castles: Castles,            // irrelevant after game ends
+      halfMoveClock: HalfMoveClock // irrelevant after game ends
   )
-}

@@ -1,23 +1,22 @@
 package lichess
 
 import akka.actor.ActorSystem
-import akka.stream._
-import akka.stream.scaladsl._
+import akka.stream.*
+import akka.stream.scaladsl.*
 import akka.util.ByteString
-import chess.format.FEN
+import chess.format.Fen
 import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import com.typesafe.config.ConfigFactory
 import java.nio.file.Paths
-import lila.db.dsl._
-import lila.game.BSONHandlers._
-import lila.game.BSONHandlers._
-import lila.game.{ Game, PgnDump, Source => S }
-import org.joda.time.DateTime
+import lila.db.dsl.*
+import lila.game.BSONHandlers.*
+import lila.game.BSONHandlers.*
+import lila.game.{ Game, PgnDump, Source as S }
 import reactivemongo.akkastream.{ cursorProducer, State }
-import reactivemongo.api._
-import reactivemongo.api.bson._
-import scala.concurrent.duration._
+import reactivemongo.api.*
+import reactivemongo.api.bson.*
+import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -25,7 +24,7 @@ object Puzzle extends App {
 
   case class PuzzleLine(
       id: String,
-      fen: FEN,
+      fen: Fen.Epd,
       moves: List[String],
       rating: Int,
       ratingDev: Int,
@@ -47,8 +46,8 @@ object Puzzle extends App {
   val uri    = config.getString("db.puzzle.uri")
   val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer(
+  given system: ActorSystem = ActorSystem()
+  given ActorMaterializer = ActorMaterializer(
     ActorMaterializerSettings(system)
       .withInputBuffer(
         initialSize = 32,
@@ -60,7 +59,7 @@ object Puzzle extends App {
 
   def parseDoc(doc: Bdoc): Option[PuzzleLine] = for {
     id         <- doc.string("_id")
-    fen        <- doc.string("fen").map(FEN.apply)
+    fen        <- doc.string("fen").map(Fen.Epd(_))
     moves      <- doc.string("line")
     glicko     <- doc.child("glicko")
     rating     <- glicko.double("r")
@@ -130,7 +129,11 @@ object Puzzle extends App {
         .buffer(1000, OverflowStrategy.backpressure)
         .mapConcat(d => parseDoc(d).toList)
         .map(toCsvLine)
-        .prepend(Source(List("PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags")))
+        .prepend(
+          Source(
+            List("PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags")
+          )
+        )
         .runWith(csvSink)
     }
 

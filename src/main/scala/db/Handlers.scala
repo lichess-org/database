@@ -1,16 +1,20 @@
-package lila.db
+package lila
+package db
 
-import org.joda.time.DateTime
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 import scala.util.{ Failure, Success, Try }
 import reactivemongo.api.bson.exceptions.TypeDoesNotMatchException
 
 trait Handlers {
 
-  implicit val BSONJodaDateTimeHandler = quickHandler[DateTime](
-    { case v: BSONDateTime => new DateTime(v.value) },
-    v => BSONDateTime(v.getMillis)
-  )
+  // free handlers for all types with TotalWrapper
+  // unless they are given an instance of lila.db.NoDbHandler[T]
+  given opaqueHandler[T, A](using
+      sr: SameRuntime[A, T],
+      rs: SameRuntime[T, A],
+      handler: BSONHandler[A]
+  ): BSONHandler[T] =
+    handler.as(sr.apply, rs.apply)
 
   def quickHandler[T](read: PartialFunction[BSONValue, T], write: T => BSONValue): BSONHandler[T] =
     new BSONHandler[T] {
@@ -49,5 +53,6 @@ trait Handlers {
       def writeTry(v: Map[String, V]) = writer writeTry v
     }
 
-  implicit val colorBoolHandler = BSONBooleanHandler.as[chess.Color](chess.Color.fromWhite, _.white)
+  given colorBoolHandler: BSONHandler[chess.Color] =
+    BSONBooleanHandler.as[chess.Color](chess.Color.fromWhite(_), _.white)
 }

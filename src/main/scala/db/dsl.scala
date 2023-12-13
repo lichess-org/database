@@ -17,9 +17,9 @@
 package lila.db
 
 import alleycats.Zero
-import reactivemongo.api._
+import reactivemongo.api.*
 import reactivemongo.api.collections.GenericQueryBuilder
-import reactivemongo.api.bson._
+import reactivemongo.api.bson.*
 
 trait dsl {
 
@@ -27,17 +27,15 @@ trait dsl {
   type Bdoc = BSONDocument
   type Barr = BSONArray
 
-  //**********************************************************************************************//
+  // **********************************************************************************************//
   // Helpers
   val $empty: Bdoc = document.asStrict
 
-  def $doc(elements: ElementProducer*): Bdoc = BSONDocument.strict(elements: _*)
+  def $doc(elements: ElementProducer*): Bdoc = BSONDocument.strict(elements*)
 
   def $doc(elements: Iterable[(String, BSONValue)]): Bdoc = BSONDocument.strict(elements)
 
-  def $arr(elements: Producer[BSONValue]*): Barr = {
-    BSONArray(elements: _*)
-  }
+  def $arr(elements: Producer[BSONValue]*): Barr = BSONArray(elements*)
 
   def $id[T: BSONWriter](id: T): Bdoc = $doc("_id" -> id)
 
@@ -49,11 +47,11 @@ trait dsl {
   def $int(i: Int)         = BSONInteger(i)
 
   // End of Helpers
-  //**********************************************************************************************//
+  // **********************************************************************************************//
 
   implicit val LilaBSONDocumentZero: Zero[Bdoc] = Zero($empty)
 
-  //**********************************************************************************************//
+  // **********************************************************************************************//
   // Top Level Logical Operators
   def $or(expressions: Bdoc*): Bdoc = {
     $doc("$or" -> expressions)
@@ -67,9 +65,9 @@ trait dsl {
     $doc("$nor" -> expressions)
   }
   // End of Top Level Logical Operators
-  //**********************************************************************************************//
+  // **********************************************************************************************//
 
-  //**********************************************************************************************//
+  // **********************************************************************************************//
   // Top Level Evaluation Operators
   def $text(term: String): Bdoc = {
     $doc("$text" -> $doc("$search" -> term))
@@ -83,43 +81,7 @@ trait dsl {
     $doc("$where" -> expr)
   }
   // End of Top Level Evaluation Operators
-  //**********************************************************************************************//
-
-  //**********************************************************************************************//
-  // Top Level Field Update Operators
-  def $inc(item: ElementProducer, items: ElementProducer*): Bdoc = {
-    $doc("$inc" -> $doc((Seq(item) ++ items): _*))
-  }
-  def $inc(doc: Bdoc): Bdoc =
-    $doc("$inc" -> doc)
-
-  def $mul(item: ElementProducer): Bdoc = {
-    $doc("$mul" -> $doc(item))
-  }
-
-  def $setOnInsert(item: ElementProducer, items: ElementProducer*): Bdoc = {
-    $doc("$setOnInsert" -> $doc((Seq(item) ++ items): _*))
-  }
-
-  def $set(item: ElementProducer, items: ElementProducer*): Bdoc = {
-    $doc("$set" -> $doc((Seq(item) ++ items): _*))
-  }
-
-  def $unset(field: String, fields: String*): Bdoc = {
-    $doc("$unset" -> $doc((Seq(field) ++ fields).map(k => (k, BSONString("")))))
-  }
-
-  def $setBoolOrUnset(field: String, value: Boolean): Bdoc = {
-    if (value) $set(field -> true) else $unset(field)
-  }
-
-  def $min(item: ElementProducer): Bdoc = {
-    $doc("$min" -> $doc(item))
-  }
-
-  def $max(item: ElementProducer): Bdoc = {
-    $doc("$max" -> $doc(item))
-  }
+  // **********************************************************************************************//
 
   // Helpers
   def $eq[T: BSONWriter](value: T) = $doc("$eq" -> value)
@@ -168,13 +130,10 @@ trait dsl {
   }
 
   // End of Top Level Field Update Operators
-  //**********************************************************************************************//
+  // **********************************************************************************************//
 
-  //**********************************************************************************************//
+  // **********************************************************************************************//
   // Top Level Array Update Operators
-
-  def $addToSet(item: ElementProducer, items: ElementProducer*): Bdoc =
-    $doc("$addToSet" -> $doc((Seq(item) ++ items): _*))
 
   def $pop(item: (String, Int)): Bdoc = {
     if (item._2 != -1 && item._2 != 1)
@@ -201,10 +160,10 @@ trait dsl {
     $doc((if (add) "$addToSet" else "$pull") -> $doc(key -> value))
 
   // End ofTop Level Array Update Operators
-  //**********************************************************************************************//
+  // **********************************************************************************************//
 
-  /** Represents the initial state of the expression which has only the name of the field.
-    * It does not know the value of the expression.
+  /** Represents the initial state of the expression which has only the name of the field. It does not know
+    * the value of the expression.
     */
   trait ElementBuilder {
     def field: String
@@ -313,20 +272,6 @@ trait dsl {
       $regex(s"^$value", options)
   }
 
-  trait ArrayOperators { self: ElementBuilder =>
-    def $all[T: BSONWriter](values: Seq[T]): SimpleExpression[Bdoc] = {
-      SimpleExpression(field, $doc("$all" -> values))
-    }
-
-    def $elemMatch(query: ElementProducer*): SimpleExpression[Bdoc] = {
-      SimpleExpression(field, $doc("$elemMatch" -> $doc(query: _*)))
-    }
-
-    def $size(s: Int): SimpleExpression[Bdoc] = {
-      SimpleExpression(field, $doc("$size" -> s))
-    }
-  }
-
   object $sort {
 
     def asc(field: String)  = $doc(field -> 1)
@@ -347,7 +292,6 @@ trait dsl {
       with ElementOperators
       with EvaluationOperators
       with LogicalOperators
-      with ArrayOperators
 
   implicit def toBSONDocument[V: BSONWriter](expression: Expression[V]): Bdoc =
     $doc(expression.field -> expression.value)

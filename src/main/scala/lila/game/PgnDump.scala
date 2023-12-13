@@ -1,27 +1,24 @@
-package lila.game
+package lila
+package game
 
-import chess.format.pgn.{ ParsedPgn, Parser, Pgn, Tag, TagType }
-import chess.format.{ FEN, Forsyth }
-import chess.format.{ pgn => chessPgn }
-import chess.{ Black, Centis, Color, White }
+import chess.format.pgn.{ InitialComments, ParsedPgn, Parser, Pgn, PgnTree, SanStr, Tag, TagType, Tags }
+import chess.format.Fen
+import chess.format.pgn as chessPgn
+import chess.{ Centis, Color, Ply }
 import lichess.Users
 
 object PgnDump {
 
-  def apply(game: Game, users: Users, initialFen: Option[FEN]): Pgn = {
+  def apply(game: Game, users: Users, initialFen: Option[Fen.Epd]): Pgn =
     val ts           = tags(game, users, initialFen)
-    val fenSituation = ts find (_.name == Tag.FEN) flatMap { case Tag(_, fen) => Forsyth <<< FEN(fen) }
-    val moves2: PgnMoves =
-      if (fenSituation.fold(false)(_.situation.color.black)) ".." +: game.pgnMoves
-      else game.pgnMoves
-    val turns = makeTurns(
-      moves2,
-      fenSituation.map(_.fullMoveNumber) getOrElse 1,
-      game.bothClockStates getOrElse Vector.empty,
+    val fenSituation = ts.fen.flatMap(Fen.readWithMoveNumber)
+    val tree = makeTree(
+      game.sans,
+      fenSituation.fold(Ply.initial)(_.ply),
+      ~game.bothClockStates,
       game.startColor
     )
-    Pgn(chessPgn.Tags(ts), turns)
-  }
+    Pgn(ts, InitialComments.empty, tree)
 
   def result(game: Game) =
     if (game.finished) game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
@@ -54,15 +51,15 @@ object PgnDump {
 
   private val emptyRound = Tag(_.Round, "-")
 
-  def tags(game: Game, users: Users, initialFen: Option[FEN]): List[Tag] = {
+  def tags(game: Game, users: Users, initialFen: Option[Fen.Epd]): Tags = Tags:
     val date = Tag.UTCDate.format.print(game.createdAt)
     List(
       Tag(_.Event, eventOf(game)),
       Tag(_.Site, gameUrl(game.id)),
       Tag(_.Date, date),
       emptyRound,
-      Tag(_.White, player(game, White, users)),
-      Tag(_.Black, player(game, Black, users)),
+      Tag(_.White, player(game, chess.White, users)),
+      Tag(_.Black, player(game, chess.Black, users)),
       Tag(_.Result, result(game)),
       Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
       Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
@@ -90,7 +87,7 @@ object PgnDump {
       Some(
         Tag(
           _.Termination, {
-            import chess.Status._
+            import chess.Status.*
             game.status match {
               case Created | Started                             => "Unterminated"
               case Aborted | NoStart                             => "Abandoned"
@@ -108,30 +105,18 @@ object PgnDump {
       if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
       if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
     ).flatten
-  }
-
-  private def makeTurns(
-      moves: Vector[String],
-      from: Int,
-      clocks: Vector[Centis],
-      startColor: Color
-  ): List[chessPgn.Turn] =
-    (moves grouped 2).zipWithIndex.toList map { case (moves, index) =>
-      val clockOffset = startColor.fold(0, 1)
-      chessPgn.Turn(
-        number = index + from,
-        white = moves.headOption.filter(".." != _).map { san =>
-          chessPgn.Move(
-            san = san,
-            secondsLeft = clocks lift (index * 2 - clockOffset) map (_.roundSeconds)
-          )
-        },
-        black = moves lift 1 map { san =>
-          chessPgn.Move(
-            san = san,
-            secondsLeft = clocks lift (index * 2 + 1 - clockOffset) map (_.roundSeconds)
-          )
-        }
-      )
-    } filterNot (_.isEmpty)
 }
+
+def makeTree(
+    moves: Seq[SanStr],
+    from: Ply,
+    clocks: Vector[Centis],
+    startColor: Color
+): Option[PgnTree] =
+  val clockOffset = startColor.fold(0, 1)
+  def f(san: SanStr, index: Int) = chessPgn.Move(
+    ply = from + index + 1,
+    san = san,
+    secondsLeft = clocks.lift(index - clockOffset).map(_.roundSeconds)
+  )
+  chess.Tree.buildWithIndex(moves, f)
