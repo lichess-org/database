@@ -63,8 +63,8 @@ function renderTable(files, variant) {
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
     <td><a href="${variant}/${f.name}">.pgn.zst</a> <span class="sep">/</span> <a href="${variant}/${
-        f.name
-      }.torrent">.torrent</a></td>
+      f.name
+    }.torrent">.torrent</a></td>
     </tr>`;
     })
     .join('\n');
@@ -116,6 +116,12 @@ function replaceNbPuzzles(template) {
     .then(c => template.replace('<!-- nbPuzzles -->', numberFormat(c)));
 }
 
+function replaceNbEvals(template) {
+  return fs
+    .readFile(sourceDir + '/eval-count.txt', { encoding: 'utf8' })
+    .then(c => template.replace('<!-- nbEvals -->', numberFormat(c)));
+}
+
 process.on('unhandledRejection', r => console.log(r));
 
 Promise.all([
@@ -134,6 +140,7 @@ Promise.all([
     .then(rv('racingKings'))
     .then(rv('threeCheck'))
     .then(replaceNbPuzzles)
+    .then(replaceNbEvals)
     .then(rendered => {
       return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, style));
     });

@@ -163,7 +163,7 @@ a:hover {
 .content,
 .license,
 header {
-  width: 650px;
+  width: 750px;
   margin: 0 auto;
 }
 
@@ -230,7 +230,7 @@ header h1 strong {
 code,
 pre {
   margin-bottom: 30px;
-  font-family: Monaco, 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal;
+  font-family: 'Bitstream Vera Sans Mono', 'Lucida Console', Terminal, Monaco, monospace;
   background: #222;
   border-radius: 4px;
   font-size: 0.9em;
@@ -446,12 +446,15 @@ nav a.on {
   border-color: var(--c-primary);
 }
 
+#evals,
 #puzzles,
 #variant_games,
+#evals:target ~ #standard_games,
 #puzzles:target ~ #standard_games,
 #variant_games:target ~ #standard_games {
   display: none;
 }
+#evals:target,
 #puzzles:target,
 #variant_games:target,
 #standard_games:target,
@@ -460,6 +463,7 @@ nav a.on {
 }
 
 #standard_games nav,
+#evals nav,
 #puzzles nav {
   margin-bottom: 50px;
 }

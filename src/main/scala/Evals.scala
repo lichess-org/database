@@ -88,64 +88,9 @@ object Evals:
 
   def main(args: Array[String]): Unit =
 
-    val path = args.headOption.getOrElse("out/lichess_db_eval.csv")
+    val path = args.headOption.getOrElse("out/lichess_db_eval.json")
 
     println(s"Exporting to $path")
-
-    /* source {
-        _id: '2b1k3pr5R1p2pr25p22pP42P5PP3PB1R5K1',
-        nbMoves: 8,
-        evals: [
-          {
-            pvs: '994:oX TU gf 6Z fm 87 iy 7Y XO YR',
-            knodes: 193778,
-            depth: 34,
-            by: 'angelchessreal',
-            trust: 9.20467223187989
-          },
-          {
-            pvs: '959:oX 6Z go TU ov 87 vD 7Y DK LD/728:3X 6X oX TU gf LD ae 8Z fm UM/690:oQ XZ gp T9 ag 87 QZ 6Z g2 ZQ',
-            knodes: 178307,
-            depth: 29,
-            by: 'xxnarcissus',
-            trust: 8.823781867452649
-          },
-          {
-            pvs: '914:oX 6Z go TU ov 87 ad Zy dl yZ/709:3? 80 ?6 XZ oQ ZR QH LD 6Y 09/674:3X 6X oX TU gf LD fm SK XO KB/481:oQ XZ jr T1 3? 19 ?9 89 QZ 6Z/23:3h X2 gf 80 h? 6Z ov 0R jr Ar',
-            knodes: 40987,
-            depth: 25,
-            by: 'zhumanchuie',
-            trust: 11.512802389289732
-          }
-        ],
-        usedAt: ISODate('2023-12-13T13:58:18.359Z'),
-        updatedAt: ISODate('2021-06-12T07:54:24.370Z')
-      } */
-
-    /* dest {
-        fen: 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -',
-        evals: [
-          {
-            pvs: [{
-              cp: 994,
-              line: 'oX TU gf 6Z fm 87 iy 7Y XO YR'
-            }],
-            knodes: 193778,
-            depth: 34,
-          },
-          {
-            pvs: [{
-              cp: 959,
-              line: 'oX 6Z go TU ov 87 vD 7Y DK LD'
-            }, {
-              mate: -2,
-              line: '3X 6X oX TU gf LD ae 8Z fm UM'
-            }],
-            knodes: 178307,
-            depth: 29,
-          },
-        ],
-      } */
 
     val config   = ConfigFactory.load()
     val dbName   = "lichess"
@@ -194,13 +139,12 @@ object Evals:
       .flatMap(_.database(dbName))
       .flatMap {
         _.collection(collName)
-          .find(BSONDocument())
-          .sort(BSONDocument())
-          .cursor[Entry]()
-          // .cursor[Bdoc](readPreference = ReadPreference.secondary)
+          .find($doc("_id" -> $doc("$not" -> BSONRegex(":", "")))) // no variant
+          // .cursor[Entry]()
+          .cursor[Entry](readPreference = ReadPreference.secondary)
           .documentSource(
-            maxDocs = 1000,
-            // maxDocs = Int.MaxValue,
+            // maxDocs = 1000,
+            maxDocs = Int.MaxValue,
             err = Cursor.ContOnError((_, e) => println(e.getMessage))
           )
           .buffer(1000, OverflowStrategy.backpressure)
