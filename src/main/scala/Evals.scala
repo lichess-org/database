@@ -57,6 +57,7 @@ object Evals:
               )
             )
           case _ => handlerBadValue(s"Invalid evalcache id $value")
+      case _ => handlerBadValue(s"Invalid evalcache id $bs")
   given BSONReader[NonEmptyList[Pv]] = new:
     private def scoreRead(str: String): Option[Score] =
       if str startsWith "#" then str.drop(1).toIntOption.map(Score.Mate.apply)
