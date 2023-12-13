@@ -1,7 +1,5 @@
 package lila.rating
 
-import chess.Centis
-
 import chess.Speed
 
 sealed abstract class PerfType(

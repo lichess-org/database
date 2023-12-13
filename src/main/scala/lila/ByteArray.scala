@@ -38,7 +38,7 @@ object ByteArray {
     var i    = s.length - 1
     var sum  = 0
     var mult = 1
-    while (i >= 0) {
+    while i >= 0 do {
       s.charAt(i) match {
         case '1' => sum += mult
         case '0' =>
@@ -61,7 +61,7 @@ object ByteArray {
       val bytes = new Array[Byte](sz)
 
       var i = 0
-      while (i < sz) {
+      while i < sz do {
         val t = 2 * i
         bytes(i) = Integer.parseInt(str.substring(t, t + 2), 16).toByte
         i += 1
@@ -76,7 +76,7 @@ object ByteArray {
       val hex = new Array[Char](2 * len)
 
       var i = 0
-      while (i < len) {
+      while i < len do {
         val b = bytes(i)
 
         val t = 2 * i // index in output buffer

@@ -2,7 +2,6 @@ package lila
 package game
 
 import ornicar.scalalib.extensions.*
-import scala.concurrent.duration.*
 import scala.language.postfixOps
 
 import chess.Color.{ Black, White }
@@ -10,22 +9,7 @@ import chess.format.{ Fen, Uci }
 import chess.opening.{ Opening, OpeningDb }
 import chess.variant.{ Crazyhouse, Variant }
 import chess.format.pgn.SanStr
-import chess.{
-  Board,
-  ByColor,
-  Castles,
-  Centis,
-  CheckCount,
-  Clock,
-  Color,
-  Game as ChessGame,
-  History as ChessHistory,
-  Mode,
-  MoveOrDrop,
-  PositionHash,
-  Status,
-  UnmovedRooks
-}
+import chess.{ Board, ByColor, Castles, Centis, CheckCount, Clock, Color, Game as ChessGame, Mode, Status }
 
 import lila.common.Sequence
 import lila.db.ByteArray
@@ -63,10 +47,9 @@ case class Game(
 
   def playedTurns = ply - startedAtPly
 
-  def flagged = if (status == Status.Outoftime) Some(turnColor) else None
+  def flagged = if status == Status.Outoftime then Some(turnColor) else None
 
-  def tournamentId = metadata.tournamentId
-  def simulId      = metadata.simulId
+  export metadata.*
 
   def isTournament = tournamentId.isDefined
   def isSimul      = simulId.isDefined
@@ -81,12 +64,12 @@ case class Game(
   }
 
   def moveTimes(color: Color): Option[List[Centis]] = {
-    for {
+    for
       clk <- clock
       inc = clk.incrementOf(color)
       history <- clockHistory
       clocks = history(color)
-    } yield Centis(0) :: {
+    yield Centis(0) :: {
       val pairs = clocks.iterator zip clocks.iterator.drop(1)
 
       // We need to determine if this color's last clock had inc applied.
@@ -103,22 +86,22 @@ case class Game(
       pairs map { case (first, second) =>
         {
           val d = first - second
-          if (pairs.hasNext || !noLastInc) d + inc else d
+          if pairs.hasNext || !noLastInc then d + inc else d
         } nonNeg
       } toList
     }
   } orElse binaryMoveTimes.map { binary =>
     // TODO: make movetime.read return List after writes are disabled.
     val base = BinaryFormat.moveTime.read(binary, playedTurns)
-    val mts  = if (color == startColor) base else base.drop(1)
+    val mts  = if color == startColor then base else base.drop(1)
     everyOther(mts.toList)
   }
 
   def moveTimes: Option[Vector[Centis]] =
-    for {
+    for
       a <- moveTimes(startColor)
       b <- moveTimes(!startColor)
-    } yield Sequence.interleave(a, b)
+    yield Sequence.interleave(a, b)
 
   def bothClockStates: Option[Vector[Centis]] =
     clockHistory.map(_ bothClockStates startColor)
@@ -216,21 +199,8 @@ case class Game(
 
   def startColor = startedAtPly.turn
 
-  def userIds = playerMaps(_.userId)
-
-  def userRatings = playerMaps(_.rating)
-
-  def averageUsersRating = userRatings match {
-    case a :: b :: Nil => Some((a + b) / 2)
-    case a :: Nil      => Some((a + 1500) / 2)
-    case _             => None
-  }
-
-  def source = metadata.source
-
   def ratingVariant =
-    if (isTournament && board.variant.fromPosition)
-      _root_.chess.variant.Standard
+    if isTournament && board.variant.fromPosition then _root_.chess.variant.Standard
     else variant
 
   def fromPosition = variant.fromPosition || source.contains(Source.Position)
@@ -239,10 +209,6 @@ case class Game(
     (!fromPosition && Variant.list.openingSensibleVariants(variant)) so OpeningDb.search(sans)
 
   def synthetic = id == Game.syntheticId
-
-  private def playerMaps[A](f: Player => Option[A]): List[A] = players flatMap {
-    f(_)
-  }
 
   def pov(c: Color)        = Pov(this, c)
   def whitePov             = pov(White)
@@ -346,6 +312,7 @@ object Game {
     val pgnImport         = "pgni"
     val tournamentId      = "tid"
     val simulId           = "sid"
+    val swissId           = "iid"
     val tvAt              = "tv"
     val winnerColor       = "w"
     val winnerId          = "wid"

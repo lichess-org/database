@@ -12,16 +12,14 @@ import akka.stream.*
 import akka.stream.scaladsl.*
 import akka.util.ByteString
 import java.nio.file.Paths
-import reactivemongo.akkastream.{ cursorProducer, State }
+import reactivemongo.akkastream.cursorProducer
 
-import chess.format.pgn.Pgn
 import chess.variant.{ Horde, Standard, Variant }
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
-import lila.game.BSONHandlers.*
-import lila.game.{ Game, PgnDump, Source as S }
+import lila.game.{ Game, PgnDump }
 import lila.db.dsl.*
-import java.time.{ Instant, LocalDateTime }
+import java.time.LocalDateTime
 
 object Main extends App {
 
@@ -43,7 +41,7 @@ object Main extends App {
     then hordeStartDate
     else fromWithoutAdjustments
 
-  if (!from.isBefore(to)) {
+  if !from.isBefore(to) then {
     System.out.println("Too early for Horde games. Exiting.");
     System.exit(0);
   }
@@ -60,7 +58,6 @@ object Main extends App {
   )
 
   val process = lichess.DB.get flatMap { (db, close) =>
-    val sources        = List(S.Lobby, S.Friend, S.Tournament, S.Pool)
     val readPreference = ReadPreference.secondary
 
     val query = BSONDocument(
@@ -81,29 +78,29 @@ object Main extends App {
     val tickSource =
       Source.tick(Reporter.freq, Reporter.freq, None)
 
-    def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
-      g -> chess.Replay
-        .boards(g.sans, None, g.variant)
-        .fold(
-          err => {
-            println(s"Replay error ${g.id} ${err.toString.take(60)}")
-            false
-          },
-          boards => {
-            if (boards.size == g.sans.size + 1) true
-            else {
-              println(
-                s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.sans.size}"
-              )
-              false
-            }
-          }
-        )
-    }
+    // def checkLegality(g: Game): Future[(Game, Boolean)] = Future {
+    //   g -> chess.Replay
+    //     .boards(g.sans, None, g.variant)
+    //     .fold(
+    //       err => {
+    //         println(s"Replay error ${g.id} ${err.toString.take(60)}")
+    //         false
+    //       },
+    //       boards => {
+    //         if boards.size == g.sans.size + 1 then true
+    //         else {
+    //           println(
+    //             s"Replay error ${g.id} boards.size=${boards.size}, moves.size=${g.sans.size}"
+    //           )
+    //           false
+    //         }
+    //       }
+    //     )
+    // }
 
     def bsonRead(variant: Variant)(docs: Seq[BSONDocument]) = Future {
       docs
-        .map(gameWithInitialFenBSONHandler.read)
+        .map(lila.game.BSONHandlers.gameWithInitialFenBSONHandler.read)
         .filter(_.game.variant == variant)
     }
 
@@ -158,13 +155,15 @@ object Main extends App {
       .mapAsyncUnordered(12)(bsonRead(variant))
       .map(g => Some(g))
       .merge(tickSource, eagerComplete = true)
-      .via(Reporter)
+      .via(Reporter.graph)
       // .mapAsyncUnordered(16)(checkLegality)
       // .filter(_._2).map(_._1)
       .mapAsyncUnordered(16)(withAnalysis)
       .mapAsyncUnordered(16)(withUsers)
       .mapAsyncUnordered(12)(toPgn)
       .runWith(pgnSink)
+      .andThen { case _ => close() }
+
   }
 
   scala.concurrent.Await.result(process, Duration.Inf)

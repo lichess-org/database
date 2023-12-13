@@ -6,8 +6,8 @@ import lila.rating.PerfType
 object PerfPicker {
 
   def key(speed: Speed, variant: chess.variant.Variant, daysPerTurn: Option[Int]): String =
-    if (variant.standard) {
-      if (daysPerTurn.isDefined || speed == Speed.Correspondence) PerfType.Correspondence.key
+    if variant.standard then {
+      if daysPerTurn.isDefined || speed == Speed.Correspondence then PerfType.Correspondence.key
       else speed.key.value
     } else variant.key.value
 

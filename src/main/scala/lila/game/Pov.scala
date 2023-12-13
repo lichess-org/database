@@ -30,18 +30,9 @@ case class Pov(game: Game, color: Color) {
 
 object Pov {
 
-  def apply(game: Game): List[Pov] = game.players.map { apply(game, _) }
-
-  def first(game: Game)  = apply(game, if (!game.variant.racingKings) game.firstPlayer else game.whitePlayer)
-  def second(game: Game) = apply(game, if (!game.variant.racingKings) game.secondPlayer else game.blackPlayer)
-  def white(game: Game)  = apply(game, game.whitePlayer)
-  def black(game: Game)  = apply(game, game.blackPlayer)
   def player(game: Game) = apply(game, game.player)
 
   def apply(game: Game, player: Player) = new Pov(game, player.color)
-
-  def apply(game: Game, playerId: String): Option[Pov] =
-    game player playerId map { apply(game, _) }
 
   def ofUserId(game: Game, userId: String): Option[Pov] =
     game playerByUserId userId map { apply(game, _) }

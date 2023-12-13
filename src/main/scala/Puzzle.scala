@@ -4,16 +4,11 @@ import akka.actor.ActorSystem
 import akka.stream.*
 import akka.stream.scaladsl.*
 import akka.util.ByteString
-import chess.format.Fen
-import chess.format.pgn.Pgn
-import chess.variant.{ Horde, Standard, Variant }
+import chess.format.{ EpdFen, Fen }
 import com.typesafe.config.ConfigFactory
 import java.nio.file.Paths
 import lila.db.dsl.*
-import lila.game.BSONHandlers.*
-import lila.game.BSONHandlers.*
-import lila.game.{ Game, PgnDump, Source as S }
-import reactivemongo.akkastream.{ cursorProducer, State }
+import reactivemongo.akkastream.cursorProducer
 import reactivemongo.api.*
 import reactivemongo.api.bson.*
 import scala.concurrent.duration.*
@@ -57,9 +52,9 @@ object Puzzle extends App {
 
   private val hiddenThemes = Set("checkFirst")
 
-  def parseDoc(doc: Bdoc): Option[PuzzleLine] = for {
+  def parseDoc(doc: Bdoc): Option[PuzzleLine] = for
     id         <- doc.string("_id")
-    fen        <- doc.string("fen").map(Fen.Epd(_))
+    fen        <- EpdFen.from(doc.string("fen"))
     moves      <- doc.string("line")
     glicko     <- doc.child("glicko")
     rating     <- glicko.double("r")
@@ -69,7 +64,7 @@ object Puzzle extends App {
     themes     <- doc.getAsOpt[List[String]]("themes")
     gameId     <- doc.string("gameId")
     openings = doc.getAsOpt[List[String]]("opening")
-  } yield PuzzleLine(
+  yield PuzzleLine(
     id = id,
     fen = fen,
     moves = moves.split(' ').toList,
@@ -79,11 +74,9 @@ object Puzzle extends App {
     plays = plays,
     themes = themes.filterNot(hiddenThemes.contains),
     gameUrl = {
-      val asWhite = fen.color.contains(chess.White)
-      val ply = fen.fullMove.fold(0) { fm =>
-        fm * 2 - fen.color.fold(0)(_.fold(1, 0))
-      }
-      s"https://lichess.org/${gameId}${if (asWhite) "" else "/black"}#${ply}"
+      val asWhite = fen.colorOrWhite.white
+      val ply     = Fen.readPly(fen)
+      s"https://lichess.org/${gameId}${if asWhite then "" else "/black"}#${ply}"
     },
     openings = openings getOrElse Nil
   )

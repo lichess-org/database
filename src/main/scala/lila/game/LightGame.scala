@@ -42,7 +42,7 @@ case class LightPlayer(
 object LightPlayer:
 
   import reactivemongo.api.bson.*
-  import lila.db.dsl.{ *, given }
+  import lila.db.dsl.*
 
   private[game] type Builder = Color => Option[String] => LightPlayer
 

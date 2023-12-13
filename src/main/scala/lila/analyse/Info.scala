@@ -3,6 +3,7 @@ package analyse
 
 import chess.Color
 import chess.format.Uci
+import chess.format.pgn.Comment
 
 import lila.tree.Eval
 
@@ -32,6 +33,11 @@ case class Info(
   }
   def evalComment: Option[String] = cpComment orElse mateComment
 
+  def pgnComment = Comment from cp
+    .map(_.pawns.toString)
+    .orElse(mate.map(m => s"#${m.value}"))
+    .map(c => s"[%eval $c]")
+
   def isEmpty = cp.isEmpty && mate.isEmpty
 
   def forceCentipawns: Option[Int] = mate match {
@@ -52,8 +58,8 @@ object Info {
 
   def start(ply: Int) = Info(ply, Eval.initial, Nil)
 
-  private def strCp(s: String)   = parseIntOption(s) map Cp.apply
-  private def strMate(s: String) = parseIntOption(s) map Mate.apply
+  private def strCp(s: String)   = s.toIntOption map Cp.apply
+  private def strMate(s: String) = s.toIntOption map Mate.apply
 
   private def decode(ply: Int, str: String): Option[Info] = str.split(separator) match {
     case Array()           => Some(Info(ply, Eval.empty))
@@ -61,7 +67,7 @@ object Info {
     case Array(cp, ma)     => Some(Info(ply, Eval(strCp(cp), strMate(ma), None)))
     case Array(cp, ma, va) => Some(Info(ply, Eval(strCp(cp), strMate(ma), None), va.split(' ').toList))
     case Array(cp, ma, va, be) =>
-      Some(Info(ply, Eval(strCp(cp), strMate(ma), Uci.Move piotr be), va.split(' ').toList))
+      Some(Info(ply, Eval(strCp(cp), strMate(ma), Uci.Move fromChars be), va.split(' ').toList))
     case _ => None
   }
 

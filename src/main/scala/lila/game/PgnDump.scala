@@ -1,12 +1,13 @@
 package lila
 package game
 
-import chess.format.pgn.{ InitialComments, ParsedPgn, Parser, Pgn, PgnTree, SanStr, Tag, TagType, Tags }
+import chess.format.pgn.{ InitialComments, Pgn, PgnTree, SanStr, Tag, TagType, Tags }
 import chess.format.Fen
 import chess.format.pgn as chessPgn
 import chess.{ Centis, Color, Ply }
 import lichess.Users
 
+// #TODO add draw offers comments
 object PgnDump {
 
   def apply(game: Game, users: Users, initialFen: Option[Fen.Epd]): Pgn =
@@ -21,7 +22,7 @@ object PgnDump {
     Pgn(ts, InitialComments.empty, tree)
 
   def result(game: Game) =
-    if (game.finished) game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
+    if game.finished then game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
     else "*"
 
   private def gameUrl(id: String) = s"https://lichess.org/$id"
@@ -29,7 +30,7 @@ object PgnDump {
   private def elo(p: Player) = p.rating.fold("?")(_.toString)
 
   private def player(g: Game, color: Color, users: Users) = {
-    val player = g.player(color)
+    val player = g.players(color)
     player.aiLevel.fold(users(color).name)("lichess AI level " + _)
   }
 
@@ -39,6 +40,8 @@ object PgnDump {
       s"${game.mode} $perf tournament https://lichess.org/tournament/$id"
     } orElse game.simulId.map { id =>
       s"$perf simul https://lichess.org/simul/$id"
+    } orElse game.swissId.map { id =>
+      s"$perf swiss https://lichess.org/swiss/$id"
     } getOrElse {
       s"${game.mode} $perf game"
     }
@@ -46,7 +49,7 @@ object PgnDump {
 
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
     p.ratingDiff.map { rd =>
-      Tag(tag(Tag), s"${if (rd >= 0) "+" else ""}$rd")
+      Tag(tag(Tag), s"${if rd >= 0 then "+" else ""}$rd")
     }
 
   private val emptyRound = Tag(_.Round, "-")
@@ -63,19 +66,19 @@ object PgnDump {
       Tag(_.Result, result(game)),
       Tag(_.UTCDate, Tag.UTCDate.format.print(game.createdAt)),
       Tag(_.UTCTime, Tag.UTCTime.format.print(game.createdAt)),
-      Tag(_.WhiteElo, elo(game.whitePlayer)),
-      Tag(_.BlackElo, elo(game.blackPlayer))
+      Tag(_.WhiteElo, elo(game.players.white)),
+      Tag(_.BlackElo, elo(game.players.black))
     ) ::: List(
-      ratingDiffTag(game.whitePlayer, _.WhiteRatingDiff),
-      ratingDiffTag(game.blackPlayer, _.BlackRatingDiff),
+      ratingDiffTag(game.players.white, _.WhiteRatingDiff),
+      ratingDiffTag(game.players.black, _.BlackRatingDiff),
       users.white.title.map { t =>
         Tag(_.WhiteTitle, t)
       },
       users.black.title.map { t =>
         Tag(_.BlackTitle, t)
       },
-      if (game.variant.standard) Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
-      if (game.variant.standard) Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
+      if game.variant.standard then Some(Tag(_.ECO, game.opening.fold("?")(_.opening.eco))) else None,
+      if game.variant.standard then Some(Tag(_.Opening, game.opening.fold("?")(_.opening.name))) else None,
       Some(
         Tag(
           _.TimeControl,
@@ -99,11 +102,11 @@ object PgnDump {
           }
         )
       ),
-      if (!game.variant.standardInitialPosition)
+      if !game.variant.standardInitialPosition then
         Some(Tag(_.FEN, initialFen.getOrElse(game.variant.initialFen)))
       else None,
-      if (!game.variant.standardInitialPosition) Some(Tag("SetUp", "1")) else None,
-      if (game.variant.exotic) Some(Tag(_.Variant, game.variant.name)) else None
+      if !game.variant.standardInitialPosition then Some(Tag("SetUp", "1")) else None,
+      if game.variant.exotic then Some(Tag(_.Variant, game.variant.name)) else None
     ).flatten
 }
 

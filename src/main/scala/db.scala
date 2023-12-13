@@ -30,7 +30,7 @@ final class DB(
     userColl
       .find(
         BSONDocument(
-          "_id" -> BSONDocument("$in" -> gs.flatMap(_.userIds).distinct)
+          "_id" -> BSONDocument("$in" -> gs.flatMap(_.players.mapList(_.userId).flatten).distinct)
         ),
         Some(userProj)
       )
@@ -41,7 +41,7 @@ final class DB(
           users.find(_.id == uid) getOrElse LightUser(uid, uid)
         }
         gs.map { g =>
-          Users(of(g.whitePlayer), of(g.blackPlayer))
+          Users(of(g.players.white), of(g.players.black))
         }
       }
 }

@@ -1,4 +1,5 @@
-package lila.analyse
+package lila
+package analyse
 
 import chess.Color
 
@@ -16,7 +17,7 @@ case class Analysis(
   lazy val infoAdvices: InfoAdvices = {
     (Info.start(startPly) :: infos) sliding 2 collect { case List(prev, info) =>
       info -> {
-        if (info.hasVariation) Advice(prev, info) else None
+        if info.hasVariation then Advice(prev, info) else None
       }
     }
   }.toList
@@ -52,7 +53,7 @@ object Analysis {
 
   type ID = String
 
-  implicit val analysisBSONHandler = new BSON[Analysis] {
+  given analysisBSONHandler: BSON[Analysis] = new:
     def reads(r: BSON.Reader) = {
       val startPly = r intD "ply"
       val raw      = r str "data"
@@ -67,5 +68,4 @@ object Analysis {
         date = r date "date"
       )
     }
-  }
 }

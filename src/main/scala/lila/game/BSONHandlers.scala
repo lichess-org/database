@@ -4,11 +4,11 @@ package game
 import chess.variant.{ Crazyhouse, Variant }
 import chess.{
   ByColor,
-  HalfMoveClock,
   CheckCount,
   Clock,
   Color,
   Game as ChessGame,
+  HalfMoveClock,
   History as ChessHistory,
   Mode,
   Ply,
@@ -16,11 +16,11 @@ import chess.{
   UnmovedRooks
 }
 import chess.bitboard.Board as BBoard
-import chess.format.Fen
 import lila.db.BSON
 import lila.db.dsl.{ *, given }
 import reactivemongo.api.bson.*
 import scala.util.Try
+import chess.format.Fen
 
 object BSONHandlers {
   import lila.db.ByteArray.byteArrayHandler
@@ -73,7 +73,7 @@ object BSONHandlers {
 
     import Game.BSONFields as F
 
-    def reads(r: BSON.Reader): Game = {
+    def reads(r: BSON.Reader): Game =
 
       val playerIds = r str F.playerIds
       val light     = lightGameReader.reads(r)
@@ -83,7 +83,7 @@ object BSONHandlers {
       val ply          = r.get[Ply](F.turns)
       val turnColor    = ply.turn
       val createdAt    = r date F.createdAt
-      val playedPlies = ply - startedAtPly
+      val playedPlies  = ply - startedAtPly
 
       val whitePlayer = Player.from(light, Color.white, playerIds, r.getD[Bdoc](F.whitePlayer))
       val blackPlayer = Player.from(light, Color.black, playerIds, r.getD[Bdoc](F.blackPlayer))
@@ -147,31 +147,25 @@ object BSONHandlers {
         id = light.id,
         players = ByColor(whitePlayer, blackPlayer),
         chess = chessGame,
-        loadClockHistory = clk =>
-          for
-            bw <- whiteClockHistory
-            bb <- blackClockHistory
-            history <-
-              BinaryFormat.clockHistory
-                .read(clk.limit, bw, bb, (light.status == Status.Outoftime).option(turnColor))
-            _ = lila.mon.game.loadClockHistory.increment()
-          yield history,
+        clockHistory = for
+          clk <- chessGame.clock
+          bw  <- whiteClockHistory
+          bb  <- blackClockHistory
+          history <- BinaryFormat.clockHistory
+            .read(clk.limit, bw, bb, (light.status == Status.Outoftime).option(turnColor))
+        yield history,
         status = light.status,
-        daysPerTurn = r.getO[Days](F.daysPerTurn),
+        daysPerTurn = r.getO[Int](F.daysPerTurn),
         binaryMoveTimes = r bytesO F.moveTimes,
         mode = Mode(r boolD F.rated),
-        bookmarks = r intD F.bookmarks,
         createdAt = createdAt,
         movedAt = r.dateD(F.movedAt, createdAt),
         metadata = Metadata(
           source = r intO F.source flatMap Source.apply,
-          pgnImport = r.getO[PgnImport](F.pgnImport),
-          tournamentId = r.getO[TourId](F.tournamentId),
-          swissId = r.getO[SwissId](F.swissId),
-          simulId = r.getO[SimulId](F.simulId),
-          analysed = r boolD F.analysed,
-          drawOffers = r.getD(F.drawOffers, GameDrawOffers.empty),
-          rules = r.getD(F.rules, Set.empty)
+          tournamentId = r.strO(F.tournamentId),
+          swissId = r.strO(F.swissId),
+          simulId = r.strO(F.simulId),
+          analysed = r boolD F.analysed
         )
       )
 
@@ -182,18 +176,6 @@ object BSONHandlers {
         gameBSONHandler.reads(r),
         Fen.Epd.from(r strO Game.BSONFields.initialFen)
       )
-
-  private def clockHistory(
-      color: Color,
-      clockHistory: Option[ClockHistory],
-      clock: Option[Clock],
-      flagged: Option[Color]
-  ) =
-    for
-      clk     <- clock
-      history <- clockHistory
-      times = history(color)
-    yield BinaryFormat.clockHistory.writeSide(clk.limit, times, flagged has color)
 
   private[game] def clockBSONReader(since: Instant, whiteBerserk: Boolean, blackBerserk: Boolean) =
     new BSONReader[Color => Clock]:

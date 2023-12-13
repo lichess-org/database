@@ -10,8 +10,6 @@ abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with B
 
   val logMalformed = true
 
-  import BSON.*
-
   def write(obj: T): Bdoc = ???
 
   def writeTry(obj: T): Try[Bdoc] = ???

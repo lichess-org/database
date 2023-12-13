@@ -5,7 +5,7 @@ object Sequence {
     val iterA   = a.iterator
     val iterB   = b.iterator
     val builder = Vector.newBuilder[A]
-    while (iterA.hasNext && iterB.hasNext) {
+    while iterA.hasNext && iterB.hasNext do {
       builder += iterA.next += iterB.next
     }
     builder ++= iterA ++= iterB

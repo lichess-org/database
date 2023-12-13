@@ -57,7 +57,7 @@ private[analyse] object CpAdvice {
     List(300 -> Advice.Judgment.Blunder, 100 -> Advice.Judgment.Mistake, 50 -> Advice.Judgment.Inaccuracy)
 
   def apply(prev: Info, info: Info): Option[CpAdvice] =
-    for {
+    for
       cp     ← prev.cp map (_.ceiled.centipawns)
       infoCp ← info.cp map (_.ceiled.centipawns)
       delta = {
@@ -65,7 +65,7 @@ private[analyse] object CpAdvice {
         info.color.fold(-d, d)
       }
       judgment ← cpJudgments find { case (d, n) => d <= delta } map (_._2)
-    } yield CpAdvice(judgment, info, prev)
+    yield CpAdvice(judgment, info, prev)
 }
 
 sealed abstract private[analyse] class MateSequence(val desc: String)
