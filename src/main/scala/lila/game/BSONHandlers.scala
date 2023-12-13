@@ -20,7 +20,6 @@ import lila.db.BSON
 import lila.db.dsl.{ *, given }
 import reactivemongo.api.bson.*
 import scala.util.Try
-import chess.format.Fen
 
 object BSONHandlers {
   import lila.db.ByteArray.byteArrayHandler
@@ -107,8 +106,8 @@ object BSONHandlers {
             lastMove = clm.lastMove,
             castles = clm.castles,
             halfMoveClock = halfMoveClock orElse
-              r.getO[Fen.Epd](F.initialFen).flatMap { fen =>
-                Fen.readHalfMoveClockAndFullMoveNumber(fen)._1
+              r.getO[chess.format.Fen.Epd](F.initialFen).flatMap { fen =>
+                chess.format.Fen.readHalfMoveClockAndFullMoveNumber(fen)._1
               } getOrElse playedPlies.into(HalfMoveClock)
           )
 
