@@ -42,7 +42,7 @@
             <a href="https://lichess.org/analysis">Produced by, and for, the Lichess analysis board</a>,
             running various flavours of Stockfish within user browsers.
           <p>
-            <a class="primary" href="lichess_db_eval.json.zst">Download lichess_db_eval.json.zst</a>
+            <a class="primary" href="lichess_db_eval.jsonl.zst">Download lichess_db_eval.jsonl.zst</a>
           </p>
           <h3 id="eval_format">Format</h3>
           <p>Evaluations are formatted as JSON; one position per line.</p>

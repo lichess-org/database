@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 dir=${1}
-file="lichess_db_eval.json"
+file="lichess_db_eval.jsonl"
 compressed_file="$file.zst"
 
 echo "Export evals to $dir/$file"

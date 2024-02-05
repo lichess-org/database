@@ -88,7 +88,7 @@ object Evals:
 
   def main(args: Array[String]): Unit =
 
-    val path = args.headOption.getOrElse("out/lichess_db_eval.json")
+    val path = args.headOption.getOrElse("out/lichess_db_eval.jsonl")
 
     println(s"Exporting to $path")
 
