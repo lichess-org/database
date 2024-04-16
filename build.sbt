@@ -22,8 +22,8 @@ lazy val app = project
     ),
     resolvers ++= Seq("lila-maven" at "https://raw.githubusercontent.com/lichess-org/lila-maven/master"),
     libraryDependencies ++= Seq(
-      "org.reactivemongo"  %% "reactivemongo"            % "1.1.0-RC11",
-      "org.reactivemongo"  %% "reactivemongo-akkastream" % "1.1.0-RC11",
+      "org.reactivemongo"  %% "reactivemongo"            % "1.1.0-RC12",
+      "org.reactivemongo"  %% "reactivemongo-akkastream" % "1.1.0-RC12",
       "org.lichess"        %% "scalalib-core"            % "11.1.2",
       "org.lichess"        %% "scalachess"               % "16.0.3",
       "com.typesafe.akka"  %% "akka-actor"               % "2.6.20",
