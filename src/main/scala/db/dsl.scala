@@ -263,6 +263,7 @@ trait dsl:
       with EvaluationOperators
       with LogicalOperators
 
+  import scala.language.implicitConversions
   implicit def toBSONDocument[V: BSONWriter](expression: Expression[V]): Bdoc =
     $doc(expression.field -> expression.value)
 
