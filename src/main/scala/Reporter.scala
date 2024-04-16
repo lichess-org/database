@@ -5,7 +5,7 @@ import akka.stream.stage.*
 import scala.concurrent.duration.*
 import java.time.format.{ DateTimeFormatter, FormatStyle }
 import java.time.Instant
-import ornicar.scalalib.time.*
+import scalalib.time.*
 
 import lila.game.Game
 

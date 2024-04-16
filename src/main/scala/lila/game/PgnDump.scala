@@ -10,7 +10,7 @@ import lichess.Users
 // #TODO add draw offers comments
 object PgnDump:
 
-  def apply(game: Game, users: Users, initialFen: Option[Fen.Epd]): Pgn =
+  def apply(game: Game, users: Users, initialFen: Option[Fen.Full]): Pgn =
     val ts           = tags(game, users, initialFen)
     val fenSituation = ts.fen.flatMap(Fen.readWithMoveNumber)
     val tree = makeTree(
@@ -56,7 +56,7 @@ object PgnDump:
 
   private val emptyRound = Tag(_.Round, "-")
 
-  def tags(game: Game, users: Users, initialFen: Option[Fen.Epd]): Tags = Tags:
+  def tags(game: Game, users: Users, initialFen: Option[Fen.Full]): Tags = Tags:
     val date = Tag.UTCDate.format.print(game.createdAt)
     List(
       Tag(_.Event, eventOf(game)),

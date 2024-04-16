@@ -108,7 +108,7 @@ object BSONHandlers:
             lastMove = clm.lastMove,
             castles = clm.castles,
             halfMoveClock = halfMoveClock
-              .orElse(r.getO[chess.format.Fen.Epd](F.initialFen).flatMap { fen =>
+              .orElse(r.getO[chess.format.Fen.Full](F.initialFen).flatMap { fen =>
                 chess.format.Fen.readHalfMoveClockAndFullMoveNumber(fen)._1
               })
               .getOrElse(playedPlies.into(HalfMoveClock))
@@ -178,7 +178,7 @@ object BSONHandlers:
     def reads(r: BSON.Reader): Game.WithInitialFen =
       Game.WithInitialFen(
         gameBSONHandler.reads(r),
-        Fen.Epd.from(r.strO(Game.BSONFields.initialFen))
+        Fen.Full.from(r.strO(Game.BSONFields.initialFen))
       )
 
   private[game] def clockBSONReader(since: Instant, whiteBerserk: Boolean, blackBerserk: Boolean) =

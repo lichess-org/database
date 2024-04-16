@@ -1,7 +1,7 @@
 package lila
 package game
 
-import ornicar.scalalib.extensions.*
+import scalalib.extensions.*
 import scala.language.postfixOps
 
 import chess.Color.{ Black, White }
@@ -223,7 +223,7 @@ object Game:
 
   type ID = String
 
-  case class WithInitialFen(game: Game, fen: Option[Fen.Epd])
+  case class WithInitialFen(game: Game, fen: Option[Fen.Full])
 
   val syntheticId = "synthetic"
 

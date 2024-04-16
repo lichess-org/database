@@ -32,16 +32,6 @@ object Evals:
   case class Entry(_id: Id, evals: List[Eval]):
     def fen = chess.format.SmallFen(_id.smallFen).garbageInefficientReadBackIntoFen
 
-  /*
-    val base = fen.value.split(' ').take(4).mkString("").filter { c =>
-      c != '/' && c != '-' && c != 'w'
-    }
-    if variant == chess.variant.ThreeCheck
-    then fen.value.split(' ').lift(6).foldLeft(base)(_ + _)
-    else base
-   */
-  // def toEpd(small: String): Fen.Epd =
-
   given BSONReader[Id] = new:
     def readTry(bs: BSONValue) = bs match
       case BSONString(value) =>
