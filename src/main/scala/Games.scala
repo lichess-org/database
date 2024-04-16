@@ -34,7 +34,7 @@ object Games:
       .getOrElse(throw new RuntimeException("Invalid variant."))
 
     val fromWithoutAdjustments = LocalDate.parse(s"$fromStr-01").atStartOfDay
-    val to                     = fromWithoutAdjustments plusMonths 1
+    val to                     = fromWithoutAdjustments.plusMonths(1)
 
     val hordeStartDate = java.time.LocalDateTime.of(2015, 4, 11, 10, 0)
     val from =
@@ -42,10 +42,9 @@ object Games:
       then hordeStartDate
       else fromWithoutAdjustments
 
-    if !from.isBefore(to) then {
+    if !from.isBefore(to) then
       System.out.println("Too early for Horde games. Exiting.");
       System.exit(0);
-    }
 
     println(s"Export $from to $path")
 
@@ -58,7 +57,7 @@ object Games:
         )
     )
 
-    val process = lichess.DB.get flatMap { (db, close) =>
+    val process = lichess.DB.get.flatMap { (db, close) =>
       val readPreference = ReadPreference.secondaryPreferred
 
       val query = BSONDocument(
@@ -116,16 +115,17 @@ object Games:
             )
           )
           .cursor[Analysis](readPreference = readPreference)
-          .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]()) map { as =>
-          gs.map { g =>
-            g -> as.find(_.id == g.game.id)
+          .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]())
+          .map { as =>
+            gs.map { g =>
+              g -> as.find(_.id == g.game.id)
+            }
           }
-        }
 
       type WithUsers = (Analysed, Users)
       def withUsers(as: Seq[Analysed]): Future[Seq[WithUsers]] =
         db.users(as.map(_._1.game)).map { users =>
-          as zip users
+          as.zip(users)
         }
 
       def toPgn(ws: Seq[WithUsers]): Future[ByteString] =

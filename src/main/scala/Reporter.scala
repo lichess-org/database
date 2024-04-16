@@ -19,7 +19,7 @@ object Reporter:
     val out            = Outlet[Seq[Game.WithInitialFen]]("reporter.out")
     override val shape = FlowShape.of(in, out)
 
-    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape) {
+    override def createLogic(inheritedAttributes: Attributes): GraphStageLogic = new GraphStageLogic(shape):
 
       private val formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.SHORT)
 
@@ -29,37 +29,28 @@ object Reporter:
 
       setHandler(
         in,
-        new InHandler {
-          override def onPush() = {
-            grab(in) match {
-              case Some(gs) => {
+        new InHandler:
+          override def onPush() =
+            grab(in) match
+              case Some(gs) =>
                 counter += gs.size
-                date = gs.headOption.map(_.game.createdAt) orElse date
+                date = gs.headOption.map(_.game.createdAt).orElse(date)
                 push(out, gs)
-              }
-              case None => {
+              case None =>
                 val gps = (counter - prev) / freq.toSeconds
                 println(s"${date.fold("-")(formatter.print)} $counter $gps/s")
                 prev = counter
                 pull(in)
-              }
-            }
-          }
 
           setHandler(
             out,
-            new OutHandler {
-              override def onPull() = {
+            new OutHandler:
+              override def onPull() =
                 pull(in)
-              }
-            }
           )
 
           //       override def onUpstreamFinish(): Unit = {
           //         println("finished?")
           //         completeStage()
           //       }
-        }
       )
-
-    }

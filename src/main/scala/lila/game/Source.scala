@@ -1,11 +1,10 @@
 package lila.game
 
-sealed abstract class Source(val id: Int) {
+sealed abstract class Source(val id: Int):
 
   lazy val name = toString.toLowerCase
-}
 
-object Source {
+object Source:
 
   case object Lobby      extends Source(id = 1)
   case object Friend     extends Source(id = 2)
@@ -38,5 +37,4 @@ object Source {
   val searchable =
     List(Lobby, Friend, Ai, Position, Import, Tournament, Simul, Pool)
 
-  def apply(id: Int): Option[Source] = byId get id
-}
+  def apply(id: Int): Option[Source] = byId.get(id)

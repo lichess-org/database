@@ -46,7 +46,7 @@ object LightPlayer:
 
   private[game] type Builder = Color => Option[String] => LightPlayer
 
-  private def safeRange[A](range: Range)(a: A): Option[A] = range.contains(a) option a
+  private def safeRange[A](range: Range)(a: A): Option[A] = range.contains(a).option(a)
   private val ratingRange                                 = safeRange[Int](0 to 4000)
   private val ratingDiffRange                             = safeRange[Int](-1000 to 1000)
 
@@ -59,10 +59,10 @@ object LightPlayer:
       import Player.BSONFields.*
       LightPlayer(
         color = color,
-        aiLevel = doc int aiLevel,
+        aiLevel = doc.int(aiLevel),
         userId = userId,
-        rating = doc.getAsOpt[Int](rating) flatMap ratingRange,
-        ratingDiff = doc.getAsOpt[Int](ratingDiff) flatMap ratingDiffRange,
+        rating = doc.getAsOpt[Int](rating).flatMap(ratingRange),
+        ratingDiff = doc.getAsOpt[Int](ratingDiff).flatMap(ratingDiffRange),
         provisional = ~doc.getAsOpt[Boolean](provisional),
-        berserk = doc booleanLike berserk getOrElse false
+        berserk = doc.booleanLike(berserk).getOrElse(false)
       )

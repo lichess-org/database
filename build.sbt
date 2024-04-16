@@ -1,6 +1,6 @@
 inThisBuild(
   Seq(
-    scalaVersion  := "3.3.1",
+    scalaVersion  := "3.4.1",
     versionScheme := Some("early-semver"),
     version       := "2.0",
     run / javaOptions += "-Dconfig.override_with_env_vars=true"

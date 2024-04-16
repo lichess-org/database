@@ -10,12 +10,12 @@ case class Analysis(
     uid: Option[String], // requester lichess ID
     by: Option[String],  // analyser lichess ID
     date: Instant
-) {
+):
 
   type InfoAdvices = List[(Info, Option[Advice])]
 
   lazy val infoAdvices: InfoAdvices = {
-    (Info.start(startPly) :: infos) sliding 2 collect { case List(prev, info) =>
+    (Info.start(startPly) :: infos).sliding(2).collect { case List(prev, info) =>
       info -> {
         if info.hasVariation then Advice(prev, info) else None
       }
@@ -27,14 +27,14 @@ case class Analysis(
   // ply -> UCI
   def bestMoves: Map[Int, String] =
     infos.view.flatMap { i =>
-      i.best map { b =>
+      i.best.map { b =>
         i.ply -> b.keys
       }
     }.toMap
 
-  def summary: List[(Color, List[(Advice.Judgment, Int)])] = Color.all map { color =>
-    color -> (Advice.Judgment.all map { judgment =>
-      judgment -> (advices count { adv =>
+  def summary: List[(Color, List[(Advice.Judgment, Int)])] = Color.all.map { color =>
+    color -> (Advice.Judgment.all.map { judgment =>
+      judgment -> (advices.count { adv =>
         adv.color == color && adv.judgment == judgment
       })
     })
@@ -44,9 +44,8 @@ case class Analysis(
 
   def nbEmptyInfos       = infos.count(_.isEmpty)
   def emptyRatio: Double = nbEmptyInfos.toDouble / infos.size
-}
 
-object Analysis {
+object Analysis:
 
   import lila.db.BSON
   import reactivemongo.api.bson.*
@@ -54,18 +53,16 @@ object Analysis {
   type ID = String
 
   given analysisBSONHandler: BSON[Analysis] = new:
-    def reads(r: BSON.Reader) = {
-      val startPly = r intD "ply"
-      val raw      = r str "data"
+    def reads(r: BSON.Reader) =
+      val startPly = r.intD("ply")
+      val raw      = r.str("data")
       Analysis(
-        id = r str "_id",
-        infos = Info.decodeList(raw, startPly) getOrElse {
-          sys error s"Invalid analysis data $raw"
+        id = r.str("_id"),
+        infos = Info.decodeList(raw, startPly).getOrElse {
+          sys.error(s"Invalid analysis data $raw")
         },
         startPly = startPly,
-        uid = r strO "uid",
-        by = r strO "by",
-        date = r date "date"
+        uid = r.strO("uid"),
+        by = r.strO("by"),
+        date = r.date("date")
       )
-    }
-}

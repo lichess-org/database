@@ -75,12 +75,12 @@ object Puzzles:
       popularity = math.round(popularity * 100).toInt,
       plays = plays,
       themes = themes.filterNot(hiddenThemes.contains),
-      gameUrl = {
+      gameUrl =
         val asWhite = fen.colorOrWhite.white
         val hash    = Fen.readPly(fen).fold("")(p => s"#$p")
         s"https://lichess.org/${gameId}${if asWhite then "" else "/black"}$hash"
-      },
-      openings = openings getOrElse Nil
+      ,
+      openings = openings.getOrElse(Nil)
     )
 
     def toCsvLine(puzzle: PuzzleLine): String =

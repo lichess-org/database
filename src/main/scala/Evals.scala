@@ -45,15 +45,18 @@ object Evals:
   given BSONReader[Id] = new:
     def readTry(bs: BSONValue) = bs match
       case BSONString(value) =>
-        value split ':' match
+        value.split(':') match
           case Array(fen) => Success(Id(chess.variant.Standard, fen))
           case Array(variantId, fen) =>
             import chess.variant.Variant
             Success(
               Id(
-                Variant.Id.from(variantId.toIntOption) flatMap {
-                  Variant(_)
-                } getOrElse sys.error(s"Invalid evalcache variant $variantId"),
+                Variant.Id
+                  .from(variantId.toIntOption)
+                  .flatMap {
+                    Variant(_)
+                  }
+                  .getOrElse(sys.error(s"Invalid evalcache variant $variantId")),
                 fen
               )
             )
@@ -61,10 +64,10 @@ object Evals:
       case _ => handlerBadValue(s"Invalid evalcache id $bs")
   given BSONReader[NonEmptyList[Pv]] = new:
     private def scoreRead(str: String): Option[Score] =
-      if str startsWith "#" then str.drop(1).toIntOption.map(Score.Mate.apply)
+      if str.startsWith("#") then str.drop(1).toIntOption.map(Score.Mate.apply)
       else str.toIntOption.map(Score.Cp.apply)
     private def movesRead(str: String): Option[NonEmptyList[Uci]] =
-      Uci readListChars str flatMap (_.toNel)
+      Uci.readListChars(str).flatMap(_.toNel)
     private val scoreSeparator = ':'
     private val pvSeparator    = '/'
     def readTry(bs: BSONValue) = bs match
@@ -74,13 +77,13 @@ object Evals:
             pvStr.split(scoreSeparator) match
               case Array(score, moves) =>
                 Pv(
-                  scoreRead(score) getOrElse sys.error(s"Invalid score $score"),
-                  movesRead(moves) getOrElse sys.error(s"Invalid moves $moves")
+                  scoreRead(score).getOrElse(sys.error(s"Invalid score $score")),
+                  movesRead(moves).getOrElse(sys.error(s"Invalid moves $moves"))
                 )
-              case x => sys error s"Invalid PV $pvStr: ${x.toList} (in $value)"
+              case x => sys.error(s"Invalid PV $pvStr: ${x.toList} (in $value)")
           }
         }.map {
-          _.toNel getOrElse sys.error(s"Empty PVs $value")
+          _.toNel.getOrElse(sys.error(s"Empty PVs $value"))
         }
       case b => lila.db.BSON.handlerBadType[NonEmptyList[Pv]](b)
   given BSONDocumentReader[Eval]  = Macros.reader

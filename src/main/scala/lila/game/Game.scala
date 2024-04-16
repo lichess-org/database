@@ -26,7 +26,7 @@ case class Game(
     createdAt: Instant,
     movedAt: Instant,
     metadata: Metadata
-) {
+):
   export chess.{ clock, player as turnColor, ply, sans, situation, startedAtPly }
   export chess.situation.board
   export chess.situation.board.{ history, variant }
@@ -36,7 +36,7 @@ case class Game(
   def playerByUserId(userId: String): Option[Player] =
     players.find(_.userId contains userId)
   def opponentByUserId(userId: String): Option[Player] =
-    playerByUserId(userId) map opponent
+    playerByUserId(userId).map(opponent)
 
   def opponent(p: Player): Player = opponent(p.color)
 
@@ -58,10 +58,9 @@ case class Game(
 
   def hasChat = !isTournament && !isSimul && nonAi
 
-  def everyOther[A](l: List[A]): List[A] = l match {
+  def everyOther[A](l: List[A]): List[A] = l match
     case a :: b :: tail => a :: everyOther(tail)
     case _              => l
-  }
 
   def moveTimes(color: Color): Option[List[Centis]] = {
     for
@@ -70,7 +69,7 @@ case class Game(
       history <- clockHistory
       clocks = history(color)
     yield Centis(0) :: {
-      val pairs = clocks.iterator zip clocks.iterator.drop(1)
+      val pairs = clocks.iterator.zip(clocks.iterator.drop(1))
 
       // We need to determine if this color's last clock had inc applied.
       // if finished and history.size == playedTurns then game was ended
@@ -83,19 +82,19 @@ case class Game(
       // the last recorded time is in the history for turnColor.
       val noLastInc = finished && (history.size <= playedTurns.value) == (color != turnColor)
 
-      pairs map { case (first, second) =>
+      pairs.map { case (first, second) =>
         {
           val d = first - second
           if pairs.hasNext || !noLastInc then d + inc else d
         } nonNeg
       } toList
     }
-  } orElse binaryMoveTimes.map { binary =>
+  }.orElse(binaryMoveTimes.map { binary =>
     // TODO: make movetime.read return List after writes are disabled.
     val base = BinaryFormat.moveTime.read(binary, playedTurns)
     val mts  = if color == startColor then base else base.drop(1)
     everyOther(mts.toList)
-  }
+  })
 
   def moveTimes: Option[Vector[Centis]] =
     for
@@ -104,14 +103,14 @@ case class Game(
     yield Sequence.interleave(a, b)
 
   def bothClockStates: Option[Vector[Centis]] =
-    clockHistory.map(_ bothClockStates startColor)
+    clockHistory.map(_.bothClockStates(startColor))
 
   def sansOf(color: Color): Vector[SanStr] =
     val pivot = if color == startColor then 0 else 1
     sans.zipWithIndex.collect:
       case (e, i) if (i % 2) == pivot => e
 
-  def lastMoveKeys: Option[String] = history.lastMove map {
+  def lastMoveKeys: Option[String] = history.lastMove.map {
     case Uci.Drop(target, _) => s"$target$target"
     case m: Uci.Move         => m.keys
   }
@@ -119,7 +118,7 @@ case class Game(
   def correspondenceClock: Option[CorrespondenceClock] =
     daysPerTurn.map: days =>
       val increment   = days * 24 * 60 * 60
-      val secondsLeft = (movedAt.toSeconds + increment - nowSeconds).toInt max 0
+      val secondsLeft = (movedAt.toSeconds + increment - nowSeconds).toInt.max(0)
       CorrespondenceClock(
         increment = increment,
         whiteTime = turnColor.fold(secondsLeft, increment).toFloat,
@@ -142,12 +141,12 @@ case class Game(
 
   def continuable = status != Status.Mate && status != Status.Stalemate
 
-  def aiLevel: Option[Int] = players find (_.isAi) flatMap (_.aiLevel)
+  def aiLevel: Option[Int] = players.find(_.isAi).flatMap(_.aiLevel)
 
   def hasAi: Boolean = players.exists(_.isAi)
   def nonAi          = !hasAi
 
-  def aiPov: Option[Pov] = players.find(_.isAi).map(_.color) map pov
+  def aiPov: Option[Pov] = players.find(_.isAi).map(_.color).map(pov)
 
   def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
 
@@ -166,19 +165,19 @@ case class Game(
   def fromLobby  = source contains Source.Lobby
   def fromFriend = source contains Source.Friend
 
-  def winner = players find (_.wins)
+  def winner = players.find(_.wins)
 
-  def loser = winner map opponent
+  def loser = winner.map(opponent)
 
-  def winnerColor: Option[Color] = winner map (_.color)
+  def winnerColor: Option[Color] = winner.map(_.color)
 
-  def winnerUserId: Option[String] = winner flatMap (_.userId)
+  def winnerUserId: Option[String] = winner.flatMap(_.userId)
 
-  def loserUserId: Option[String] = loser flatMap (_.userId)
+  def loserUserId: Option[String] = loser.flatMap(_.userId)
 
-  def wonBy(c: Color): Option[Boolean] = winnerColor map (_ == c)
+  def wonBy(c: Color): Option[Boolean] = winnerColor.map(_ == c)
 
-  def lostBy(c: Color): Option[Boolean] = winnerColor map (_ != c)
+  def lostBy(c: Color): Option[Boolean] = winnerColor.map(_ != c)
 
   def drawn = finished && winner.isEmpty
 
@@ -191,8 +190,7 @@ case class Game(
   def estimateClockTotalTime = clock.map(_.estimateTotalSeconds)
 
   def estimateTotalTime =
-    estimateClockTotalTime orElse
-      correspondenceClock.map(_.estimateTotalTime) getOrElse 1200
+    estimateClockTotalTime.orElse(correspondenceClock.map(_.estimateTotalTime)).getOrElse(1200)
 
   def onePlayerHasMoved    = playedTurns > 0
   def bothPlayersHaveMoved = playedTurns > 1
@@ -206,7 +204,7 @@ case class Game(
   def fromPosition = variant.fromPosition || source.contains(Source.Position)
 
   lazy val opening: Option[Opening.AtPly] =
-    (!fromPosition && Variant.list.openingSensibleVariants(variant)) so OpeningDb.search(sans)
+    (!fromPosition && Variant.list.openingSensibleVariants(variant)).so(OpeningDb.search(sans))
 
   def synthetic = id == Game.syntheticId
 
@@ -214,15 +212,14 @@ case class Game(
   def whitePov             = pov(White)
   def blackPov             = pov(Black)
   def playerPov(p: Player) = pov(p.color)
-  def loserPov             = loser map playerPov
+  def loserPov             = loser.map(playerPov)
 
   def speed = _root_.chess.Speed(clock.map(_.config))
 
   def perfKey  = PerfPicker.key(this)
   def perfType = lila.rating.PerfType(perfKey)
-}
 
-object Game {
+object Game:
 
   type ID = String
 
@@ -272,12 +269,12 @@ object Game {
   val fullIdSize   = 12
   val tokenSize    = 4
 
-  def takeGameId(fullId: String)   = fullId take gameIdSize
-  def takePlayerId(fullId: String) = fullId drop gameIdSize
+  def takeGameId(fullId: String)   = fullId.take(gameIdSize)
+  def takePlayerId(fullId: String) = fullId.drop(gameIdSize)
 
   private[game] val emptyCheckCount = CheckCount(0, 0)
 
-  object BSONFields {
+  object BSONFields:
 
     val id                = "_id"
     val whitePlayer       = "p0"
@@ -318,8 +315,6 @@ object Game {
     val winnerId          = "wid"
     val initialFen        = "if"
     val checkAt           = "ck"
-  }
-}
 
 case class CastleLastMove(castles: Castles, lastMove: Option[Uci])
 
@@ -333,15 +328,15 @@ object CastleLastMove:
 
   private[game] given castleLastMoveHandler: BSONHandler[CastleLastMove] = tryHandler[CastleLastMove](
     { case bin: BSONBinary =>
-      byteArrayHandler readTry bin map BinaryFormat.castleLastMove.read
+      byteArrayHandler.readTry(bin).map(BinaryFormat.castleLastMove.read)
     },
-    clmt => byteArrayHandler writeTry { BinaryFormat.castleLastMove write clmt } get
+    clmt => byteArrayHandler.writeTry { BinaryFormat.castleLastMove.write(clmt) } get
   )
 
 case class ClockHistory(
     white: Vector[Centis] = Vector.empty,
     black: Vector[Centis] = Vector.empty
-) {
+):
 
   def update(color: Color, f: Vector[Centis] => Vector[Centis]): ClockHistory =
     color.fold(copy(white = f(white)), copy(black = f(black)))
@@ -363,4 +358,3 @@ case class ClockHistory(
       firstMoveBy.fold(white, black),
       firstMoveBy.fold(black, white)
     )
-}

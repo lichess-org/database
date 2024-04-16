@@ -6,16 +6,15 @@ import alleycats.Zero
 import reactivemongo.api.bson.*
 import scala.util.Try
 
-abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T] {
+abstract class BSON[T] extends BSONReadOnly[T] with BSONDocumentReader[T] with BSONDocumentWriter[T]:
 
   val logMalformed = true
 
   def write(obj: T): Bdoc = ???
 
   def writeTry(obj: T): Try[Bdoc] = ???
-}
 
-abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
+abstract class BSONReadOnly[T] extends BSONDocumentReader[T]:
 
   import BSON.*
 
@@ -27,53 +26,51 @@ abstract class BSONReadOnly[T] extends BSONDocumentReader[T] {
     }
 
   def read(doc: Bdoc) = readDocument(doc).get
-}
 
-object BSON extends Handlers {
+object BSON extends Handlers:
 
-  final class Reader(val doc: Bdoc) {
+  final class Reader(val doc: Bdoc):
 
     def get[A: BSONReader](k: String): A =
       doc.getAsTry[A](k).get
     def getO[A: BSONReader](k: String): Option[A] =
       doc.getAsOpt[A](k)
     def getD[A](k: String)(implicit zero: Zero[A], reader: BSONReader[A]): A =
-      doc.getAsOpt[A](k) getOrElse zero.zero
+      doc.getAsOpt[A](k).getOrElse(zero.zero)
     def getD[A: BSONReader](k: String, default: => A): A =
-      doc.getAsOpt[A](k) getOrElse default
+      doc.getAsOpt[A](k).getOrElse(default)
     def getsD[A: BSONReader](k: String) =
-      doc.getAsOpt[List[A]](k) getOrElse Nil
+      doc.getAsOpt[List[A]](k).getOrElse(Nil)
 
     inline def str(k: String)                 = get[String](k)(using BSONStringHandler)
     inline def strO(k: String)                = getO[String](k)(using BSONStringHandler)
-    def strD(k: String)                       = strO(k) getOrElse ""
+    def strD(k: String)                       = strO(k).getOrElse("")
     def int(k: String)                        = get[Int](k)
     def intO(k: String)                       = getO[Int](k)
-    def intD(k: String)                       = intO(k) getOrElse 0
+    def intD(k: String)                       = intO(k).getOrElse(0)
     def double(k: String)                     = get[Double](k)
     def doubleO(k: String)                    = getO[Double](k)
     def floatO(k: String)                     = getO[Float](k)
     def bool(k: String)                       = get[Boolean](k)
     def boolO(k: String)                      = getO[Boolean](k)
-    def boolD(k: String)                      = boolO(k) getOrElse false
+    def boolD(k: String)                      = boolO(k).getOrElse(false)
     def date(k: String)                       = get[Instant](k)
     def dateO(k: String)                      = getO[Instant](k)
     def dateD(k: String, default: => Instant) = getD(k, default)
     def bytes(k: String)                      = get[ByteArray](k)
     def bytesO(k: String)                     = getO[ByteArray](k)
-    def bytesD(k: String)                     = bytesO(k) getOrElse ByteArray.empty
+    def bytesD(k: String)                     = bytesO(k).getOrElse(ByteArray.empty)
     def nInt(k: String)                       = get[BSONNumberLike](k).toInt.get
-    def nIntO(k: String): Option[Int]         = getO[BSONNumberLike](k) flatMap (_.toInt.toOption)
-    def nIntD(k: String): Int                 = nIntO(k) getOrElse 0
-    def intsD(k: String)                      = getO[List[Int]](k) getOrElse Nil
-    def strsD(k: String)                      = getO[List[String]](k) getOrElse Nil
+    def nIntO(k: String): Option[Int]         = getO[BSONNumberLike](k).flatMap(_.toInt.toOption)
+    def nIntD(k: String): Int                 = nIntO(k).getOrElse(0)
+    def intsD(k: String)                      = getO[List[Int]](k).getOrElse(Nil)
+    def strsD(k: String)                      = getO[List[String]](k).getOrElse(Nil)
 
     export doc.contains
 
-    def debug = BSON debug doc
-  }
+    def debug = BSON.debug(doc)
 
-  def debug(v: BSONValue): String = v match {
+  def debug(v: BSONValue): String = v match
     case d: Bdoc        => debugDoc(d)
     case d: Barr        => debugArr(d)
     case BSONString(x)  => x
@@ -81,13 +78,13 @@ object BSON extends Handlers {
     case BSONDouble(x)  => x.toString
     case BSONBoolean(x) => x.toString
     case v              => v.toString
-  }
   def debugArr(doc: Barr): String = doc.values.toList.map(debug).mkString("[", ", ", "]")
   def debugDoc(doc: Bdoc): String =
-    (doc.elements.toList map {
-      case BSONElement(k, v) => s"$k: ${debug(v)}"
-      case x                 => x.toString
-    }).mkString("{", ", ", "}")
+    (doc.elements.toList
+      .map {
+        case BSONElement(k, v) => s"$k: ${debug(v)}"
+        case x                 => x.toString
+      })
+      .mkString("{", ", ", "}")
 
   def hashDoc(doc: Bdoc): String = debugDoc(doc).replace(" ", "")
-}

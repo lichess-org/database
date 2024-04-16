@@ -4,7 +4,7 @@ package analyse
 import chess.format.pgn.{ Glyphs, Pgn }
 import chess.{ Clock, Color, Ply, Status }
 
-object Annotator {
+object Annotator:
 
   def apply(
       p: Pgn,
@@ -38,4 +38,3 @@ object Annotator {
         )
         .getOrElse(pgn)
     }
-}
