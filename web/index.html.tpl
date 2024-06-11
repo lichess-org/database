@@ -440,6 +440,9 @@
             <li>
               <a href="https://mcognetta.github.io/posts/lichess-combined-puzzle-game-db/">Combined puzzle and game database</a>
             </li>
+            <li>
+              <a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
