@@ -20,7 +20,7 @@ import alleycats.Zero
 import reactivemongo.api.*
 import reactivemongo.api.bson.*
 
-trait dsl {
+trait dsl:
 
   type Coll = reactivemongo.api.bson.collection.BSONCollection
   type Bdoc = BSONDocument
@@ -52,33 +52,27 @@ trait dsl {
 
   // **********************************************************************************************//
   // Top Level Logical Operators
-  def $or(expressions: Bdoc*): Bdoc = {
+  def $or(expressions: Bdoc*): Bdoc =
     $doc("$or" -> expressions)
-  }
 
-  def $and(expressions: Bdoc*): Bdoc = {
+  def $and(expressions: Bdoc*): Bdoc =
     $doc("$and" -> expressions)
-  }
 
-  def $nor(expressions: Bdoc*): Bdoc = {
+  def $nor(expressions: Bdoc*): Bdoc =
     $doc("$nor" -> expressions)
-  }
   // End of Top Level Logical Operators
   // **********************************************************************************************//
 
   // **********************************************************************************************//
   // Top Level Evaluation Operators
-  def $text(term: String): Bdoc = {
+  def $text(term: String): Bdoc =
     $doc("$text" -> $doc("$search" -> term))
-  }
 
-  def $text(term: String, lang: String): Bdoc = {
+  def $text(term: String, lang: String): Bdoc =
     $doc("$text" -> $doc("$search" -> term, f"$$language" -> lang))
-  }
 
-  def $where(expr: String): Bdoc = {
+  def $where(expr: String): Bdoc =
     $doc("$where" -> expr)
-  }
   // End of Top Level Evaluation Operators
   // **********************************************************************************************//
 
@@ -107,25 +101,20 @@ trait dsl {
 
   def $exists(value: Boolean) = $doc("$exists" -> value)
 
-  trait CurrentDateValueProducer[T] {
+  trait CurrentDateValueProducer[T]:
     def produce: BSONValue
-  }
 
   implicit final class BooleanCurrentDateValueProducer(value: Boolean)
-      extends CurrentDateValueProducer[Boolean] {
+      extends CurrentDateValueProducer[Boolean]:
     def produce: BSONValue = BSONBoolean(value)
-  }
 
-  implicit final class StringCurrentDateValueProducer(value: String)
-      extends CurrentDateValueProducer[String] {
+  implicit final class StringCurrentDateValueProducer(value: String) extends CurrentDateValueProducer[String]:
     def isValid: Boolean = Seq("date", "timestamp") contains value
 
-    def produce: BSONValue = {
+    def produce: BSONValue =
       if !isValid then throw new IllegalArgumentException(value)
 
       $doc("$type" -> value)
-    }
-  }
 
   // End of Top Level Field Update Operators
   // **********************************************************************************************//
@@ -133,11 +122,10 @@ trait dsl {
   // **********************************************************************************************//
   // Top Level Array Update Operators
 
-  def $pop(item: (String, Int)): Bdoc = {
+  def $pop(item: (String, Int)): Bdoc =
     if item._2 != -1 && item._2 != 1 then
       throw new IllegalArgumentException(s"${item._2} is not equal to: -1 | 1")
     $doc("$pop" -> $doc(item))
-  }
 
   def $push(item: ElementProducer): Bdoc =
     $doc("$push" -> $doc(item))
@@ -163,16 +151,14 @@ trait dsl {
   /** Represents the initial state of the expression which has only the name of the field. It does not know
     * the value of the expression.
     */
-  trait ElementBuilder {
+  trait ElementBuilder:
     def field: String
     def append(value: Bdoc): Bdoc = value
-  }
 
   /** Represents the state of an expression which has a field and a value */
-  trait Expression[V] extends ElementBuilder {
+  trait Expression[V] extends ElementBuilder:
     def value: V
     def toBdoc(implicit writer: BSONWriter[V]) = toBSONDocument(this)
-  }
 
   /*
    * This type of expressions cannot be cascaded. Examples:
@@ -196,70 +182,58 @@ trait dsl {
     */
   case class CompositeExpression(field: String, value: Bdoc)
       extends Expression[Bdoc]
-      with ComparisonOperators {
-    override def append(value: Bdoc): Bdoc = {
+      with ComparisonOperators:
+    override def append(value: Bdoc): Bdoc =
       this.value ++ value
-    }
-  }
 
   /** MongoDB comparison operators. */
-  trait ComparisonOperators { self: ElementBuilder =>
+  trait ComparisonOperators:
+    self: ElementBuilder =>
 
-    def $eq[T: BSONWriter](value: T): SimpleExpression[BSONValue] = {
+    def $eq[T: BSONWriter](value: T): SimpleExpression[BSONValue] =
       SimpleExpression(field, implicitly[BSONWriter[T]].writeTry(value).get)
-    }
 
     /** Matches values that are greater than the value specified in the query. */
-    def $gt[T: BSONWriter](value: T): CompositeExpression = {
+    def $gt[T: BSONWriter](value: T): CompositeExpression =
       CompositeExpression(field, append($doc("$gt" -> value)))
-    }
 
     /** Matches values that are greater than or equal to the value specified in the query. */
-    def $gte[T: BSONWriter](value: T): CompositeExpression = {
+    def $gte[T: BSONWriter](value: T): CompositeExpression =
       CompositeExpression(field, append($doc("$gte" -> value)))
-    }
 
     /** Matches any of the values that exist in an array specified in the query. */
-    def $in[T: BSONWriter](values: Iterable[T]): SimpleExpression[Bdoc] = {
+    def $in[T: BSONWriter](values: Iterable[T]): SimpleExpression[Bdoc] =
       SimpleExpression(field, $doc("$in" -> values))
-    }
 
     /** Matches values that are less than the value specified in the query. */
-    def $lt[T: BSONWriter](value: T): CompositeExpression = {
+    def $lt[T: BSONWriter](value: T): CompositeExpression =
       CompositeExpression(field, append($doc("$lt" -> value)))
-    }
 
     /** Matches values that are less than or equal to the value specified in the query. */
-    def $lte[T: BSONWriter](value: T): CompositeExpression = {
+    def $lte[T: BSONWriter](value: T): CompositeExpression =
       CompositeExpression(field, append($doc("$lte" -> value)))
-    }
 
     /** Matches all values that are not equal to the value specified in the query. */
-    def $ne[T: BSONWriter](value: T): SimpleExpression[Bdoc] = {
+    def $ne[T: BSONWriter](value: T): SimpleExpression[Bdoc] =
       SimpleExpression(field, $doc("$ne" -> value))
-    }
 
     /** Matches values that do not exist in an array specified to the query. */
-    def $nin[T: BSONWriter](values: Iterable[T]): SimpleExpression[Bdoc] = {
+    def $nin[T: BSONWriter](values: Iterable[T]): SimpleExpression[Bdoc] =
       SimpleExpression(field, $doc("$nin" -> values))
-    }
 
-  }
-
-  trait LogicalOperators { self: ElementBuilder =>
-    def $not(f: String => Expression[Bdoc]): SimpleExpression[Bdoc] = {
+  trait LogicalOperators:
+    self: ElementBuilder =>
+    def $not(f: String => Expression[Bdoc]): SimpleExpression[Bdoc] =
       val expression = f(field)
       SimpleExpression(field, $doc("$not" -> expression.value))
-    }
-  }
 
-  trait ElementOperators { self: ElementBuilder =>
-    def $exists(v: Boolean): SimpleExpression[Bdoc] = {
+  trait ElementOperators:
+    self: ElementBuilder =>
+    def $exists(v: Boolean): SimpleExpression[Bdoc] =
       SimpleExpression(field, $doc("$exists" -> v))
-    }
-  }
 
-  trait EvaluationOperators { self: ElementBuilder =>
+  trait EvaluationOperators:
+    self: ElementBuilder =>
     def $mod(divisor: Int, remainder: Int): SimpleExpression[Bdoc] =
       SimpleExpression(field, $doc("$mod" -> BSONArray(divisor, remainder)))
 
@@ -268,9 +242,8 @@ trait dsl {
 
     def $startsWith(value: String, options: String = ""): SimpleExpression[BSONRegex] =
       $regex(s"^$value", options)
-  }
 
-  object $sort {
+  object $sort:
 
     def asc(field: String)  = $doc(field -> 1)
     def desc(field: String) = $doc(field -> -1)
@@ -282,7 +255,6 @@ trait dsl {
     val createdAsc  = asc("createdAt")
     val createdDesc = desc("createdAt")
     val updatedDesc = desc("updatedAt")
-  }
 
   implicit class ElementBuilderLike(val field: String)
       extends ElementBuilder
@@ -291,9 +263,8 @@ trait dsl {
       with EvaluationOperators
       with LogicalOperators
 
+  import scala.language.implicitConversions
   implicit def toBSONDocument[V: BSONWriter](expression: Expression[V]): Bdoc =
     $doc(expression.field -> expression.value)
-
-}
 
 object dsl extends dsl with Handlers

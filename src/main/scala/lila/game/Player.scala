@@ -15,10 +15,10 @@ case class Player(
     provisional: Boolean = false,
     berserk: Boolean = false,
     name: Option[String] = None
-) {
+):
 
-  def playerUser = userId flatMap { uid =>
-    rating map { PlayerUser(uid, _, ratingDiff) }
+  def playerUser = userId.flatMap { uid =>
+    rating.map { PlayerUser(uid, _, ratingDiff) }
   }
 
   def isAi = aiLevel.isDefined
@@ -27,14 +27,13 @@ case class Player(
 
   def hasUser = userId.isDefined
 
-  def wins = isWinner getOrElse false
+  def wins = isWinner.getOrElse(false)
 
-  def ratingAfter = rating map (_ + ratingDiff.getOrElse(0))
-}
+  def ratingAfter = rating.map(_ + ratingDiff.getOrElse(0))
 
-object Player {
+object Player:
 
-  object BSONFields {
+  object BSONFields:
 
     val aiLevel           = "ai"
     val isOfferingDraw    = "od"
@@ -46,7 +45,6 @@ object Player {
     val provisional       = "p"
     val berserk           = "be"
     val name              = "na"
-  }
 
   type Id      = String
   type UserId  = Option[String]
@@ -57,7 +55,7 @@ object Player {
     import BSONFields.*
     val p = light.player(color)
     Player(
-      id = color.fold(ids take 4, ids drop 4),
+      id = color.fold(ids.take(4), ids.drop(4)),
       color = p.color,
       aiLevel = p.aiLevel,
       isWinner = light.win.map(_ == color),
@@ -66,6 +64,5 @@ object Player {
       ratingDiff = p.ratingDiff,
       provisional = p.provisional,
       berserk = p.berserk,
-      name = doc string name
+      name = doc.string(name)
     )
-}

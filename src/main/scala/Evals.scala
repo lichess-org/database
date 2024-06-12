@@ -11,7 +11,7 @@ import reactivemongo.api.*
 import reactivemongo.api.bson.*
 import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
-import chess.format.Uci
+import chess.format.{ BinaryFen, Fen, Uci }
 import cats.data.NonEmptyList
 import cats.syntax.all.*
 import scala.util.{ Success, Try }
@@ -19,7 +19,6 @@ import scala.concurrent.Future
 import play.api.libs.json.*
 import akka.util.ByteString
 import akka.NotUsed
-import chess.variant.Variant
 
 object Evals:
 
@@ -28,43 +27,20 @@ object Evals:
     case Mate(m: Int)
   case class Pv(score: Score, moves: NonEmptyList[Uci])
   case class Eval(pvs: NonEmptyList[Pv], knodes: Int, depth: Int)
-  case class Id(variant: Variant, smallFen: String)
+  case class Id(position: BinaryFen)
   case class Entry(_id: Id, evals: List[Eval]):
-    def fen = chess.format.SmallFen(_id.smallFen).garbageInefficientReadBackIntoFen
-
-  /*
-    val base = fen.value.split(' ').take(4).mkString("").filter { c =>
-      c != '/' && c != '-' && c != 'w'
-    }
-    if variant == chess.variant.ThreeCheck
-    then fen.value.split(' ').lift(6).foldLeft(base)(_ + _)
-    else base
-   */
-  // def toEpd(small: String): Fen.Epd =
+    def fen = Fen.write(_id.position.read).simple
 
   given BSONReader[Id] = new:
     def readTry(bs: BSONValue) = bs match
-      case BSONString(value) =>
-        value split ':' match
-          case Array(fen) => Success(Id(chess.variant.Standard, fen))
-          case Array(variantId, fen) =>
-            import chess.variant.Variant
-            Success(
-              Id(
-                Variant.Id.from(variantId.toIntOption) flatMap {
-                  Variant(_)
-                } getOrElse sys.error(s"Invalid evalcache variant $variantId"),
-                fen
-              )
-            )
-          case _ => handlerBadValue(s"Invalid evalcache id $value")
+      case v: BSONBinary => Success(Id(BinaryFen(v.byteArray)))
       case _ => handlerBadValue(s"Invalid evalcache id $bs")
   given BSONReader[NonEmptyList[Pv]] = new:
     private def scoreRead(str: String): Option[Score] =
-      if str startsWith "#" then str.drop(1).toIntOption.map(Score.Mate.apply)
+      if str.startsWith("#") then str.drop(1).toIntOption.map(Score.Mate.apply)
       else str.toIntOption.map(Score.Cp.apply)
     private def movesRead(str: String): Option[NonEmptyList[Uci]] =
-      Uci readListChars str flatMap (_.toNel)
+      Uci.readListChars(str).flatMap(_.toNel)
     private val scoreSeparator = ':'
     private val pvSeparator    = '/'
     def readTry(bs: BSONValue) = bs match
@@ -74,13 +50,13 @@ object Evals:
             pvStr.split(scoreSeparator) match
               case Array(score, moves) =>
                 Pv(
-                  scoreRead(score) getOrElse sys.error(s"Invalid score $score"),
-                  movesRead(moves) getOrElse sys.error(s"Invalid moves $moves")
+                  scoreRead(score).getOrElse(sys.error(s"Invalid score $score")),
+                  movesRead(moves).getOrElse(sys.error(s"Invalid moves $moves"))
                 )
-              case x => sys error s"Invalid PV $pvStr: ${x.toList} (in $value)"
+              case x => sys.error(s"Invalid PV $pvStr: ${x.toList} (in $value)")
           }
         }.map {
-          _.toNel getOrElse sys.error(s"Empty PVs $value")
+          _.toNel.getOrElse(sys.error(s"Empty PVs $value"))
         }
       case b => lila.db.BSON.handlerBadType[NonEmptyList[Pv]](b)
   given BSONDocumentReader[Eval]  = Macros.reader
@@ -94,7 +70,7 @@ object Evals:
 
     val config   = ConfigFactory.load()
     val dbName   = "lichess"
-    val collName = "eval_cache"
+    val collName = "eval_cache2"
 
     val uri    = config.getString("db.eval.uri")
     val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
@@ -139,7 +115,7 @@ object Evals:
       .flatMap(_.database(dbName))
       .flatMap {
         _.collection(collName)
-          .find($doc("_id" -> $doc("$not" -> BSONRegex(":", "")))) // no variant
+          .find($doc())
           .cursor[Entry]()
           // .cursor[Entry](readPreference = ReadPreference.secondary)
           .documentSource(
@@ -148,6 +124,7 @@ object Evals:
             err = Cursor.ContOnError((_, e) => println(e.getMessage))
           )
           .buffer(1000, OverflowStrategy.backpressure)
+          .filter(_._id.position.read.situation.variant.standard)
           .via(toJson)
           .runWith(ndjsonSink)
       }

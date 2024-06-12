@@ -12,7 +12,7 @@ final class DB(
     val gameColl: BSONCollection,
     val analysisColl: BSONCollection,
     val userColl: BSONCollection
-) {
+):
 
   private val userProj = BSONDocument("username" -> true, "title" -> true)
   given lightUserBSONReader: BSONDocumentReader[LightUser] = new:
@@ -38,15 +38,14 @@ final class DB(
       .collect[List](Int.MaxValue, Cursor.ContOnError[List[LightUser]]())
       .map { users =>
         def of(p: lila.game.Player) = p.userId.fold(LightUser("?", "?")) { uid =>
-          users.find(_.id == uid) getOrElse LightUser(uid, uid)
+          users.find(_.id == uid).getOrElse(LightUser(uid, uid))
         }
         gs.map { g =>
           Users(of(g.players.white), of(g.players.black))
         }
       }
-}
 
-object DB {
+object DB:
 
   private val config = ConfigFactory.load()
 
@@ -56,7 +55,7 @@ object DB {
   val uri    = config.getString("db.game.uri")
   val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
   val conn =
-    MongoConnection.fromString(uri) flatMap { parsedUri =>
+    MongoConnection.fromString(uri).flatMap { parsedUri =>
       driver.connect(parsedUri, Some("lichess-db"))
     }
 
@@ -64,13 +63,10 @@ object DB {
     conn.flatMap(_.database(dbName)).map { db =>
       (
         new DB(
-          gameColl = db collection "game5",
-          analysisColl = db collection "analysis2",
-          userColl = db collection "user4"
+          gameColl = db.collection("game5"),
+          analysisColl = db.collection("analysis2"),
+          userColl = db.collection("user4")
         ),
-        (() => {
-          driver.close()
-        })
+        (() => driver.close())
       )
     }
-}

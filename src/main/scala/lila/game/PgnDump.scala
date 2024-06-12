@@ -8,9 +8,9 @@ import chess.{ Centis, Color, Ply }
 import lichess.Users
 
 // #TODO add draw offers comments
-object PgnDump {
+object PgnDump:
 
-  def apply(game: Game, users: Users, initialFen: Option[Fen.Epd]): Pgn =
+  def apply(game: Game, users: Users, initialFen: Option[Fen.Full]): Pgn =
     val ts           = tags(game, users, initialFen)
     val fenSituation = ts.fen.flatMap(Fen.readWithMoveNumber)
     val tree = makeTree(
@@ -29,23 +29,25 @@ object PgnDump {
 
   private def elo(p: Player) = p.rating.fold("?")(_.toString)
 
-  private def player(g: Game, color: Color, users: Users) = {
+  private def player(g: Game, color: Color, users: Users) =
     val player = g.players(color)
     player.aiLevel.fold(users(color).name)("lichess AI level " + _)
-  }
 
-  private def eventOf(game: Game) = {
+  private def eventOf(game: Game) =
     val perf = game.perfType.fold("Standard")(_.name)
-    game.tournamentId.map { id =>
-      s"${game.mode} $perf tournament https://lichess.org/tournament/$id"
-    } orElse game.simulId.map { id =>
-      s"$perf simul https://lichess.org/simul/$id"
-    } orElse game.swissId.map { id =>
-      s"$perf swiss https://lichess.org/swiss/$id"
-    } getOrElse {
-      s"${game.mode} $perf game"
-    }
-  }
+    game.tournamentId
+      .map { id =>
+        s"${game.mode} $perf tournament https://lichess.org/tournament/$id"
+      }
+      .orElse(game.simulId.map { id =>
+        s"$perf simul https://lichess.org/simul/$id"
+      })
+      .orElse(game.swissId.map { id =>
+        s"$perf swiss https://lichess.org/swiss/$id"
+      })
+      .getOrElse {
+        s"${game.mode} $perf game"
+      }
 
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
     p.ratingDiff.map { rd =>
@@ -54,7 +56,7 @@ object PgnDump {
 
   private val emptyRound = Tag(_.Round, "-")
 
-  def tags(game: Game, users: Users, initialFen: Option[Fen.Epd]): Tags = Tags:
+  def tags(game: Game, users: Users, initialFen: Option[Fen.Full]): Tags = Tags:
     val date = Tag.UTCDate.format.print(game.createdAt)
     List(
       Tag(_.Event, eventOf(game)),
@@ -91,14 +93,13 @@ object PgnDump {
         Tag(
           _.Termination, {
             import chess.Status.*
-            game.status match {
+            game.status match
               case Created | Started                             => "Unterminated"
               case Aborted | NoStart                             => "Abandoned"
               case Timeout | Outoftime                           => "Time forfeit"
               case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
               case Cheat                                         => "Rules infraction"
               case UnknownFinish                                 => "Unknown"
-            }
           }
         )
       ),
@@ -108,7 +109,6 @@ object PgnDump {
       if !game.variant.standardInitialPosition then Some(Tag("SetUp", "1")) else None,
       if game.variant.exotic then Some(Tag(_.Variant, game.variant.name)) else None
     ).flatten
-}
 
 def makeTree(
     moves: Seq[SanStr],

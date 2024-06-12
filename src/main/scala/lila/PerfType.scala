@@ -8,12 +8,11 @@ sealed abstract class PerfType(
     val name: String,
     val title: String,
     val iconChar: Char
-) {
+):
 
   def iconString = iconChar.toString
-}
 
-object PerfType {
+object PerfType:
 
   case object UltraBullet
       extends PerfType(
@@ -186,14 +185,14 @@ object PerfType {
 
   val default = Standard
 
-  def apply(key: String): Option[PerfType] = byKey get key
-  def orDefault(key: String): PerfType     = apply(key) getOrElse default
+  def apply(key: String): Option[PerfType] = byKey.get(key)
+  def orDefault(key: String): PerfType     = apply(key).getOrElse(default)
 
-  def apply(id: Int): Option[PerfType] = byId get id
+  def apply(id: Int): Option[PerfType] = byId.get(id)
 
-  def name(key: String): Option[String] = apply(key) map (_.name)
+  def name(key: String): Option[String] = apply(key).map(_.name)
 
-  def id2key(id: Int): Option[String] = byId get id map (_.key)
+  def id2key(id: Int): Option[String] = byId.get(id).map(_.key)
 
   val nonPuzzle: List[PerfType] = List(
     UltraBullet,
@@ -241,4 +240,3 @@ object PerfType {
     List(Bullet, Blitz, Rapid, Classical, Correspondence)
 
   def isGame(pt: PerfType) = !nonGame.contains(pt)
-}
