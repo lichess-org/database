@@ -34,7 +34,7 @@ object Evals:
   given BSONReader[Id] = new:
     def readTry(bs: BSONValue) = bs match
       case v: BSONBinary => Success(Id(BinaryFen(v.byteArray)))
-      case _ => handlerBadValue(s"Invalid evalcache id $bs")
+      case _             => handlerBadValue(s"Invalid evalcache id $bs")
   given BSONReader[NonEmptyList[Pv]] = new:
     private def scoreRead(str: String): Option[Score] =
       if str.startsWith("#") then str.drop(1).toIntOption.map(Score.Mate.apply)
@@ -76,7 +76,7 @@ object Evals:
     val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
 
     given system: ActorSystem = ActorSystem()
-    given ActorMaterializer = ActorMaterializer(
+    given Materializer = ActorMaterializer(
       ActorMaterializerSettings(system)
         .withInputBuffer(
           initialSize = 32,
