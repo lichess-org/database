@@ -14,12 +14,12 @@ import akka.util.ByteString
 import java.nio.file.Paths
 import reactivemongo.akkastream.cursorProducer
 
-import chess.variant.{ Horde, Standard, Variant }
+import chess.variant.{ Horde, Variant }
 import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
 import lila.game.{ Game, PgnDump }
 import lila.db.dsl.*
-import java.time.{ LocalDate, LocalDateTime }
+import java.time.LocalDate
 
 object Games:
 
