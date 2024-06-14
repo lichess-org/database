@@ -23,8 +23,7 @@ object Annotator:
       pgn
         .modifyInMainline(
           Ply(advice.ply),
-          _.map:
-            _.copy(glyphs = Glyphs.fromList(advice.judgment.glyph :: Nil))
+          node => node.copy(value = node.value.copy(glyphs = Glyphs.fromList(advice.judgment.glyph :: Nil)))
         )
         .getOrElse(pgn)
     }
