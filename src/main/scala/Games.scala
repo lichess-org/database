@@ -58,7 +58,6 @@ object Games:
     )
 
     val process = lichess.DB.get.flatMap { (db, close) =>
-      val readPreference = ReadPreference.secondaryPreferred
 
       val query = BSONDocument(
         "ca" -> BSONDocument("$gte" -> from, "$lt" -> to),
@@ -69,7 +68,7 @@ object Games:
       val gameSource = db.gameColl
         .find(query)
         .sort(BSONDocument("ca" -> 1))
-        .cursor[BSONDocument](readPreference = readPreference)
+        .cursor[BSONDocument](readPreference = ReadPreference.primary)
         .documentSource(
           maxDocs = Int.MaxValue,
           err = Cursor.ContOnError((_, e) => println(e.getMessage))
@@ -114,7 +113,7 @@ object Games:
               )
             )
           )
-          .cursor[Analysis](readPreference = readPreference)
+          .cursor[Analysis](readPreference = ReadPreference.secondaryPreferred)
           .collect[List](Int.MaxValue, Cursor.ContOnError[List[Analysis]]())
           .map { as =>
             gs.map { g =>
