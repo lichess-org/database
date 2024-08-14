@@ -77,7 +77,7 @@ object Puzzles:
       themes = themes.filterNot(hiddenThemes.contains),
       gameUrl =
         val asWhite = fen.colorOrWhite.white
-        val hash    = Fen.readPly(fen).fold("")(p => s"#$p")
+        val hash    = Fen.readPly(fen).map(_ + 1).fold("")(p => s"#$p")
         s"https://lichess.org/${gameId}${if asWhite then "" else "/black"}$hash"
       ,
       openings = openings.getOrElse(Nil)
