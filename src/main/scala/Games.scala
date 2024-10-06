@@ -129,21 +129,22 @@ object Games:
 
       def toPgn(ws: Seq[WithUsers]): Future[ByteString] =
         Future {
-          val str = ws
-            .map { case ((g, analysis), users) =>
+          ByteString {
+            ws.map { case ((g, analysis), users) =>
               val pgn = PgnDump(g.game, users, g.fen)
-              lila.analyse.Annotator(
-                pgn,
-                analysis,
-                g.game.winnerColor,
-                g.game.status,
-                g.game.clock
-              )
-            }
-            .map(_.toString)
-            .mkString("\n\n")
-            .replace("] } { [", "] [")
-          ByteString(s"$str\n\n")
+              lila.analyse
+                .Annotator(
+                  pgn,
+                  analysis,
+                  g.game.winnerColor,
+                  g.game.status,
+                  g.game.clock
+                )
+                .render
+                .value
+                .replace("] } { [", "] [") + "\n\n"
+            }.mkString
+          }
         }
 
       def pgnSink: Sink[ByteString, Future[IOResult]] =
