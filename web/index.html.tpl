@@ -291,6 +291,9 @@
             <h3 id="issues">Known issues</h3>
             <ul>
               <li>
+                November 2023: Some <a href="https://github.com/lichess-org/database/issues/54">Chess960 rematches were recorded with invalid castling rights in their starting FEN</a>.
+              </li>
+              <li>
                 December 2022: Some <a href="https://github.com/lichess-org/lila/commit/3a742bcbb9504ca471e3c4baf6fe7ab25fc46441">Antichess games were recorded with bullet ratings</a>.
               </li>
               <li>
