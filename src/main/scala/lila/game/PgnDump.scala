@@ -13,13 +13,14 @@ object PgnDump:
   def apply(game: Game, users: Users, initialFen: Option[Fen.Full]): Pgn =
     val ts           = tags(game, users, initialFen)
     val fenSituation = ts.fen.flatMap(Fen.readWithMoveNumber)
+    val initialPly   = fenSituation.fold(Ply.initial)(_.ply)
     val tree = makeTree(
       game.sans,
-      fenSituation.fold(Ply.initial)(_.ply),
+      initialPly,
       ~game.bothClockStates,
       game.startColor
     )
-    Pgn(ts, InitialComments.empty, tree)
+    Pgn(ts, InitialComments.empty, tree, initialPly)
 
   def result(game: Game) =
     if game.finished then game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
@@ -118,7 +119,6 @@ def makeTree(
 ): Option[PgnTree] =
   val clockOffset = startColor.fold(0, 1)
   def f(san: SanStr, index: Int) = chessPgn.Move(
-    ply = from + index + 1,
     san = san,
     secondsLeft = clocks.lift(index - clockOffset).map(_.roundSeconds)
   )
