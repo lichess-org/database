@@ -79,7 +79,7 @@ object BSONHandlers:
 
       val gameVariant  = Variant.idOrDefault(r.getO[Variant.Id](F.variant))
       val startedAtPly = Ply(r.intD(F.startedAtTurn))
-      val ply          = r.get[Ply](F.turns)
+      val ply          = r.get[Ply](F.turns).atMost(600)
       val turnColor    = ply.turn
       val createdAt    = r.date(F.createdAt)
       val playedPlies  = ply - startedAtPly
