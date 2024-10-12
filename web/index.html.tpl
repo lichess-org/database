@@ -22,7 +22,7 @@
           </h1>
         </header>
         <p class="license">
-          Lichess games and puzzles are released under the
+          Database exports are released under the
           <a href="https://tldrlegal.com/license/creative-commons-cc0-1.0-universal">Creative Commons CC0 license</a>.<br />
           Use them for research, commercial purpose, publication, anything you like.<br />
           You can download, modify and redistribute them, without asking for permission.<br />
