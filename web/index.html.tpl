@@ -449,6 +449,9 @@
             <li>
               <a href="https://chessort.com/">Chessort, a puzzle game where you sort moves based on the chess engine's evaluation.</a>
             </li>
+            <li>
+              <a href="https://www.youtube.com/watch?v=oUERPFqruYo/">500,000 games of intermediate chess players analyzed (in French)</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
