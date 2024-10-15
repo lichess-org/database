@@ -37,7 +37,7 @@
             <a href="#evals" class="on">Evaluations</a>
           </nav>
           <p>
-            <strong><!-- nbEvals --></strong> chess positions evaluated with Stockfish.
+            <strong><!-- nbEvals --></strong> chess positions evaluated with Stockfish. Last updated on <!-- dateUpdated -->.
             <br>
             <a href="https://lichess.org/analysis">Produced by, and for, the Lichess analysis board</a>,
             running various flavours of Stockfish within user browsers.
@@ -121,7 +121,7 @@
             <a href="#evals">Evaluations</a>
           </nav>
           <p>
-            <strong><!-- nbPuzzles --></strong> chess puzzles, rated and tagged.
+            <strong><!-- nbPuzzles --></strong> chess puzzles, rated, and tagged. Last updated on <!-- dateUpdated -->.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
             <a class="primary" href="lichess_db_puzzle.csv.zst">Download lichess_db_puzzle.csv.zst</a>
