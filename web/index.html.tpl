@@ -44,6 +44,9 @@
           <p>
             <a class="primary" href="lichess_db_eval.jsonl.zst">Download lichess_db_eval.jsonl.zst</a>
           </p>
+          <p>
+            This file was last updated on <!-- dateUpdated -->.
+          </p>
           <h3 id="eval_format">Format</h3>
           <p>Evaluations are formatted as JSON; one position per line.</p>
           <p>The schema of a position looks like this:</p>
@@ -121,11 +124,14 @@
             <a href="#evals">Evaluations</a>
           </nav>
           <p>
-            <strong><!-- nbPuzzles --></strong> chess puzzles, rated and tagged.
+            <strong><!-- nbPuzzles --></strong> chess puzzles, rated, and tagged.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
             <a class="primary" href="lichess_db_puzzle.csv.zst">Download lichess_db_puzzle.csv.zst</a>
           </p>
+          <p>
+            This file was last updated on <!-- dateUpdated -->.
+          </p>          
           <h3 id="puzzle_format">Format</h3>
           <p>Puzzles are formatted as standard CSV. The fields are as follows:</p>
           <pre>PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags</pre>

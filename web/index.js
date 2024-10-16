@@ -10,6 +10,7 @@ const styleFile = 'style.css';
 const listFile = 'list.txt';
 
 const clockSince = moment('2017-04');
+const today = new Date();
 
 function numberFormat(n) {
   return new Intl.NumberFormat().format(n);
@@ -122,6 +123,10 @@ function replaceNbEvals(template) {
     .then(c => template.replace('<!-- nbEvals -->', numberFormat(c)));
 }
 
+function replaceDateUpdated(template) {
+  return template.replace('<!-- dateUpdated -->', today.toLocaleDateString('en-GB'));
+}
+
 process.on('unhandledRejection', r => console.log(r));
 
 Promise.all([
@@ -141,6 +146,7 @@ Promise.all([
     .then(rv('threeCheck'))
     .then(replaceNbPuzzles)
     .then(replaceNbEvals)
+    .then(replaceDateUpdated)
     .then(rendered => {
       return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, style));
     });
