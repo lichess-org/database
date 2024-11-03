@@ -12,7 +12,7 @@ cd "$dir"
 
 echo "Counting evals in $file"
 
-evals=$(tail -n +2 "$file" | wc -l)
+evals=$(tail -n +1 "$file" | wc -l)
 echo "$evals" >eval-count.txt
 
 echo "Compressing $evals evals to $compressed_file"
