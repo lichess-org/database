@@ -16,11 +16,10 @@ object PgnDump:
     val initialPly   = fenSituation.fold(Ply.initial)(_.ply)
     val tree = makeTree(
       game.sans,
-      initialPly,
       ~game.bothClockStates,
       game.startColor
     )
-    Pgn(ts, InitialComments.empty, tree, initialPly)
+    Pgn(ts, InitialComments.empty, tree, initialPly.next)
 
   def result(game: Game) =
     if game.finished then game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
@@ -113,7 +112,6 @@ object PgnDump:
 
 def makeTree(
     moves: Seq[SanStr],
-    from: Ply,
     clocks: Vector[Centis],
     startColor: Color
 ): Option[PgnTree] =
