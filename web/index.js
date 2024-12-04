@@ -120,7 +120,7 @@ function replaceNbPuzzles(template) {
 function replaceNbEvals(template) {
   return fs
     .readFile(sourceDir + '/eval-count.txt', { encoding: 'utf8' })
-    .then(c => template.replace('<!-- nbEvals -->', numberFormat(c)));
+    .then(c => template.replace('<!-- nbEvals -->', numberFormat(parseInt(c))));
 }
 
 function replaceDateUpdated(template) {
