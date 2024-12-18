@@ -261,6 +261,11 @@
               Games contain clock information as PGN <code>%clk</code> comments since April 2017.
             </p>
             <p>
+              Players using the <a href="https://lichess.org/api#tag/Bot">Bot API</a>
+              are marked with <code>[WhiteTitle "BOT"]</code> or
+              <code>[BlackTitle "BOT"]</code>, respectively.
+            </p>
+            <p>
               Variant games have a <code>Variant</code> tag, e.g., <code>[Variant "Antichess"]</code>.
             </p>
           </section>
