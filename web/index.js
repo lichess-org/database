@@ -124,7 +124,7 @@ function replaceNbEvals(template) {
 }
 
 function replaceDateUpdated(template) {
-  return template.replace(/<!-- dateUpdated -->/g, today.toLocaleDateString('en-GB'));
+  return template.replace(/<!-- dateUpdated -->/g, today.toISOString().split('T')[0]);
 }
 
 process.on('unhandledRejection', r => console.log(r));
