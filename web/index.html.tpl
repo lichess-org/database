@@ -437,7 +437,7 @@
               <a href="https://tusharmurali.github.io/chess-memory/">Puzzle memory trainer</a>
             </li>
             <li>
-              <a href="https://www.chesspecker.com">Chesspecker - puzzle repetition training</a>
+              <a href="https://github.com/chesspecker/chesspecker">Chesspecker - puzzle repetition training</a>
             </li>
             <li>
               <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do Variants Help You Play Better Chess?</a>
