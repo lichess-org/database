@@ -9,11 +9,11 @@ trait Handlers:
 
   // free handlers for all types with TotalWrapper
   // unless they are given an instance of lila.db.NoDbHandler[T]
-  given opaqueHandler[T, A](using
+  given [T, A] => (
       sr: SameRuntime[A, T],
       rs: SameRuntime[T, A],
       handler: BSONHandler[A]
-  ): BSONHandler[T] =
+  ) => BSONHandler[T] =
     handler.as(sr.apply, rs.apply)
 
   def quickHandler[T](read: PartialFunction[BSONValue, T], write: T => BSONValue): BSONHandler[T] =

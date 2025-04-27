@@ -58,7 +58,8 @@ object BinaryFormat:
       .zip(buckets.tail)
       .map { (i1, i2) =>
         (i1 + i2) / 2
-      } toVector
+      }
+      .toVector
 
     private val decodeMap: Map[Int, MT] = buckets.mapWithIndex((x, i) => i -> x).toMap
 
@@ -169,7 +170,7 @@ object BinaryFormat:
       val lastMoveInt = clmt.lastMove.map(_.origDest).fold(0) { (o, d) =>
         (posInt(o) << 6) + posInt(d)
       }
-      Array((castleInt << 4) + (lastMoveInt >> 8) toByte, lastMoveInt.toByte)
+      Array(((castleInt << 4) + (lastMoveInt >> 8)).toByte, lastMoveInt.toByte)
     }
 
     def read(ba: ByteArray): CastleLastMove =
@@ -192,7 +193,8 @@ object BinaryFormat:
       .grouped(2)
       .collect { case List(p1, p2) =>
         (p1, p2)
-      } toArray
+      }
+      .toArray
 
     def write(pieces: PieceMap): ByteArray =
       def posInt(pos: Square): Int =

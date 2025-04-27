@@ -20,8 +20,7 @@ sealed trait Advice:
     } +
       (this match
         case MateAdvice(seq, _, _, _) => seq.desc
-        case CpAdvice(judgment, _, _) => judgment.toString
-      ) + "." + {
+        case CpAdvice(judgment, _, _) => judgment.toString) + "." + {
         info.variation.headOption.filter(_ => withBestMove).fold("") { move =>
           s" Best move was $move."
         }

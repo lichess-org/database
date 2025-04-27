@@ -37,7 +37,7 @@ object BSONHandlers:
     x => byteArrayHandler.writeTry(BinaryFormat.unmovedRooks.write(x)).get
   )
 
-  private[game] given crazyhouseDataHandler: BSON[Crazyhouse.Data] with
+  private[game] given crazyhouseDataHandler: BSON[Crazyhouse.Data]:
     import Crazyhouse.*
     def reads(r: BSON.Reader) =
       val (white, black) = r.str("p").view.flatMap(chess.Piece.fromChar).to(List).partition(_.is(chess.White))
@@ -46,7 +46,7 @@ object BSONHandlers:
         promoted = chess.bitboard.Bitboard(r.str("t").view.flatMap(chess.Square.fromChar(_)))
       )
 
-  private given lightGameReader: lila.db.BSONReadOnly[LightGame] with
+  private given lightGameReader: lila.db.BSONReadOnly[LightGame]:
 
     import Game.BSONFields as F
 
@@ -130,7 +130,7 @@ object BSONHandlers:
               else Game.emptyCheckCount,
               crazyData = gameVariant.crazyhouse.option(r.get[Crazyhouse.Data](F.crazyData))
             ),
-            variant = gameVariant,
+            variant = gameVariant
           ),
           color = turnColor
         ),

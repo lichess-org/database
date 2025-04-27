@@ -86,8 +86,8 @@ case class Game(
         {
           val d = first - second
           if pairs.hasNext || !noLastInc then d + inc else d
-        } nonNeg
-      } toList
+        }.nonNeg
+      }.toList
     }
   }.orElse(binaryMoveTimes.map { binary =>
     // TODO: make movetime.read return List after writes are disabled.
@@ -330,7 +330,7 @@ object CastleLastMove:
     { case bin: BSONBinary =>
       byteArrayHandler.readTry(bin).map(BinaryFormat.castleLastMove.read)
     },
-    clmt => byteArrayHandler.writeTry { BinaryFormat.castleLastMove.write(clmt) } get
+    clmt => byteArrayHandler.writeTry { BinaryFormat.castleLastMove.write(clmt) }.get
   )
 
 case class ClockHistory(

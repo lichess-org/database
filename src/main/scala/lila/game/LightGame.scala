@@ -50,7 +50,7 @@ object LightPlayer:
   private val ratingRange                                 = safeRange[Int](0 to 4000)
   private val ratingDiffRange                             = safeRange[Int](-1000 to 1000)
 
-  given lightPlayerReader: BSONDocumentReader[Builder] with
+  given lightPlayerReader: BSONDocumentReader[Builder]:
     import scala.util.{ Success, Try }
     def readDocument(doc: Bdoc): Try[Builder] = Success(builderRead(doc))
 
