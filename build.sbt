@@ -1,6 +1,6 @@
 inThisBuild(
   Seq(
-    scalaVersion  := "3.5.1",
+    scalaVersion  := "3.6.4",
     versionScheme := Some("early-semver"),
     version       := "2.0",
     run / javaOptions += "-Dconfig.override_with_env_vars=true"
@@ -24,8 +24,8 @@ lazy val app = project
     libraryDependencies ++= Seq(
       "org.reactivemongo" %% "reactivemongo"            % "1.1.0-RC13",
       "org.reactivemongo" %% "reactivemongo-akkastream" % "1.1.0-RC13",
-      "org.lichess"       %% "scalalib-core"            % "11.2.9",
-      "org.lichess"       %% "scalachess"               % "16.3.0",
+      "org.lichess"       %% "scalalib-core"            % "11.7.0",
+      "org.lichess"       %% "scalachess"               % "17.3.2",
       "com.typesafe.akka" %% "akka-actor"               % "2.6.21",
       "com.typesafe.akka" %% "akka-stream"              % "2.6.21",
       "com.typesafe.akka" %% "akka-slf4j"               % "2.6.21",
