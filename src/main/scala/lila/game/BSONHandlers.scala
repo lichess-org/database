@@ -97,7 +97,7 @@ object BSONHandlers:
               sans.reverse
                 .indexWhere(san => san.value.contains("x") || san.value.headOption.exists(_.isLower))
                 .some
-                .filter(HalfMoveClock.initial <= _)
+                .filter(HalfMoveClock.initial.value <= _)
             )
           PgnStorage.Decoded(
             sans = sans,
@@ -127,10 +127,10 @@ object BSONHandlers:
               checkCount = if gameVariant.threeCheck then
                 val counts = r.intsD(F.checkCount)
                 CheckCount(~counts.headOption, ~counts.lastOption)
-              else Game.emptyCheckCount
+              else Game.emptyCheckCount,
+              crazyData = gameVariant.crazyhouse.option(r.get[Crazyhouse.Data](F.crazyData))
             ),
             variant = gameVariant,
-            crazyData = gameVariant.crazyhouse.option(r.get[Crazyhouse.Data](F.crazyData))
           ),
           color = turnColor
         ),
