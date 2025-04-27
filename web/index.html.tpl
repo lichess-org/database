@@ -258,7 +258,7 @@
               The <code>WhiteElo</code> and <code>BlackElo</code> tags contain Glicko2 ratings.
             </p>
             <p>
-              Games contain clock information down to the second as PGN <code>%clk</code> comments since April 2017. If you need more precision, <a href="https://database.lichess.org/db-univ/">standard games across all time controls from 2013 to 2021 are available</a> down to the centisecond using the <code>%clkc</code> comments.
+              Games contain clock information down to the second as PGN <code>%clk</code> comments since April 2017. If you need centisecond precision, there is a separate export of <a href="https://database.lichess.org/db-univ/">standard games across all time controls from 2013 to 2021</a> using <code>%clkc</code> comments.
             </p>
             <p>
               Players using the <a href="https://lichess.org/api#tag/Bot">Bot API</a>
