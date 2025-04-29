@@ -172,12 +172,14 @@ header {
   display: flex;
   align-items: center;
 }
+
 header img {
   margin: 0 50px 0 -210px;
   width: 160px;
   height: 160px;
   opacity: 0.3;
 }
+
 @media (max-width: 1000px) {
   header img {
     display: none;
@@ -191,12 +193,14 @@ header h1 {
   display: flex;
   flex-flow: column;
 }
+
 header h1 a {
   color: #e0e0e0;
   font-size: 66px;
   letter-spacing: 10px;
   margin-bottom: 12px;
 }
+
 header h1 strong {
   font-size: 28px;
   font-weight: lighter;
@@ -287,6 +291,7 @@ table {
 th {
   font-weight: 500;
 }
+
 th:first-child {
   padding-left: 0;
 }
@@ -297,9 +302,11 @@ td {
   border-top: 1px solid rgb(25, 31, 36);
   line-height: 2em;
 }
+
 td:first-child {
   padding-left: 0;
 }
+
 td:last-child {
   padding-right: 0;
 }
@@ -397,30 +404,38 @@ footer a {
 table {
   margin-bottom: 20px;
 }
+
 table,
 table td {
   text-align: left;
 }
+
 table th {
   font-family: Roboto;
 }
+
 table th,
 table td {
   padding: 3px 10px;
 }
+
 table .center {
   text-align: center;
 }
+
 table .right {
   text-align: right;
 }
+
 table .total td {
   font-weight: bold;
 }
+
 table td a {
   color: var(--c-primary);
   font-weight: bold;
 }
+
 table td a:hover {
   text-decoration: underline;
 }
@@ -429,18 +444,21 @@ nav {
   padding: 1em 0;
   margin-top: -3.2em;
 }
+
 nav a {
   cursor: pointer;
   padding: 0.6em 0 0.6em;
-  margin-right: 2em;
+  margin-right: 1.2em;
   text-transform: uppercase;
   border-bottom: 0.2em solid transparent;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: #adb1b5;
 }
+
 nav a:hover {
   color: var(--c-primary);
 }
+
 nav a.on {
   color: var(--c-primary);
   border-color: var(--c-primary);
@@ -448,21 +466,26 @@ nav a.on {
 
 #evals,
 #puzzles,
+#broadcasts,
 #variant_games,
-#evals:target ~ #standard_games,
-#puzzles:target ~ #standard_games,
-#variant_games:target ~ #standard_games {
+#standard_games,
+#evals:target~#standard_games,
+#puzzles:target~#standard_games,
+#broadcasts:target~#standard_games,
+#variant_games:target~#standard_games {
   display: none;
 }
+
 #evals:target,
 #puzzles:target,
+#broadcasts:target,
 #variant_games:target,
-#standard_games:target,
-#standard_games {
+#standard_games:target {
   display: block;
 }
 
 #standard_games nav,
+#broadcasts nav,
 #evals nav,
 #puzzles nav {
   margin-bottom: 50px;
