@@ -468,7 +468,6 @@ nav a.on {
 #puzzles,
 #broadcasts,
 #variant_games,
-#standard_games,
 #evals:target~#standard_games,
 #puzzles:target~#standard_games,
 #broadcasts:target~#standard_games,
@@ -480,6 +479,7 @@ nav a.on {
 #puzzles:target,
 #broadcasts:target,
 #variant_games:target,
+#standard_games,
 #standard_games:target {
   display: block;
 }
