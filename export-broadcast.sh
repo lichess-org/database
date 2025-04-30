@@ -15,7 +15,11 @@ echo "Export broadcasts of $month to $file"
 
 cd "$dir"
 
-curl -s http://lichess.org/api/broadcast/round/_${month//-/_}.pgn -H "Authorization: Bearer $BROADCAST_TOKEN" >$file
+url="http://lichess.org/api/broadcast/round/_${month//-/_}.pgn"
+
+echo "curl $url"
+
+curl -s $url -H "Authorization: Bearer $BROADCAST_TOKEN" >$file
 
 echo "Counting games in $file"
 
