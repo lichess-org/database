@@ -202,6 +202,74 @@
           <h3>Three-check</h3>
           <!-- table-threeCheck -->
         </section>
+        <div id="broadcasts" class="panel">
+          <section>
+            <nav>
+              <a href="#standard_games">Chess games</a>
+              <a href="#variant_games">Variants</a>
+              <a href="#broadcasts" class="on">Broadcasts</a>
+              <a href="#puzzles">Puzzles</a>
+              <a href="#evals">Evaluations</a>
+            </nav>
+            <!-- table-broadcasts -->
+          </section>
+
+          <section>
+            <h3 id="sample">Sample</h3>
+            <pre>[Event "New Zealand Chess Congress 2025"]
+[Round "01"]
+[White "Metge, J. Nigel"]
+[Black "Nagy, Gabor"]
+[Result "1/2-1/2"]
+[WhiteElo "1885"]
+[WhiteFideId "4300181"]
+[BlackElo "2469"]
+[BlackTitle "GM"]
+[BlackFideId "737119"]
+[TimeControl "5400+30"]
+[Board "1"]
+[Variant "Standard"]
+[ECO "E47"]
+[Opening "Nimzo-Indian Defense: Normal Variation"]
+[StudyName "Round 1"]
+[ChapterName "Metge, J. Nigel - Nagy, Gabor"]
+[UTCDate "2025.01.02"]
+[UTCTime "01:29:03"]
+[BroadcastName "New Zealand Chess Congress 2025 | Championship"]
+[BroadcastURL "https://lichess.org/broadcast/new-zealand-chess-congress-2025--championship/round-1/spI5tcia"]
+[GameURL "https://lichess.org/broadcast/new-zealand-chess-congress-2025--championship/round-1/spI5tcia/oHmutTGn"]
+
+1. d4 { [%eval 0.17] [%clk 1:30:50] } 1... Nf6 { [%eval 0.19] [%clk 1:30:39] } 2. c4 { [%eval 0.18] [%clk 1:31:12] } 2... e6 { [%eval 0.11] [%clk 1:30:21] } 3. Nc3 { [%eval 0.17] [%clk 1:31:34] } 3... Bb4 { [%eval 0.09] [%clk 1:28:27] } 4. e3 { [%eval 0.11] [%clk 1:31:38] } 4... O-O { [%eval 0.11] [%clk 1:27:10] } 5. Bd3 { [%eval 0.03] [%clk 1:31:37] } 5... Re8 { [%eval 0.28] [%clk 1:25:53] } 6. Nf3 { [%eval 0.18] [%clk 1:31:03] } 6... d5 { [%eval 0.23] [%clk 1:25:50] } 7. O-O { [%eval 0.2] [%clk 1:27:01] } 7... Nbd7 { [%eval 0.4] [%clk 1:24:53] } 8. Ne5 { [%eval 0.17] [%clk 1:12:36] } 8... dxc4 { [%eval 0.29] [%clk 1:20:40] } 9. Nxc4 { [%eval 0.34] [%clk 1:08:45] } 9... a6 { [%eval 0.23] [%clk 1:15:52] } 10. Qc2 { [%eval 0.16] [%clk 0:52:48] } 10... c5 { [%eval 0.7] [%clk 1:03:58] } 11. Rd1?! { [%eval 0.05] } { Inaccuracy. a3 was best. } { [%clk 0:45:36] } 11... Qc7 { [%eval 0.22] [%clk 0:59:08] } 12. a3 { [%eval 0.0] [%clk 0:27:22] } 12... Bxc3 { [%eval 0.01] [%clk 0:56:30] } 13. bxc3 { [%eval -0.29] [%clk 0:24:44] } 13... b5 { [%eval -0.23] [%clk 0:55:45] } 14. Ne5?! { [%eval -1.05] } { Inaccuracy. Nd2 was best. } { [%clk 0:24:46] } 14... Nxe5 { [%eval -1.08] [%clk 0:55:09] } 15. dxe5 { [%eval -0.99] [%clk 0:25:06] } 15... Qxe5 { [%eval -1.15] [%clk 0:55:20] } 16. f4 { [%eval -1.06] [%clk 0:24:56] } 16... Qc7 { [%eval -1.04] [%clk 0:52:02] } 17. c4 { [%eval -1.06] [%clk 0:24:54] } 17... e5 { [%eval -0.59] [%clk 0:46:02] } 18. cxb5? { [%eval -1.76] } { Mistake. Bb2 was best. } { [%clk 0:21:18] } 18... exf4 { [%eval -1.74] [%clk 0:45:48] } 19. exf4?! { [%eval -2.55] } { Inaccuracy. Rb1 was best. } { [%clk 0:20:49] } 19... Qb6 { [%eval -2.6] [%clk 0:44:49] } 20. Bc4 { [%eval -2.47] [%clk 0:15:07] } 20... axb5 { [%eval -2.32] [%clk 0:44:34] } 21. Qb3?! { [%eval -3.64] } { Inaccuracy. Rb1 was best. } { [%clk 0:15:05] } 21... Qa7 { [%eval -4.06] [%clk 0:44:15] } 22. Qxb5 { [%eval -3.87] [%clk 0:13:39] } 22... Rb8 { [%eval -3.92] [%clk 0:43:20] } 23. Qc6 { [%eval -3.61] [%clk 0:11:51] } 23... Bg4 { [%eval -3.81] [%clk 0:40:29] } 24. Rf1 { [%eval -3.55] [%clk 0:10:56] } 24... Rbc8?? { [%eval -1.35] } { Blunder. Re4 was best. } { [%clk 0:36:46] } 25. Qa6 { [%eval -1.21] [%clk 0:09:58] } 25... Qd7? { [%eval 0.0] } { Mistake. Qe7 was best. } { [%clk 0:36:59] } 26. Bb2 { [%eval 0.0] [%clk 0:09:25] } 26... Ra8 { [%eval 0.0] [%clk 0:35:18] } 27. Qb5 { [%eval 0.03] [%clk 0:09:21] } 27... Qd2 { [%eval 0.13] [%clk 0:33:14] } 28. Qb7 { [%eval -0.18] [%clk 0:01:54] } 28... Nd7 { [%eval 0.28] [%clk 0:29:14] } 29. Rf2 { [%eval 0.34] [%clk 0:01:10] } 29... Qe3 { [%eval 0.36] [%clk 0:28:34] } 30. Qd5?! { [%eval -0.19] } { Inaccuracy. f5 was best. } { [%clk 0:00:58] } 30... Be6 { [%eval -0.24] [%clk 0:27:26] } 31. Qd3 { [%eval -0.22] [%clk 0:00:48] } 31... Bxc4 { [%eval -0.2] [%clk 0:26:04] } 32. Qxc4 { [%eval -0.17] [%clk 0:01:15] } 32... Nb6 { [%eval -0.26] [%clk 0:21:47] } 33. Qc3 { [%eval -0.25] [%clk 0:01:30] } 33... Qxc3 { [%eval -0.19] [%clk 0:22:07] } 34. Bxc3 { [%eval -0.24] [%clk 0:01:59] } 34... Re3 { [%eval -0.01] [%clk 0:22:25] } 35. Rc2 { [%eval -0.03] [%clk 0:02:03] } 35... f6 { [%eval -0.01] [%clk 0:22:07] } 36. Kf2 { [%eval -0.14] [%clk 0:01:42] } 36... Rd3 { [%eval -0.03] [%clk 0:22:06] } 37. Ke2 { [%eval -0.03] [%clk 0:01:18] } 37... c4 { [%eval -0.06] [%clk 0:22:22] } 38. Bb4 { [%eval -0.03] [%clk 0:00:48] } 38... Re8+ { [%eval -0.09] [%clk 0:17:43] } 39. Kf2 { [%eval -0.06] [%clk 0:01:11] } 39... Re4 { [%eval -0.08] [%clk 0:15:48] } 40. g3 { [%eval -0.05] [%clk 0:31:15] } 40... Nd5 { [%eval 0.0] [%clk 0:46:06] } 41. Rac1 { [%eval -0.06] [%clk 0:21:23] } 41... Ne3 { [%eval 0.0] [%clk 0:45:01] } 42. Re2 { [%eval 0.0] [%clk 0:11:27] } 42... f5 { [%eval 0.0] [%clk 0:43:22] } 43. Bc5 { [%eval 0.0] [%clk 0:07:39] } 43... Ng4+ { [%eval 0.0] [%clk 0:39:39] } 44. Ke1 { [%eval 0.0] [%clk 0:07:54] } 44... Rxe2+ { [%eval 0.0] [%clk 0:36:31] } 45. Kxe2 { [%eval 0.0] [%clk 0:08:21] } 45... Nxh2 { [%eval 0.03] [%clk 0:36:51] } 46. Rxc4 { [%eval 0.0] [%clk 0:08:30] } 46... Rxg3 { [%eval 0.0] [%clk 0:37:16] } 47. a4 { [%eval 0.0] [%clk 0:08:01] } 47... h5 { [%eval 0.0] [%clk 0:36:55] } 48. a5 { [%eval 0.0] [%clk 0:08:14] } 48... Rg2+ { [%eval 0.0] [%clk 0:37:19] } 49. Kd3 { [%eval 0.0] [%clk 0:08:01] } 49... Ra2 { [%eval 0.0] [%clk 0:37:41] } 50. Rc2 { [%eval 0.0] [%clk 0:06:57] } 50... Rxa5 { [%eval 0.0] [%clk 0:37:59] } 51. Rxh2 { [%eval 0.0] [%clk 0:07:20] } 51... Rxc5 { [%eval 0.0] [%clk 0:38:21] } 52. Rxh5 { [%eval -0.01] [%clk 0:07:46] } 52... g6 { [%eval -0.05] [%clk 0:38:44] } 53. Rg5 { [%eval -0.07] [%clk 0:08:09] } 53... Kg7 { [%eval -0.01] [%clk 0:38:58] } 54. Kd4 { [%eval 0.0] [%clk 0:08:32] } 54... Rc1 { [%eval 0.0] [%clk 0:39:11] } 55. Ke3 { [%eval 0.0] [%clk 0:08:31] } 55... Kh6 { [%eval 0.0] [%clk 0:37:59] } 56. Kf3 { [%eval 0.0] [%clk 0:06:35] } 56... Rf1+ { [%eval 0.0] [%clk 0:38:19] } 57. Ke3 { [%eval 0.0] [%clk 0:06:48] } 57... Ra1 { [%eval 0.0] [%clk 0:38:12] } 58. Kf3 { [%eval -0.01] [%clk 0:06:50] } 58... Kg7 { [%eval -0.03] [%clk 0:38:35] } 59. Ke3 { [%eval 0.0] [%clk 0:06:59] } 59... Kf6 { [%eval 0.0] [%clk 0:38:43] } 60. Kf3 { [%eval 0.0] [%clk 0:07:21] } 60... Ra3+ { [%eval -0.02] [%clk 0:38:29] } 61. Kf2 { [%eval -0.05] [%clk 0:07:31] } 61... Ke6 { [%eval 0.0] [%clk 0:37:20] } 62. Rxg6+ { [%eval 0.0] [%clk 0:07:05] } 62... Kd5 { [%eval 0.0] [%clk 0:37:44] } 63. Rb6 { [%eval 0.0] [%clk 0:07:00] } 63... Rc3 { [%eval 0.0] [%clk 0:37:42] } 64. Rb5+ { [%eval 0.0] [%clk 0:06:30] } 64... Kd4 { [%eval 0.0] [%clk 0:37:54] } 65. Rxf5 { [%eval 0.0] [%clk 0:06:32] } 65... Ke4 { [%eval 0.0] [%clk 0:38:19] } 66. Re5+ { [%eval 0.0] [%clk 0:05:49] } 66... Kxf4 { [%clk 0:38:41] } 67. Re2 { [%clk 0:06:11] } 67... Rf3+ { [%clk 0:39:07] } 68. Kg2 { [%clk 0:06:36] } 68... Re3 { [%clk 0:39:32] } 69. Rxe3 { [%clk 0:07:02] } 69... Kxe3 { [%clk 0:40:01] } 1/2-1/2</pre>
+          </section>
+
+          <section>
+            <h3 id="notes">Notes</h3>
+            <p>
+              Almost all the games include Stockfish analysis evaluations:
+              <code>[%eval 2.35]</code> (235 centipawn advantage),
+              <code>[%eval #-4]</code> (getting mated in 4),
+              always from White's point of view.
+            </p>
+          </section>
+
+          <section>
+            <h3 id="zst">Decompress .zst</h3>
+            <p>
+              Unix: <code>pzstd -d filename.pgn.zst</code> (faster than <code>unzstd</code>)<br />
+              Windows: use <a href="https://peazip.github.io/">PeaZip</a>
+            </p>
+            <p>
+              Expect uncompressed files to be about 7.1 times larger.
+            </p>
+            <p>
+              ZStandard archives are partially decompressable, so you can start downloading and then cancel at any point. You will be able to decompress the partial download if you only want a smaller set of game data.
+            </p>
+            <p>
+              You can also decompress the data on-the-fly without having to create large temporary files. This example shows how you can pipe the contents to a Python script for analyzing using <code>zstdcat</code>.
+            </p>
+            <pre>$ zstdcat lichess_db.pgn.zst | python script.py</pre>
+          </section>
+        </div>
         <div id="standard_games" class="panel">
           <section>
             <nav>
@@ -354,74 +422,6 @@
                 Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
               </li>
             </ul>
-          </section>
-        </div>
-        <div id="broadcasts" class="panel">
-          <section>
-            <nav>
-              <a href="#standard_games">Chess games</a>
-              <a href="#variant_games">Variants</a>
-              <a href="#broadcasts" class="on">Broadcasts</a>
-              <a href="#puzzles">Puzzles</a>
-              <a href="#evals">Evaluations</a>
-            </nav>
-            <!-- table-broadcasts -->
-          </section>
-
-          <section>
-            <h3 id="sample">Sample</h3>
-            <pre>[Event "New Zealand Chess Congress 2025"]
-[Round "01"]
-[White "Metge, J. Nigel"]
-[Black "Nagy, Gabor"]
-[Result "1/2-1/2"]
-[WhiteElo "1885"]
-[WhiteFideId "4300181"]
-[BlackElo "2469"]
-[BlackTitle "GM"]
-[BlackFideId "737119"]
-[TimeControl "5400+30"]
-[Board "1"]
-[Variant "Standard"]
-[ECO "E47"]
-[Opening "Nimzo-Indian Defense: Normal Variation"]
-[StudyName "Round 1"]
-[ChapterName "Metge, J. Nigel - Nagy, Gabor"]
-[UTCDate "2025.01.02"]
-[UTCTime "01:29:03"]
-[BroadcastName "New Zealand Chess Congress 2025 | Championship"]
-[BroadcastURL "https://lichess.org/broadcast/new-zealand-chess-congress-2025--championship/round-1/spI5tcia"]
-[GameURL "https://lichess.org/broadcast/new-zealand-chess-congress-2025--championship/round-1/spI5tcia/oHmutTGn"]
-
-1. d4 { [%eval 0.17] [%clk 1:30:50] } 1... Nf6 { [%eval 0.19] [%clk 1:30:39] } 2. c4 { [%eval 0.18] [%clk 1:31:12] } 2... e6 { [%eval 0.11] [%clk 1:30:21] } 3. Nc3 { [%eval 0.17] [%clk 1:31:34] } 3... Bb4 { [%eval 0.09] [%clk 1:28:27] } 4. e3 { [%eval 0.11] [%clk 1:31:38] } 4... O-O { [%eval 0.11] [%clk 1:27:10] } 5. Bd3 { [%eval 0.03] [%clk 1:31:37] } 5... Re8 { [%eval 0.28] [%clk 1:25:53] } 6. Nf3 { [%eval 0.18] [%clk 1:31:03] } 6... d5 { [%eval 0.23] [%clk 1:25:50] } 7. O-O { [%eval 0.2] [%clk 1:27:01] } 7... Nbd7 { [%eval 0.4] [%clk 1:24:53] } 8. Ne5 { [%eval 0.17] [%clk 1:12:36] } 8... dxc4 { [%eval 0.29] [%clk 1:20:40] } 9. Nxc4 { [%eval 0.34] [%clk 1:08:45] } 9... a6 { [%eval 0.23] [%clk 1:15:52] } 10. Qc2 { [%eval 0.16] [%clk 0:52:48] } 10... c5 { [%eval 0.7] [%clk 1:03:58] } 11. Rd1?! { [%eval 0.05] } { Inaccuracy. a3 was best. } { [%clk 0:45:36] } 11... Qc7 { [%eval 0.22] [%clk 0:59:08] } 12. a3 { [%eval 0.0] [%clk 0:27:22] } 12... Bxc3 { [%eval 0.01] [%clk 0:56:30] } 13. bxc3 { [%eval -0.29] [%clk 0:24:44] } 13... b5 { [%eval -0.23] [%clk 0:55:45] } 14. Ne5?! { [%eval -1.05] } { Inaccuracy. Nd2 was best. } { [%clk 0:24:46] } 14... Nxe5 { [%eval -1.08] [%clk 0:55:09] } 15. dxe5 { [%eval -0.99] [%clk 0:25:06] } 15... Qxe5 { [%eval -1.15] [%clk 0:55:20] } 16. f4 { [%eval -1.06] [%clk 0:24:56] } 16... Qc7 { [%eval -1.04] [%clk 0:52:02] } 17. c4 { [%eval -1.06] [%clk 0:24:54] } 17... e5 { [%eval -0.59] [%clk 0:46:02] } 18. cxb5? { [%eval -1.76] } { Mistake. Bb2 was best. } { [%clk 0:21:18] } 18... exf4 { [%eval -1.74] [%clk 0:45:48] } 19. exf4?! { [%eval -2.55] } { Inaccuracy. Rb1 was best. } { [%clk 0:20:49] } 19... Qb6 { [%eval -2.6] [%clk 0:44:49] } 20. Bc4 { [%eval -2.47] [%clk 0:15:07] } 20... axb5 { [%eval -2.32] [%clk 0:44:34] } 21. Qb3?! { [%eval -3.64] } { Inaccuracy. Rb1 was best. } { [%clk 0:15:05] } 21... Qa7 { [%eval -4.06] [%clk 0:44:15] } 22. Qxb5 { [%eval -3.87] [%clk 0:13:39] } 22... Rb8 { [%eval -3.92] [%clk 0:43:20] } 23. Qc6 { [%eval -3.61] [%clk 0:11:51] } 23... Bg4 { [%eval -3.81] [%clk 0:40:29] } 24. Rf1 { [%eval -3.55] [%clk 0:10:56] } 24... Rbc8?? { [%eval -1.35] } { Blunder. Re4 was best. } { [%clk 0:36:46] } 25. Qa6 { [%eval -1.21] [%clk 0:09:58] } 25... Qd7? { [%eval 0.0] } { Mistake. Qe7 was best. } { [%clk 0:36:59] } 26. Bb2 { [%eval 0.0] [%clk 0:09:25] } 26... Ra8 { [%eval 0.0] [%clk 0:35:18] } 27. Qb5 { [%eval 0.03] [%clk 0:09:21] } 27... Qd2 { [%eval 0.13] [%clk 0:33:14] } 28. Qb7 { [%eval -0.18] [%clk 0:01:54] } 28... Nd7 { [%eval 0.28] [%clk 0:29:14] } 29. Rf2 { [%eval 0.34] [%clk 0:01:10] } 29... Qe3 { [%eval 0.36] [%clk 0:28:34] } 30. Qd5?! { [%eval -0.19] } { Inaccuracy. f5 was best. } { [%clk 0:00:58] } 30... Be6 { [%eval -0.24] [%clk 0:27:26] } 31. Qd3 { [%eval -0.22] [%clk 0:00:48] } 31... Bxc4 { [%eval -0.2] [%clk 0:26:04] } 32. Qxc4 { [%eval -0.17] [%clk 0:01:15] } 32... Nb6 { [%eval -0.26] [%clk 0:21:47] } 33. Qc3 { [%eval -0.25] [%clk 0:01:30] } 33... Qxc3 { [%eval -0.19] [%clk 0:22:07] } 34. Bxc3 { [%eval -0.24] [%clk 0:01:59] } 34... Re3 { [%eval -0.01] [%clk 0:22:25] } 35. Rc2 { [%eval -0.03] [%clk 0:02:03] } 35... f6 { [%eval -0.01] [%clk 0:22:07] } 36. Kf2 { [%eval -0.14] [%clk 0:01:42] } 36... Rd3 { [%eval -0.03] [%clk 0:22:06] } 37. Ke2 { [%eval -0.03] [%clk 0:01:18] } 37... c4 { [%eval -0.06] [%clk 0:22:22] } 38. Bb4 { [%eval -0.03] [%clk 0:00:48] } 38... Re8+ { [%eval -0.09] [%clk 0:17:43] } 39. Kf2 { [%eval -0.06] [%clk 0:01:11] } 39... Re4 { [%eval -0.08] [%clk 0:15:48] } 40. g3 { [%eval -0.05] [%clk 0:31:15] } 40... Nd5 { [%eval 0.0] [%clk 0:46:06] } 41. Rac1 { [%eval -0.06] [%clk 0:21:23] } 41... Ne3 { [%eval 0.0] [%clk 0:45:01] } 42. Re2 { [%eval 0.0] [%clk 0:11:27] } 42... f5 { [%eval 0.0] [%clk 0:43:22] } 43. Bc5 { [%eval 0.0] [%clk 0:07:39] } 43... Ng4+ { [%eval 0.0] [%clk 0:39:39] } 44. Ke1 { [%eval 0.0] [%clk 0:07:54] } 44... Rxe2+ { [%eval 0.0] [%clk 0:36:31] } 45. Kxe2 { [%eval 0.0] [%clk 0:08:21] } 45... Nxh2 { [%eval 0.03] [%clk 0:36:51] } 46. Rxc4 { [%eval 0.0] [%clk 0:08:30] } 46... Rxg3 { [%eval 0.0] [%clk 0:37:16] } 47. a4 { [%eval 0.0] [%clk 0:08:01] } 47... h5 { [%eval 0.0] [%clk 0:36:55] } 48. a5 { [%eval 0.0] [%clk 0:08:14] } 48... Rg2+ { [%eval 0.0] [%clk 0:37:19] } 49. Kd3 { [%eval 0.0] [%clk 0:08:01] } 49... Ra2 { [%eval 0.0] [%clk 0:37:41] } 50. Rc2 { [%eval 0.0] [%clk 0:06:57] } 50... Rxa5 { [%eval 0.0] [%clk 0:37:59] } 51. Rxh2 { [%eval 0.0] [%clk 0:07:20] } 51... Rxc5 { [%eval 0.0] [%clk 0:38:21] } 52. Rxh5 { [%eval -0.01] [%clk 0:07:46] } 52... g6 { [%eval -0.05] [%clk 0:38:44] } 53. Rg5 { [%eval -0.07] [%clk 0:08:09] } 53... Kg7 { [%eval -0.01] [%clk 0:38:58] } 54. Kd4 { [%eval 0.0] [%clk 0:08:32] } 54... Rc1 { [%eval 0.0] [%clk 0:39:11] } 55. Ke3 { [%eval 0.0] [%clk 0:08:31] } 55... Kh6 { [%eval 0.0] [%clk 0:37:59] } 56. Kf3 { [%eval 0.0] [%clk 0:06:35] } 56... Rf1+ { [%eval 0.0] [%clk 0:38:19] } 57. Ke3 { [%eval 0.0] [%clk 0:06:48] } 57... Ra1 { [%eval 0.0] [%clk 0:38:12] } 58. Kf3 { [%eval -0.01] [%clk 0:06:50] } 58... Kg7 { [%eval -0.03] [%clk 0:38:35] } 59. Ke3 { [%eval 0.0] [%clk 0:06:59] } 59... Kf6 { [%eval 0.0] [%clk 0:38:43] } 60. Kf3 { [%eval 0.0] [%clk 0:07:21] } 60... Ra3+ { [%eval -0.02] [%clk 0:38:29] } 61. Kf2 { [%eval -0.05] [%clk 0:07:31] } 61... Ke6 { [%eval 0.0] [%clk 0:37:20] } 62. Rxg6+ { [%eval 0.0] [%clk 0:07:05] } 62... Kd5 { [%eval 0.0] [%clk 0:37:44] } 63. Rb6 { [%eval 0.0] [%clk 0:07:00] } 63... Rc3 { [%eval 0.0] [%clk 0:37:42] } 64. Rb5+ { [%eval 0.0] [%clk 0:06:30] } 64... Kd4 { [%eval 0.0] [%clk 0:37:54] } 65. Rxf5 { [%eval 0.0] [%clk 0:06:32] } 65... Ke4 { [%eval 0.0] [%clk 0:38:19] } 66. Re5+ { [%eval 0.0] [%clk 0:05:49] } 66... Kxf4 { [%clk 0:38:41] } 67. Re2 { [%clk 0:06:11] } 67... Rf3+ { [%clk 0:39:07] } 68. Kg2 { [%clk 0:06:36] } 68... Re3 { [%clk 0:39:32] } 69. Rxe3 { [%clk 0:07:02] } 69... Kxe3 { [%clk 0:40:01] } 1/2-1/2</pre>
-          </section>
-
-          <section>
-            <h3 id="notes">Notes</h3>
-            <p>
-              Almost all the games include Stockfish analysis evaluations:
-              <code>[%eval 2.35]</code> (235 centipawn advantage),
-              <code>[%eval #-4]</code> (getting mated in 4),
-              always from White's point of view.
-            </p>
-          </section>
-
-          <section>
-            <h3 id="zst">Decompress .zst</h3>
-            <p>
-              Unix: <code>pzstd -d filename.pgn.zst</code> (faster than <code>unzstd</code>)<br />
-              Windows: use <a href="https://peazip.github.io/">PeaZip</a>
-            </p>
-            <p>
-              Expect uncompressed files to be about 7.1 times larger.
-            </p>
-            <p>
-              ZStandard archives are partially decompressable, so you can start downloading and then cancel at any point. You will be able to decompress the partial download if you only want a smaller set of game data.
-            </p>
-            <p>
-              You can also decompress the data on-the-fly without having to create large temporary files. This example shows how you can pipe the contents to a Python script for analyzing using <code>zstdcat</code>.
-            </p>
-            <pre>$ zstdcat lichess_db.pgn.zst | python script.py</pre>
           </section>
         </div>
 
