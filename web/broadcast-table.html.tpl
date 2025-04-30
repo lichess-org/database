@@ -8,6 +8,7 @@
       <th>Month</th>
       <th class="right">Size</th>
       <th class="right">Games</th>
+      <th>View</th>
       <th>Download</th>
     </tr>
   </thead>

@@ -78,6 +78,7 @@ function renderBroadcastTable(files, dir) {
     <td>${f.date.format('YYYY - MMMM')}</td>
     <td class="right">${prettyBytes(f.size)}</td>
     <td class="right">${f.games ? numberFormat(f.games) : '?'}</td>
+    <td><a href="https://lichess.org/broadcast/calendar/${f.date.format('YYYY/MM')}">👁</a></td>
     <td><a href="${dir}/${f.name}">.pgn.zst</a></td>
 </tr>`;
     })
@@ -96,9 +97,7 @@ function renderTotal(files) {
 
 function renderList(files, dir) {
   return files
-    .map(f => {
-      return `https://database.lichess.org/${dir}/${f.name}`;
-    })
+    .map(f => `https://database.lichess.org/${dir}/${f.name}`)
     .join('\n');
 }
 
@@ -124,7 +123,7 @@ function replaceVariant(variant, tableTemplate) {
   };
 }
 
-function getBroadcastCounts(variant) {
+function getBroadcastCounts() {
   return fs.readFile(sourceDir + '/broadcast/counts.txt', { encoding: 'utf8' }).then(c => {
     var counts = {};
     c.split('\n')
