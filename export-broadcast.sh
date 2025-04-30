@@ -15,7 +15,7 @@ echo "Export broadcasts of $month to $file"
 
 cd "$dir"
 
-url="http://lichess.org/api/broadcast/round/_${month//-/_}.pgn"
+url="https://lichess.org/api/broadcast/round/_${month//-/_}.pgn"
 
 echo "curl $url"
 
