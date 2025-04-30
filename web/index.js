@@ -191,18 +191,16 @@ Promise.all([
   fs.readFile(styleFile, { encoding: 'utf8' }),
 ]).then(([index, table, broadcastTable, style]) => {
   const rv = variant => replaceVariant(variant, table);
-  // return
-  // rv('standard')(index)
-  // .then(rv('antichess'))
-  // .then(rv('atomic'))
-  // .then(rv('chess960'))
-  // .then(rv('crazyhouse'))
-  // .then(rv('horde'))
-  // .then(rv('kingOfTheHill'))
-  // .then(rv('racingKings'))
-  // .then(rv('threeCheck'))
-  // .then(replaceBroadcasts(broadcastTable))
-  return replaceBroadcasts(broadcastTable)(index)
+  return rv('standard')(index)
+    .then(rv('antichess'))
+    .then(rv('atomic'))
+    .then(rv('chess960'))
+    .then(rv('crazyhouse'))
+    .then(rv('horde'))
+    .then(rv('kingOfTheHill'))
+    .then(rv('racingKings'))
+    .then(rv('threeCheck'))
+    .then(replaceBroadcasts(broadcastTable))
     .then(replaceNbPuzzles)
     .then(replaceNbEvals)
     .then(replaceDateUpdated)
