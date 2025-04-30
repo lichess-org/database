@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 month=${1}
 dir=${2}/broadcast
