@@ -1,6 +1,10 @@
 <p>
   <strong><!-- nbGames --></strong> games in PGN format, from the official <a href="https://lichess.org/broadcast">Lichess broadcasts</a>.
 </p>
+<p class="license">
+  Broadcast games are released under the
+  <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 license</a>.<br />
+</p>
 
 <table>
   <thead>
