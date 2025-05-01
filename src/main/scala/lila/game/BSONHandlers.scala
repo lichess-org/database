@@ -115,23 +115,21 @@ object BSONHandlers:
           )
 
       val chessGame = ChessGame(
-        situation = chess.Situation(
-          chess.Board(
-            board = decoded.board,
-            history = ChessHistory(
-              lastMove = decoded.lastMove,
-              castles = decoded.castles,
-              halfMoveClock = decoded.halfMoveClock,
-              positionHashes = decoded.positionHashes,
-              unmovedRooks = decoded.unmovedRooks,
-              checkCount = if gameVariant.threeCheck then
-                val counts = r.intsD(F.checkCount)
-                CheckCount(~counts.headOption, ~counts.lastOption)
-              else Game.emptyCheckCount,
-              crazyData = gameVariant.crazyhouse.option(r.get[Crazyhouse.Data](F.crazyData))
-            ),
-            variant = gameVariant
+        situation = chess.Board(
+          board = decoded.board,
+          history = ChessHistory(
+            lastMove = decoded.lastMove,
+            castles = decoded.castles,
+            halfMoveClock = decoded.halfMoveClock,
+            positionHashes = decoded.positionHashes,
+            unmovedRooks = decoded.unmovedRooks,
+            checkCount = if gameVariant.threeCheck then
+              val counts = r.intsD(F.checkCount)
+              CheckCount(~counts.headOption, ~counts.lastOption)
+            else Game.emptyCheckCount,
+            crazyData = gameVariant.crazyhouse.option(r.get[Crazyhouse.Data](F.crazyData))
           ),
+          variant = gameVariant,
           color = turnColor
         ),
         sans = decoded.sans,
