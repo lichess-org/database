@@ -1,0 +1,34 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: ['**']
+  push:
+    branches: ['**']
+
+jobs:
+  openjdk21:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout current branch
+        uses: actions/checkout@v4
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Setup JVM
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: sbt
+
+      - name: Build project
+        run: sbt compile
+
+      - name: Test project
+        run: sbt test
+
+      - name: Check Formatting
+        run: sbt scalafmtCheckAll
