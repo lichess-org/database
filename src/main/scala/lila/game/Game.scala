@@ -9,7 +9,7 @@ import chess.format.{ Fen, Uci }
 import chess.opening.{ Opening, OpeningDb }
 import chess.variant.Variant
 import chess.format.pgn.SanStr
-import chess.{ Board, ByColor, Castles, Centis, CheckCount, Clock, Color, Game as ChessGame, Mode, Status }
+import chess.{ ByColor, Castles, Centis, CheckCount, Clock, Color, Game as ChessGame, Mode, Status }
 
 import lila.common.Sequence
 import lila.db.ByteArray
