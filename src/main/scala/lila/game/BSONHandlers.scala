@@ -15,7 +15,6 @@ import chess.{
   Status,
   UnmovedRooks
 }
-import chess.bitboard.Board as BBoard
 import lila.db.BSON
 import lila.db.dsl.{ *, given }
 import reactivemongo.api.bson.*
@@ -43,7 +42,7 @@ object BSONHandlers:
       val (white, black) = r.str("p").view.flatMap(chess.Piece.fromChar).to(List).partition(_.is(chess.White))
       Crazyhouse.Data(
         pockets = ByColor(white, black).map(pieces => Pocket(pieces.map(_.role))),
-        promoted = chess.bitboard.Bitboard(r.str("t").view.flatMap(chess.Square.fromChar(_)))
+        promoted = chess.Bitboard(r.str("t").view.flatMap(chess.Square.fromChar(_)))
       )
 
   private given lightGameReader: lila.db.BSONReadOnly[LightGame]:
@@ -101,7 +100,7 @@ object BSONHandlers:
             )
           PgnStorage.Decoded(
             sans = sans,
-            board = BBoard.fromMap(BinaryFormat.piece.read(r.bytes(F.binaryPieces), gameVariant)),
+            board = chess.Board.fromMap(BinaryFormat.piece.read(r.bytes(F.binaryPieces), gameVariant)),
             positionHashes =
               r.getO[Array[Byte]](F.positionHashes).map(chess.PositionHash.apply) | chess.PositionHash.empty,
             unmovedRooks = r.getO[UnmovedRooks](F.unmovedRooks) | UnmovedRooks.default,
@@ -115,7 +114,7 @@ object BSONHandlers:
           )
 
       val chessGame = ChessGame(
-        situation = chess.Board(
+        board = chess.Position(
           board = decoded.board,
           history = ChessHistory(
             lastMove = decoded.lastMove,

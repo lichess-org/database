@@ -124,7 +124,7 @@ object Evals:
             err = Cursor.ContOnError((_, e) => println(e.getMessage))
           )
           .buffer(1000, OverflowStrategy.backpressure)
-          .filter(_._id.position.read.situation.variant.standard)
+          .filter(_._id.position.read.board.variant.standard)
           .via(toJson)
           .runWith(ndjsonSink)
       }
