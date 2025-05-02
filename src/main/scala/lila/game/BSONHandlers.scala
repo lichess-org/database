@@ -115,7 +115,7 @@ object BSONHandlers:
           )
 
       val chessGame = ChessGame(
-        situation = chess.Board(
+        board = chess.Board(
           board = decoded.board,
           history = ChessHistory(
             lastMove = decoded.lastMove,

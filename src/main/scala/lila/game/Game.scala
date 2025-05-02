@@ -27,8 +27,8 @@ case class Game(
     movedAt: Instant,
     metadata: Metadata
 ):
-  export chess.{ clock, player as turnColor, ply, sans, situation, startedAtPly }
-  export chess.situation.{ history, variant }
+  export chess.{ clock, player as turnColor, ply, sans, board, startedAtPly }
+  export chess.board.{ history, variant }
 
   def player: Player = players(turnColor)
 
@@ -197,7 +197,7 @@ case class Game(
   def startColor = startedAtPly.turn
 
   def ratingVariant =
-    if isTournament && situation.variant.fromPosition then _root_.chess.variant.Standard
+    if isTournament && board.variant.fromPosition then _root_.chess.variant.Standard
     else variant
 
   def fromPosition = variant.fromPosition || source.contains(Source.Position)
