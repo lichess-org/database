@@ -1,7 +1,6 @@
 package lila
 package game
 
-import scala.collection.Searching.*
 import scala.util.Try
 import scala.language.postfixOps
 

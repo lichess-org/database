@@ -58,7 +58,7 @@ case class Game(
   def hasChat = !isTournament && !isSimul && nonAi
 
   def everyOther[A](l: List[A]): List[A] = l match
-    case a :: b :: tail => a :: everyOther(tail)
+    case a :: _ :: tail => a :: everyOther(tail)
     case _              => l
 
   def moveTimes(color: Color): Option[List[Centis]] = {

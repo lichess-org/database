@@ -48,7 +48,6 @@ case class Analysis(
 object Analysis:
 
   import lila.db.BSON
-  import reactivemongo.api.bson.*
 
   type ID = String
 
