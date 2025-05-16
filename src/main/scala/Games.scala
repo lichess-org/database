@@ -133,13 +133,7 @@ object Games:
             ws.map { case ((g, analysis), users) =>
               val pgn = PgnDump(g.game, users, g.fen)
               lila.analyse
-                .Annotator(
-                  pgn,
-                  analysis,
-                  g.game.winnerColor,
-                  g.game.status,
-                  g.game.clock
-                )
+                .Annotator(pgn, analysis)
                 .render
                 .value
                 .replace("] } { [", "] [") + "\n\n"

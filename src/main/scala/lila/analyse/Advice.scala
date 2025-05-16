@@ -58,7 +58,7 @@ private[analyse] object CpAdvice:
       delta =
         val d = infoCp - cp
         info.color.fold(-d, d)
-      judgment <- cpJudgments.find { case (d, n) => d <= delta }.map(_._2)
+      judgment <- cpJudgments.find { (d, _) => d <= delta }.map(_._2)
     yield CpAdvice(judgment, info, prev)
 
 sealed abstract private[analyse] class MateSequence(val desc: String)

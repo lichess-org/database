@@ -2,16 +2,13 @@ package lila
 package analyse
 
 import chess.format.pgn.{ Glyphs, Pgn }
-import chess.{ Clock, Color, Ply, Status }
+import chess.Ply
 
 object Annotator:
 
   def apply(
       p: Pgn,
-      analysis: Option[Analysis],
-      winner: Option[Color],
-      status: Status,
-      clock: Option[Clock]
+      analysis: Option[Analysis]
   ): Pgn =
     addEvals(
       addGlyphs(p, analysis.fold(List.empty[Advice])(_.advices)),
