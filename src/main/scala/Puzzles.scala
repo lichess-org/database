@@ -44,7 +44,7 @@ object Puzzles:
     val driver = new AsyncDriver(Some(config.getConfig("mongo-async-driver")))
 
     given system: ActorSystem = ActorSystem()
-    given ActorMaterializer = ActorMaterializer(
+    given Materializer = ActorMaterializer(
       ActorMaterializerSettings(system)
         .withInputBuffer(
           initialSize = 32,
@@ -106,13 +106,21 @@ object Puzzles:
 
     val process = MongoConnection
       .fromString(uri)
-      .flatMap { parsedUri =>
+      .flatMap: parsedUri =>
         driver.connect(parsedUri, Some("lichess-puzzle"))
-      }
       .flatMap(_.database(dbName))
       .flatMap {
         _.collection(collName)
-          .find(BSONDocument("issue" -> BSONDocument("$exists" -> false)))
+          .find(
+            BSONDocument(
+              "issue" -> BSONDocument("$exists" -> false),
+              "vote"  -> BSONDocument("$gt" -> -1),
+              "$or" -> BSONArray(
+                BSONDocument("generator" -> BSONDocument("$exists" -> 0)),
+                BSONDocument("generator" -> BSONDocument("$gt" -> 22))
+              )
+            )
+          )
           .sort(BSONDocument("_id" -> 1))
           .cursor[Bdoc]()
           // .cursor[Bdoc](readPreference = ReadPreference.secondary)
