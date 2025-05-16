@@ -169,9 +169,9 @@
             </p>
             <p>
               <a href="https://github.com/ornicar/lichess-puzzler/tree/master/generator">Generating these chess puzzles</a>
-              took more than 50 years of CPU time.<br />
-              We went through 300,000,000 analysed games from the Lichess database,
-              and re-analyzed interesting positions with Stockfish 12/13/14/15 NNUE at 40 meganodes.
+              took more than 100 years of CPU time.<br />
+              We went through 600,000,000 analysed games from the Lichess database,
+              and re-analyzed interesting positions with Stockfish NNUE at 40 meganodes.
               The resulting puzzles were then <a href="https://github.com/ornicar/lichess-puzzler/tree/master/tagger">automatically tagged</a>.
               To determine the rating, each attempt to solve is considered as a Glicko2 rated game between the player and the puzzle.
               Finally, player votes refine the tags and define popularity.
