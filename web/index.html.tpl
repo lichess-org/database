@@ -250,6 +250,9 @@
               <code>[%eval #-4]</code> (getting mated in 4),
               always from White's point of view.
             </p>
+            <p>
+              Games between chess engines are marked with [WhiteTitle "BOT"] or [BlackTitle "BOT"], respectively.
+            </p>
           </section>
 
           <section>
