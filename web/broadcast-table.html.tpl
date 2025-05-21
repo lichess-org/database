@@ -23,5 +23,6 @@
 </table>
 
 <p>
-  Here's the <a href="broadcast/sha256sums.txt">SHA256 checksums</a>.
+  Here's a plain text <a href="broadcast/list.txt">download list</a>,
+  and the <a href="broadcast/sha256sums.txt">SHA256 checksums</a>.
 </p>
