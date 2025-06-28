@@ -9,7 +9,7 @@ import chess.format.{ Fen, Uci }
 import chess.opening.{ Opening, OpeningDb }
 import chess.variant.Variant
 import chess.format.pgn.SanStr
-import chess.{ ByColor, Castles, Centis, CheckCount, Clock, Color, Game as ChessGame, Mode, Status }
+import chess.{ ByColor, Castles, Centis, CheckCount, Clock, Color, Game as ChessGame, Rated, Status }
 
 import lila.common.Sequence
 import lila.db.ByteArray
@@ -22,13 +22,13 @@ case class Game(
     daysPerTurn: Option[Int],
     binaryMoveTimes: Option[ByteArray] = None,
     clockHistory: Option[ClockHistory] = Option(ClockHistory()),
-    mode: Mode = Mode.default,
+    mode: Rated = Rated.default,
     createdAt: Instant,
     movedAt: Instant,
     metadata: Metadata
 ):
-  export chess.{ clock, player as turnColor, ply, sans, board, startedAtPly }
-  export chess.board.{ history, variant }
+  export chess.{ clock, player as turnColor, ply, sans, position, startedAtPly }
+  export chess.position.{ history, variant }
 
   def player: Player = players(turnColor)
 
@@ -149,7 +149,7 @@ case class Game(
 
   def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
 
-  def rated  = mode.rated
+  def rated  = mode.yes
   def casual = !rated
 
   def finished = status >= Status.Mate
@@ -197,7 +197,7 @@ case class Game(
   def startColor = startedAtPly.turn
 
   def ratingVariant =
-    if isTournament && board.variant.fromPosition then _root_.chess.variant.Standard
+    if isTournament && position.variant.fromPosition then _root_.chess.variant.Standard
     else variant
 
   def fromPosition = variant.fromPosition || source.contains(Source.Position)

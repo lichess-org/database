@@ -10,7 +10,7 @@ import chess.{
   Game as ChessGame,
   HalfMoveClock,
   History as ChessHistory,
-  Mode,
+  Rated,
   Ply,
   Status,
   UnmovedRooks
@@ -114,7 +114,7 @@ object BSONHandlers:
           )
 
       val chessGame = ChessGame(
-        board = chess.Position(
+        position = chess.Position(
           board = decoded.board,
           history = ChessHistory(
             lastMove = decoded.lastMove,
@@ -158,7 +158,7 @@ object BSONHandlers:
         status = light.status,
         daysPerTurn = r.getO[Int](F.daysPerTurn),
         binaryMoveTimes = r.bytesO(F.moveTimes),
-        mode = Mode(r.boolD(F.rated)),
+        mode = Rated(r.boolD(F.rated)),
         createdAt = createdAt,
         movedAt = r.dateD(F.movedAt, createdAt),
         metadata = Metadata(
