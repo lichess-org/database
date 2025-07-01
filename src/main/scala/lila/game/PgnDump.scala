@@ -33,11 +33,13 @@ object PgnDump:
     val player = g.players(color)
     player.aiLevel.fold(users(color).name)("lichess AI level " + _)
 
+  private def modeName(g: Game) = if g.rated.yes then "Rated" else "Casual"
+
   private def eventOf(game: Game) =
     val perf = game.perfType.fold("Standard")(_.name)
     game.tournamentId
       .map { id =>
-        s"${game.mode} $perf tournament https://lichess.org/tournament/$id"
+        s"${modeName(game)} $perf tournament https://lichess.org/tournament/$id"
       }
       .orElse(game.simulId.map { id =>
         s"$perf simul https://lichess.org/simul/$id"
@@ -46,7 +48,7 @@ object PgnDump:
         s"$perf swiss https://lichess.org/swiss/$id"
       })
       .getOrElse {
-        s"${game.mode} $perf game"
+        s"${modeName(game)} $perf game"
       }
 
   private def ratingDiffTag(p: Player, tag: Tag.type => TagType) =
