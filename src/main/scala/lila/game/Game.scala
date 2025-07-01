@@ -22,7 +22,7 @@ case class Game(
     daysPerTurn: Option[Int],
     binaryMoveTimes: Option[ByteArray] = None,
     clockHistory: Option[ClockHistory] = Option(ClockHistory()),
-    mode: Rated = Rated.default,
+    rated: Rated = Rated.default,
     createdAt: Instant,
     movedAt: Instant,
     metadata: Metadata
@@ -147,10 +147,7 @@ case class Game(
 
   def aiPov: Option[Pov] = players.find(_.isAi).map(_.color).map(pov)
 
-  def boosted = rated && finished && bothPlayersHaveMoved && playedTurns < 10
-
-  def rated  = mode.yes
-  def casual = !rated
+  def boosted = rated.yes && finished && bothPlayersHaveMoved && playedTurns < 10
 
   def finished = status >= Status.Mate
 

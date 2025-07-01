@@ -158,7 +158,7 @@ object BSONHandlers:
         status = light.status,
         daysPerTurn = r.getO[Int](F.daysPerTurn),
         binaryMoveTimes = r.bytesO(F.moveTimes),
-        mode = Rated(r.boolD(F.rated)),
+        rated = Rated(r.boolD(F.rated)),
         createdAt = createdAt,
         movedAt = r.dateD(F.movedAt, createdAt),
         metadata = Metadata(
