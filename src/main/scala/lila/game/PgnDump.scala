@@ -102,6 +102,7 @@ object PgnDump:
               case Resign | Draw | Stalemate | Mate | VariantEnd => "Normal"
               case Cheat                                         => "Rules infraction"
               case UnknownFinish                                 => "Unknown"
+              case InsufficientMaterialClaim                     => "Insufficient material"
           }
         )
       ),

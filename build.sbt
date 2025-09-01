@@ -29,7 +29,7 @@ lazy val app = project
       "org.reactivemongo"                 %% "reactivemongo"            % "1.1.0-RC15",
       "org.reactivemongo"                 %% "reactivemongo-akkastream" % "1.1.0-RC15",
       "org.lichess"                       %% "scalalib-core"            % "11.7.0",
-      "com.github.lichess-org.scalachess" %% "scalachess"               % "17.8.3",
+      "com.github.lichess-org.scalachess" %% "scalachess"               % "17.9.5",
       "com.typesafe.akka"                 %% "akka-actor"               % "2.6.21",
       "com.typesafe.akka"                 %% "akka-stream"              % "2.6.21",
       "com.typesafe.akka"                 %% "akka-slf4j"               % "2.6.21",
