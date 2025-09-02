@@ -538,6 +538,9 @@
             <li>
               <a href="https://www.youtube.com/watch?v=oUERPFqruYo/">500,000 games of intermediate chess players analyzed (in French)</a>
             </li>
+            <li>
+              <a href="https://chessboard.fun/">Chessboard.fun</a> – Interactive chess training platform with puzzles, analysis, and stats
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
