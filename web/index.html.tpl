@@ -548,7 +548,7 @@
         </section>
       </div>
       <footer>
-        <a href="https://twitter.com/lichess">@lichess</a> | contact@lichess.org | <a href="https://github.com/lichess-org/database">Source code</a>
+        <a href="https://lichess.org/about#links">@lichess</a> | contact@lichess.org | <a href="https://github.com/lichess-org/database">Source code</a>
       </footer>
     </div>
   </body>
