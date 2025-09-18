@@ -541,6 +541,9 @@
             <li>
               <a href="https://chessboard.fun/">Chessboard.fun</a> – Interactive chess training platform with puzzles, analysis, and stats
             </li>
+            <li>
+              <a href="https://blitztactics.com/">Blitz tactics - Fast-paced chess puzzles</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
