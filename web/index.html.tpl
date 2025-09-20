@@ -60,7 +60,7 @@
       "pvs": [    // list of principal variations
         "cp":     // centipawn evaluation. Omitted if mate is certain.
         "mate":   // mate evaluation. Omitted if mate is not certain.
-        "line":   // principal variation, in UCI format.
+        "line":   // principal variation, in UCI_Chess960 format.
 }</pre>
           <p>Each position can have multiple evaluations, each with a different number of <a href="https://www.chessprogramming.org/Principal_Variation">PVs</a>.
           <h3 id="eval_sample">Sample</h3>
