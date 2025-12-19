@@ -544,6 +544,9 @@
             <li>
               <a href="https://blitztactics.com/">Blitz tactics - Fast-paced chess puzzles</a>
             </li>
+            <li>
+              <a href="https://morchess.com/">Mor Chess - Rebuild chess positions with daily puzzles</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
