@@ -432,6 +432,9 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://www.discochess.com">Disco Chess - Woodpecker Method style chess tactics training with spaced repetition</a>
+            </li>
+            <li>
               <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
             </li>
             <li>

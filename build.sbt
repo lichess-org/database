@@ -34,7 +34,7 @@ lazy val app = project
       "com.typesafe.akka"                 %% "akka-stream"              % "2.6.21",
       "com.typesafe.akka"                 %% "akka-slf4j"               % "2.6.21",
       "org.playframework"                 %% "play-json"                % "3.0.4",
-      "org.lichess"                       %% "compression"              % "3.0",
+      "com.github.lichess-org"             % "compression"              % "3.1.3",
       "org.slf4j"                          % "slf4j-nop"                % "1.7.36"
       // "ch.qos.logback"      % "logback-classic"          % "1.4.14"
     )
