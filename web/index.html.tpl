@@ -432,6 +432,9 @@
           <h3 id="related-projects" >Related projects</h3>
           <ul>
             <li>
+              <a href="https://thomasd.be/2026/02/01/aix-storing-querying-chess-games.html">Aix: Efficiently storing and querying the Lichess DB</a>
+            </li>
+            <li>
               <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
             </li>
             <li>
