@@ -17,6 +17,10 @@ export_variant() {
 }
 
 ./export-broadcast.sh $month $dir
+./export-puzzle.sh $dir
+./export-eval.sh $dir
+
+gen_site
 
 variants="standard chess960 antichess atomic crazyhouse horde kingOfTheHill racingKings threeCheck"
 
@@ -25,6 +29,4 @@ for variant in $variants; do
   gen_site
 done
 
-./export-puzzle.sh $dir
-./export-eval.sh $dir
 gen_site
