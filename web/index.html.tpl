@@ -161,7 +161,7 @@
               It is calculated as <code>100 * (upvotes - downvotes)/(upvotes + downvotes)</code>, although votes are weighted by various factors such as whether the puzzle was solved successfully or the solver's puzzle rating in comparison to the puzzle's.
             </p>
             <p>
-              You can find a list of themes, their names and descriptions, in <a href="https://github.com/ornicar/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
+              You can find a list of themes, their names and descriptions, in <a href="https://github.com/lichess-org/lila/blob/master/translation/source/puzzleTheme.xml">this file</a>.
             </p>
             <p>
               The <code>OpeningTags</code> field is only set for puzzles starting before move 20.
@@ -401,28 +401,28 @@
                 Some exports are missing the redundant (but strictly speaking mandatory)
                 <code>Round</code> tag (always <code>-</code>),
                 <code>Date</code> tag (see <code>UTCDate</code> &amp; <code>UTCTime</code> instead),
-                and <a href="https://github.com/ornicar/lichess-db/issues/31">black move numbers after comments</a>.
+                and <a href="https://github.com/lichess-org/database/issues/31">black move numbers after comments</a>.
                 This may be fixed by a future re-export.
               </li>
               <li>
                 July 2020 (especially 31st), August 2020 (up to 16th):
                 Many games, especially variant games, may have
-                <a href="https://github.com/ornicar/lila/issues/7086">incorrect evaluations</a>
+                <a href="https://github.com/lichess-org/lila/issues/7086">incorrect evaluations</a>
                 in the opening (up to 15 plies).
               </li>
               <li>
                 December 2016 (up to and especially 9th):
-                Many games may have <a href="https://github.com/ornicar/lichess-db/issues/10">incorrect evaluations</a>.
+                Many games may have <a href="https://github.com/lichess-org/database/issues/10">incorrect evaluations</a>.
               </li>
               <li>
                 Before 2016: In some cases,
-                <a href="https://github.com/ornicar/lichess-db/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
+                <a href="https://github.com/lichess-org/database/issues/9#issuecomment-373883385">mate may not be forced in the number of moves given by the evaluations</a>.
               </li>
               <li>
-                June 2020, all before March 2016: Some players were able to <a href="https://github.com/ornicar/lila/issues/7031">play themselves in rated games</a>.
+                June 2020, all before March 2016: Some players were able to <a href="https://github.com/lichess-org/lila/issues/7031">play themselves in rated games</a>.
               </li>
               <li>
-                Up to August 2016: <a href="https://github.com/ornicar/lichess-db/issues/23">7 games with illegal castling moves</a> were recorded.
+                Up to August 2016: <a href="https://github.com/lichess-org/database/issues/23">7 games with illegal castling moves</a> were recorded.
               </li>
             </ul>
           </section>
@@ -521,7 +521,7 @@
               <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do Variants Help You Play Better Chess?</a>
             </li>
             <li>
-              <a href="https://github.com/ornicar/lichess-db/blob/master/web/chess-social-networks-paper.pdf">Online Chess Social Networks</a>
+              <a href="https://github.com/lichess-org/database/blob/master/web/chess-social-networks-paper.pdf">Online Chess Social Networks</a>
             </li>
             <li>
               <a href="https://emiruz.com/post/2022-04-15-lichess1/">Fast thinking on lichess.org</a>
