@@ -553,6 +553,9 @@
             <li>
               <a href="https://morchess.com/">Mor Chess - Rebuild chess positions with daily puzzles</a>
             </li>
+            <li>
+              <a href="https://chessbuddy.app">Chessbuddy - Customizable tactics training with spaced repetition</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
