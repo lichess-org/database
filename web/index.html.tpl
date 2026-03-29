@@ -36,6 +36,7 @@
             <a href="#broadcasts">Broadcasts</a>
             <a href="#puzzles">Puzzles</a>
             <a href="#evals" class="on">Evaluations</a>
+            <a href="#openings">Openings</a>
           </nav>
           <p>
             <strong><!-- nbEvals --></strong> chess positions evaluated with Stockfish.
@@ -124,6 +125,7 @@
             <a href="#broadcasts">Broadcasts</a>
             <a href="#puzzles" class="on">Puzzles</a>
             <a href="#evals">Evaluations</a>
+            <a href="#openings">Openings</a>
           </nav>
           <p>
             <strong><!-- nbPuzzles --></strong> chess puzzles, rated, and tagged.
@@ -184,6 +186,7 @@
             <a href="#broadcasts">Broadcasts</a>
             <a href="#puzzles">Puzzles</a>
             <a href="#evals">Evaluations</a>
+            <a href="#openings">Openings</a>
           </nav>
           <h3>Antichess</h3>
           <!-- table-antichess -->
@@ -210,6 +213,7 @@
               <a href="#broadcasts" class="on">Broadcasts</a>
               <a href="#puzzles">Puzzles</a>
               <a href="#evals">Evaluations</a>
+              <a href="#openings">Openings</a>
             </nav>
             <!-- table-broadcasts -->
           </section>
@@ -281,6 +285,7 @@
               <a href="#broadcasts">Broadcasts</a>
               <a href="#puzzles">Puzzles</a>
               <a href="#evals">Evaluations</a>
+              <a href="#openings">Openings</a>
             </nav>
             <!-- table-standard -->
           </section>
@@ -427,7 +432,17 @@
             </ul>
           </section>
         </div>
-
+        <div id="openings" class="panel">
+            <nav>
+                <a href="#standard_games">Chess games</a>
+                <a href="#variant_games">Variants</a>
+                <a href="#broadcasts">Broadcasts</a>
+                <a href="#puzzles">Puzzles</a>
+                <a href="#evals">Evaluations</a>
+                <a href="#openings" class="on">Openings</a>
+            </nav>
+              <p> We maintain a crowdsourced dataset of chess openings on GitHub: <a href="https://github.com/lichess-org/chess-openings">lichess-org/chess-openings</a></p>
+        </div>
         <section>
           <h3 id="related-projects" >Related projects</h3>
           <ul>
