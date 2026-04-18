@@ -7,6 +7,7 @@ import akka.util.ByteString
 import chess.format.{ Fen, FullFen }
 import com.typesafe.config.ConfigFactory
 import java.nio.file.Paths
+import java.time.Instant
 import lila.db.dsl.*
 import reactivemongo.akkastream.cursorProducer
 import reactivemongo.api.*
@@ -27,7 +28,8 @@ object Puzzles:
       plays: Int,
       themes: List[String],
       openings: List[String],
-      gameUrl: String
+      gameUrl: String,
+      day: Option[Instant]
   )
 
   def main(args: Array[String]): Unit =
@@ -65,6 +67,7 @@ object Puzzles:
       plays      <- doc.int("plays")
       themes     <- doc.getAsOpt[List[String]]("themes")
       gameId     <- doc.string("gameId")
+      day      = doc.getAsOpt[Instant]("day")
       openings = doc.getAsOpt[List[String]]("opening")
     yield PuzzleLine(
       id = id,
@@ -80,7 +83,8 @@ object Puzzles:
         val hash    = Fen.readPly(fen).map(_ + 1).fold("")(p => s"#$p")
         s"https://lichess.org/${gameId}${if asWhite then "" else "/black"}$hash"
       ,
-      openings = openings.getOrElse(Nil)
+      openings = openings.getOrElse(Nil),
+      day = day
     )
 
     def toCsvLine(puzzle: PuzzleLine): String =
@@ -94,7 +98,8 @@ object Puzzles:
         puzzle.plays,
         puzzle.themes.sorted.mkString(" "),
         puzzle.gameUrl,
-        puzzle.openings.mkString(" ")
+        puzzle.openings.mkString(" "),
+        puzzle.day.map(_.toEpochMilli()).getOrElse("")
       ).mkString(",")
 
     def csvSink: Sink[String, Future[IOResult]] =
@@ -134,7 +139,9 @@ object Puzzles:
           .map(toCsvLine)
           .prepend(
             Source(
-              List("PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags")
+              List(
+                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags,date"
+              )
             )
           )
           .runWith(csvSink)
