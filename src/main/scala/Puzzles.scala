@@ -140,7 +140,7 @@ object Puzzles:
           .prepend(
             Source(
               List(
-                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags,date"
+                "PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl,OpeningTags,DailyDate"
               )
             )
           )
