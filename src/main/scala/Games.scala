@@ -127,7 +127,7 @@ object Games:
             ws.map { case ((g, analysis), users) =>
               val pgn = PgnDump(g.game, users, g.fen)
               lila.analyse
-                .Annotator(pgn, analysis)
+                .Annotator(pgn, g.game, analysis)
                 .render
                 .value
                 .replace("] } { [", "] [") + "\n\n"

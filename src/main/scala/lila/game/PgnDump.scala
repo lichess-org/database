@@ -7,7 +7,6 @@ import chess.format.pgn as chessPgn
 import chess.{ Centis, Color, Ply }
 import lichess.Users
 
-// #TODO add draw offers comments
 object PgnDump:
 
   def apply(game: Game, users: Users, initialFen: Option[Fen.Full]): Pgn =

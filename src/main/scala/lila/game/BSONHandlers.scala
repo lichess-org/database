@@ -18,7 +18,7 @@ import chess.{
 import lila.db.BSON
 import lila.db.dsl.{ *, given }
 import reactivemongo.api.bson.*
-import scala.util.Try
+import scala.util.{ Try, Success }
 
 object BSONHandlers:
   import lila.db.ByteArray.byteArrayHandler
@@ -166,9 +166,11 @@ object BSONHandlers:
           tournamentId = r.strO(F.tournamentId),
           swissId = r.strO(F.swissId),
           simulId = r.strO(F.simulId),
-          analysed = r.boolD(F.analysed)
+          analysed = r.boolD(F.analysed),
+          drawOffers = r.getD(F.drawOffers, emptyDrawOffers)
         )
       )
+  private val emptyDrawOffers = GameDrawOffers(Set.empty, Set.empty)
 
   import chess.format.Fen
   given gameWithInitialFenBSONHandler: BSON[Game.WithInitialFen] = new:
@@ -187,3 +189,15 @@ object BSONHandlers:
               BinaryFormat.clock(since).read(cl, whiteBerserk, blackBerserk)
             }
           case b => lila.db.BSON.handlerBadType(b)
+
+  private[game] given gameDrawOffersReader: BSONReader[GameDrawOffers] =
+    new BSONReader[GameDrawOffers]:
+      def readTry(bson: BSONValue): Try[GameDrawOffers] = bson match
+        case arr: BSONArray =>
+          Success(arr.values.foldLeft(emptyDrawOffers) {
+            case (offers, BSONInteger(p)) =>
+              if p > 0 then offers.copy(white = offers.white.incl(Ply(p)))
+              else offers.copy(black = offers.black.incl(Ply(-p)))
+            case (offers, _) => offers
+          })
+        case b => lila.db.BSON.handlerBadType(b)

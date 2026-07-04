@@ -102,7 +102,7 @@ object GWC:
           val str = ws
             .map { case ((g, analysis), users) =>
               val pgn = PgnDump(g.game, users, g.fen)
-              lila.analyse.Annotator(pgn, analysis)
+              lila.analyse.Annotator(pgn, g.game, analysis)
             }
             .map(_.toString)
             .mkString("\n\n")

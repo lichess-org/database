@@ -295,6 +295,7 @@ object Game:
     val blackClockHistory = "cb"
     val rated             = "ra"
     val analysed          = "an"
+    val drawOffers        = "do"
     val variant           = "v"
     val crazyData         = "chd"
     val next              = "ne"
