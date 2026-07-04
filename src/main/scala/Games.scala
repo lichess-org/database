@@ -49,13 +49,7 @@ object Games:
     println(s"Export $from to $path")
 
     given system: ActorSystem = ActorSystem()
-    given ActorMaterializer = ActorMaterializer(
-      ActorMaterializerSettings(system)
-        .withInputBuffer(
-          initialSize = 32,
-          maxSize = 32
-        )
-    )
+    given Materializer        = Materializer.matFromSystem
 
     val process = lichess.DB.get.flatMap { (db, close) =>
 
