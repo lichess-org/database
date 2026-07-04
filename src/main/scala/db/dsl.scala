@@ -48,7 +48,7 @@ trait dsl:
   // End of Helpers
   // **********************************************************************************************//
 
-  implicit val LilaBSONDocumentZero: Zero[Bdoc] = Zero($empty)
+  given LilaBSONDocumentZero: Zero[Bdoc] = Zero($empty)
 
   // **********************************************************************************************//
   // Top Level Logical Operators
@@ -104,17 +104,17 @@ trait dsl:
   trait CurrentDateValueProducer[T]:
     def produce: BSONValue
 
-  implicit final class BooleanCurrentDateValueProducer(value: Boolean)
-      extends CurrentDateValueProducer[Boolean]:
-    def produce: BSONValue = BSONBoolean(value)
-
-  implicit final class StringCurrentDateValueProducer(value: String) extends CurrentDateValueProducer[String]:
-    def isValid: Boolean = Seq("date", "timestamp") contains value
-
-    def produce: BSONValue =
-      if !isValid then throw new IllegalArgumentException(value)
-
-      $doc("$type" -> value)
+  // implicit final class BooleanCurrentDateValueProducer(value: Boolean)
+  //     extends CurrentDateValueProducer[Boolean]:
+  //   def produce: BSONValue = BSONBoolean(value)
+  //
+  // implicit final class StringCurrentDateValueProducer(value: String) extends CurrentDateValueProducer[String]:
+  //   def isValid: Boolean = Seq("date", "timestamp") contains value
+  //
+  //   def produce: BSONValue =
+  //     if !isValid then throw new IllegalArgumentException(value)
+  //
+  //     $doc("$type" -> value)
 
   // End of Top Level Field Update Operators
   // **********************************************************************************************//
@@ -158,7 +158,6 @@ trait dsl:
   /** Represents the state of an expression which has a field and a value */
   trait Expression[V] extends ElementBuilder:
     def value: V
-    def toBdoc(implicit writer: BSONWriter[V]) = toBSONDocument(this)
 
   /*
    * This type of expressions cannot be cascaded. Examples:
@@ -256,15 +255,16 @@ trait dsl:
     val createdDesc = desc("createdAt")
     val updatedDesc = desc("updatedAt")
 
-  implicit class ElementBuilderLike(val field: String)
+  final class ElementBuilderLike(val field: String)
       extends ElementBuilder
       with ComparisonOperators
       with ElementOperators
       with EvaluationOperators
       with LogicalOperators
 
-  import scala.language.implicitConversions
-  implicit def toBSONDocument[V: BSONWriter](expression: Expression[V]): Bdoc =
+  given Conversion[String, ElementBuilderLike] = ElementBuilderLike(_)
+
+  given toBSONDocument: [V: BSONWriter] => (expression: Expression[V]) => Bdoc =
     $doc(expression.field -> expression.value)
 
 object dsl extends dsl with Handlers

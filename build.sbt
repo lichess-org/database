@@ -1,6 +1,6 @@
 inThisBuild(
   Seq(
-    scalaVersion  := "3.7.0",
+    scalaVersion  := "3.8.4",
     versionScheme := Some("early-semver"),
     version       := "2.0",
     run / javaOptions += "-Dconfig.override_with_env_vars=true"
@@ -24,7 +24,7 @@ lazy val app = project
       "lila-maven".at("https://raw.githubusercontent.com/lichess-org/lila-maven/master"),
       "jitpack".at("https://jitpack.io")
     ),
-    resolvers += Resolver.sonatypeRepo("public"),
+    // resolvers += Resolver.sonatypeOssRepo("public"),
     libraryDependencies ++= Seq(
       "org.reactivemongo"                 %% "reactivemongo"            % "1.1.0-RC15",
       "org.reactivemongo"                 %% "reactivemongo-akkastream" % "1.1.0-RC15",
