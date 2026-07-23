@@ -430,133 +430,158 @@
 
         <section>
           <h3 id="related-projects" >Related projects</h3>
-          <ul>
-            <li>
-              <a href="https://thomasd.be/2026/02/01/aix-storing-querying-chess-games.html">Aix: Efficiently storing and querying the Lichess DB</a>
-            </li>
-            <li>
-              <a href="https://maiachess.com/">MAIA CHESS - A human-like neural network chess engine</a>
-            </li>
-            <li>
-              <a href="https://freopen.org/">World Chess Champion number</a>
-            </li>
-            <li>
-              <a href="https://database.nikonoel.fr/">Elite database (2400+)</a>
-            </li>
-            <li>
-              <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
-            </li>
-            <li>
-              <a href="https://www.chessroots.com">ChessRoots visual opening explorer</a>
-            <li>
-              <a href="https://github.com/Ramon-Deniz/ChessData#heatmap-of-chess-moves">Heatmap of Chess Moves</a>
-            </li>
-            <li>
-              <a href="https://github.com/QueensGambit/CrazyAra">Deep Learning Engine for Crazyhouse </a>
-            </li>
-            <li>
-              <a href="https://github.com/mark-dev/chessfactory-hall-of-fame">Top lichess games by various criteria</a>
-            </li>
-            <li>
-              <a href="https://reddit.com/r/chess/comments/c4nzje/how_lichess_ratings_compare_analysis_of_35/">Comparison of Bullet, Blitz, Rapid and Classical ratings</a>
-            </li>
-            <li>
-              <a href="https://medium.com/@yyyeliko/this-bot-is-actually-you-63d89631b2e5">A Bot that plays its next move by what the majority of all the players chose at that specific position</a>
-            </li>
-            <li>
-              <a href="https://thenewstack.io/artificial-stupidity-one-google-engineers-algorithms-for-bad-chess-playing/">Machine learning over 500 million games</a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=7eevSgJqV7o">Finding the Most Common Chess Blunders</a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=VcghDhMlgBw">20 most popular chess openings over time</a>
-            </li>
-            <li>
-              <a href="http://tom7.org/chess/survival.pdf">Survival in chessland [PDF]</a> - <a href="https://youtu.be/DpXy041BIlA?t=859">YouTube video</a>
-            </li>
-            <li>
-              <a href="https://github.com/welyab/chess960-win-by-position-setup">Chess960 Win by Position Setup</a>
-            </li>
-            <li>
-              <a href="https://www.reddit.com/r/chess/comments/kzb9f5/selected_opening_usage_in_17_billion_lichess/">Selected Opening Usage by Game Rating</a>
-            </li>
-            <li>
-              <a href="https://www.kaggle.com/ironicninja/visualizing-chess-game-length-and-piece-movement">Chess Visualization Project</a>
-            </li>
-            <li>
-              <a href="https://github.com/githubvishwas/blindfoldpuzzles">Blindfold puzzles (using the puzzle DB)</a>
-            </li>
-            <li>
-              <a href="https://chesscup.org/">Puzzle battle (using the puzzle DB)</a>
-            </li>
-            <li>
-              <a href="https://web.chessdigits.com/articles/when-should-you-resign">When should you resign?</a>
-            </li>
-            <li>
-              <a href="https://github.com/Paul566/chessOpeningStats">Popularity and win rate of chess openings</a>
-            </li>
-            <li>
-              <a href="https://github.com/marcusbuffett/chess-tactics-cli">Chess Tactics CLI (using the puzzle DB)</a>
-            </li>
-            <li>
-              <a href="https://cshancock.netlify.app/post/2021-06-23-lichess-puzzles-by-eco/">Lichess puzzles, by ECO</a>
-            </li>
-            <li>
-              <a href="https://github.com/brianch/offline-chess-puzzles">Offline puzzles</a>
-            </li>
-            <li>
-              <a href="https://www.reddit.com/r/chess/comments/pn2f45/whats_the_difficulty_of_the_tactics_that_people/">What's the difficulty of the tactics that people actually spot during their games?</a>
-            </li>
-            <li>
-              <a href="https://chessbook.com/">Repertoire builder</a>
-            </li>
-            <li>
-              <a href="https://tusharmurali.github.io/chess-memory/">Puzzle memory trainer</a>
-            </li>
-            <li>
-              <a href="https://github.com/chesspecker/chesspecker">Chesspecker - puzzle repetition training</a>
-            </li>
-            <li>
-              <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do Variants Help You Play Better Chess?</a>
-            </li>
-            <li>
-              <a href="https://github.com/lichess-org/database/blob/master/web/chess-social-networks-paper.pdf">Online Chess Social Networks</a>
-            </li>
-            <li>
-              <a href="https://emiruz.com/post/2022-04-15-lichess1/">Fast thinking on lichess.org</a>
-            </li>
-            <li>
-              <a href="https://lichess.org/@/jmviz/blog/when-should-you-berserk/rQdcB4QB">When should you berserk?</a>
-            </li>
-            <li>
-              <a href="https://mcognetta.github.io/posts/lichess-combined-puzzle-game-db/">Combined puzzle and game database</a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">The rarest move in chess</a>
-            </li>
-            <li>
-              <a href="https://chessort.com/">Chessort, a puzzle game where you sort moves based on the chess engine's evaluation.</a>
-            </li>
-            <li>
-              <a href="https://www.youtube.com/watch?v=oUERPFqruYo/">500,000 games of intermediate chess players analyzed (in French)</a>
-            </li>
-            <li>
-              <a href="https://extrapawn.com/">extrapawn.com</a> – Interactive chess training platform with puzzles, analysis, and stats
-            </li>
-            <li>
-              <a href="https://blitztactics.com/">Blitz tactics - Fast-paced chess puzzles</a>
-            </li>
-            <li>
-              <a href="https://www.discochess.com">Disco Chess - Woodpecker Method style chess tactics training with spaced repetition</a>
-            </li>
-            <li>
-              <a href="https://morchess.com/">Mor Chess - Rebuild chess positions with daily puzzles</a>
-            </li>
-            <li>
-              <a href="https://chessbuddy.app">Chessbuddy - Customizable tactics training with spaced repetition</a>
-            </li>
-          </ul>
+          <ol>
+            <li>Data analysis and visualization</li>
+              <ul>
+                <li>
+                  <a href="https://github.com/Antiochian/chess-blunders/blob/main/README.md">Does the low time alarm make people play worse?</a>
+                </li>
+                <li>
+                  <a href="https://github.com/Ramon-Deniz/ChessData#heatmap-of-chess-moves">Heatmap of chess moves</a>
+                </li>
+                <li>
+                  <a href="https://github.com/mark-dev/chessfactory-hall-of-fame">Finding rare occurrences and configurations in chess games</a>
+                </li>
+                <li>
+                  <a href="https://reddit.com/r/chess/comments/c4nzje/how_lichess_ratings_compare_analysis_of_35/">Comparison of bullet, blitz, rapid and classical ratings</a>
+                </li>
+                <li>
+                  <a href="https://github.com/amjohnson36/Most-Common-Chess-Blunders">Finding the most common chess blunders</a> - <a href="https://www.youtube.com/watch?v=7eevSgJqV7o">Youtube video</a>
+                </li>
+                <li>
+                  <a href="https://www.youtube.com/watch?v=VcghDhMlgBw">20 most popular chess openings over time (Youtube)</a>
+                </li>
+                <li>
+                  <a href="http://tom7.org/chess/survival.pdf">Survival in chessland - which piece is most likely to survive until the end? [PDF]</a> - <a href="https://youtu.be/DpXy041BIlA?t=859">Youtube video</a>
+                </li>
+                <li>
+                  <a href="https://github.com/welyab/chess960-win-by-position-setup">Winning statistics of the Chess960 positions</a>
+                </li>
+                <li>
+                  <a href="https://www.reddit.com/r/chess/comments/kzb9f5/selected_opening_usage_in_17_billion_lichess/">Selected opening usage by game rating</a>
+                </li>
+                <li>
+                  <a href="https://www.kaggle.com/ironicninja/visualizing-chess-game-length-and-piece-movement">Visualizing chess game length and piece movement</a>
+                </li>
+                <li>
+                  <a href="https://web.chessdigits.com/articles/when-should-you-resign">When should you resign?</a>
+                </li>
+                <li>
+                  <a href="https://github.com/Paul566/chessOpeningStats">Popularity and win rate of various chess openings</a>
+                </li>
+                <li>
+                  <a href="https://www.reddit.com/r/chess/comments/pn2f45/whats_the_difficulty_of_the_tactics_that_people/">What's the difficulty of the tactics that people actually spot during their games?</a>
+                </li>
+                <li>
+                  <a href="https://lichess.org/@/piazzai/blog/do-variants-help-you-play-better-chess-statistical-evidence/0tAPXnqH">Do variants help you play better chess?</a>
+                </li>
+                <li>
+                  <a href="https://github.com/lichess-org/database/blob/master/web/chess-social-networks-paper.pdf">Online chess social networks - analyzing the network structure of Lichess players [PDF]</a>
+                </li>
+                <li>
+                  <a href="https://emiruz.com/post/2022-04-15-lichess1/">To what extent does fast thinking affect game outcomes?</a>
+                </li>
+                <li>
+                  <a href="https://lichess.org/@/jmviz/blog/when-should-you-berserk/rQdcB4QB">When should you berserk?</a>
+                </li>
+                <li>
+                  <a href="https://github.com/paralogical/rarest-move-in-chess">The rarest move in chess</a> - <a href="https://www.youtube.com/watch?v=iDnW0WiCqNc">Youtube video</a>
+                </li>
+                <li>
+                  <a href="https://www.youtube.com/watch?v=oUERPFqruYo/">An analysis of intermediate players' blunders (Youtube, in French)</a>
+                </li>
+                <li>
+                  <a href="https://www.dataxchess.com/">DataX Chess: Rankings and forecasts for top level play</a>
+                </li>
+              </ul>
+            <li>Puzzles, tactics, opening repertoire and training tools</li>
+              <ul>
+                <li>
+                  <a href="https://www.chessroots.com/">ChessRoots: a visual opening explorer</a>
+                </li>
+                <li>
+                  <a href="https://github.com/githubvishwas/blindfoldpuzzles">Blindfold puzzles</a>
+                </li>
+                <li>
+                  <a href="https://chesscup.org/">CHESSCUP.ORG: play puzzles against others</a>
+                </li>
+                <li>
+                  <a href="https://github.com/marcusbuffett/chess-tactics-cli">Chess tactics CLI</a>
+                </li>
+                <li>
+                  <a href="https://cshancock.netlify.app/post/2021-06-23-lichess-puzzles-by-eco/">Lichess puzzles by ECO code</a>
+                </li>
+                <li>
+                  <a href="https://github.com/brianch/offline-chess-puzzles">Offline puzzles</a>
+                </li>
+                <li>
+                  <a href="https://chessbook.com/">Chessbook: an opening repertoire builder</a>
+                </li>
+                <li>
+                  <a href="https://tusharmurali.github.io/chess-memory/">ChessMemory: a puzzle memorization trainer</a>
+                </li>
+                <li>
+                  <a href="https://github.com/chesspecker/chesspecker">Chesspecker: puzzle repetition training</a>
+                </li>
+                <li>
+                  <a href="https://chessort.com/">Chessort: sort moves by their evaluation</a>
+                </li>
+                <li>
+                  <a href="https://extrapawn.com/">EXTRAPAWN: interactive chess training platform</a>
+                </li>
+                <li>
+                  <a href="https://blitztactics.com/">Blitz Tactics: fast past chess puzzles</a>
+                </li>
+                <li>
+                  <a href="https://www.discochess.com/">Disco Chess: cycle-based chess trainer</a>
+                </li>
+                <li>
+                  <a href="https://morchess.com/">Mor Chess: a daily chess puzzle game</a>
+                </li>
+                <li>
+                  <a href="https://chessbuddy.app/">Chessbuddy: customizable tactics trainer</a>
+                </li>
+                <li>
+                  <a href="https://garatc.github.io/blindfold-chess-trainer/">Blindfold puzzle training</a>
+                </li>
+              </ul>
+            <li>Engines</li>
+              <ul>
+                <li>
+                  <a href="https://maiachess.com/">Maia Chess: a human-like neural network chess engine</a>
+                </li>
+                <li>
+                  <a href="https://github.com/QueensGambit/CrazyAra">Crazy Ara: a neural network Crazyhouse engine</a>
+                </li>
+                <li>
+                  <a href="https://github.com/Eli212/chessing_around2">An engine that only plays the moves played by the majority of humans</a> - <a href="https://medium.com/@yyyeliko/this-bot-is-actually-you-63d89631b2e5">blog post</a>
+                </li>
+              </ul>
+            <li>Databases and data tooling</li>
+              <ul>
+                <li>
+                  <a href="https://thomasd.be/2026/02/01/aix-storing-querying-chess-games.html">Aix: efficiently storing and querying the Lichess database</a>
+                </li>
+                <li>
+                  <a href="https://database.nikonoel.fr/">Elite database containing only games by players rated 2400+</a>
+                </li>
+                <li>
+                  <a href="https://mcognetta.github.io/posts/lichess-combined-puzzle-game-db/">Combined puzzle and game database</a>
+                </li>
+              </ul>
+            <li>Fun stuff</li>
+              <ul>
+                <li>
+                  <a href="https://freopen.org/">World chess champion number for any Lichess player</a>
+                </li>
+                <li>
+                  <a href="https://chess.tutlis.com/">Find how you're connected to any Lichess player through a chain of victories</a>
+                </li>
+                <li>
+                  <a href=""></a>
+                </li>
+              </ul>
+          </ol>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
           </p>
