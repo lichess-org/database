@@ -556,6 +556,9 @@
             <li>
               <a href="https://chessbuddy.app">Chessbuddy - Customizable tactics training with spaced repetition</a>
             </li>
+            <li>
+              <a href="https://chess.tutlis.com/">Victory Path - Finds the shortest chain of victories connecting any two Lichess players</a>
+            </li>
           </ul>
           <p>
             Did you use this database? Please share your results! contact@lichess.org
