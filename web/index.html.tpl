@@ -515,6 +515,9 @@
             <li>Puzzles, tactics, opening repertoire and training tools</li>
               <ul>
                 <li>
+                  <a href="https://www.theoria.gg/">Theoria: visual repertoire builder & trainer</a>
+                </li>
+                <li>
                   <a href="https://www.chessroots.com/">ChessRoots: a visual opening explorer</a>
                 </li>
                 <li>
