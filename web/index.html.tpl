@@ -511,6 +511,9 @@
                 <li>
                   <a href="https://www.dataxchess.com/">DataX Chess: Rankings and forecasts for top level play</a>
                 </li>
+                <li>
+                  <a href="https://github.com/yolorys/crisc-chess">Analyzing 3 months of Lichess data for a piece-sacrifice tactic in time scrambles</a>
+                </li>
               </ul>
             <li>Puzzles, tactics, opening repertoire and training tools</li>
               <ul>
