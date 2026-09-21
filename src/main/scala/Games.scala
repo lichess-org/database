@@ -19,7 +19,7 @@ import lila.analyse.Analysis
 import lila.analyse.Analysis.analysisBSONHandler
 import lila.game.{ Game, PgnDump }
 import lila.db.dsl.*
-import java.time.LocalDate
+import java.time.{ Instant, OffsetDateTime }
 
 object Games:
 
@@ -33,10 +33,11 @@ object Games:
       .apply(Variant.LilaKey(args.lift(2).getOrElse("standard")))
       .getOrElse(throw new RuntimeException("Invalid variant."))
 
-    val fromWithoutAdjustments = LocalDate.parse(s"$fromStr-01").atStartOfDay
-    val to                     = fromWithoutAdjustments.plusMonths(1)
+    val month                  = OffsetDateTime.parse(s"$fromStr-01T00:00:00Z")
+    val fromWithoutAdjustments = month.toInstant
+    val to                     = month.plusMonths(1).toInstant
 
-    val hordeStartDate = java.time.LocalDateTime.of(2015, 4, 11, 10, 0)
+    val hordeStartDate = Instant.parse("2015-04-11T10:00:00Z")
     val from =
       if variant == Horde && hordeStartDate.isAfter(fromWithoutAdjustments)
       then hordeStartDate
