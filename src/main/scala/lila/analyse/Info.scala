@@ -58,16 +58,24 @@ object Info:
 
   def start(ply: Int) = Info(ply, Eval.initial, Nil)
 
-  private def strCp(s: String)   = s.toIntOption.map(Cp.apply)
-  private def strMate(s: String) = s.toIntOption.map(Mate.apply)
+  private def strCp(s: String) = s.toIntOption.map(Cp.apply)
+
+  // keep mate in +/-0 only when it has the standard meaning
+  // (side to move is mated), like WhiteScore.exportMate
+  private def strMate(s: String, ply: Int): Option[Mate] =
+    val whiteToMove = ply % 2 == 0
+    s match
+      case "+0"       => Option.when(!whiteToMove)(Mate(0))
+      case "-0" | "0" => Option.when(whiteToMove)(Mate(0))
+      case _          => s.toIntOption.map(Mate.apply)
 
   private def decode(ply: Int, str: String): Option[Info] = str.split(separator) match
     case Array()           => Some(Info(ply, Eval.empty))
     case Array(cp)         => Some(Info(ply, Eval(strCp(cp), None, None)))
-    case Array(cp, ma)     => Some(Info(ply, Eval(strCp(cp), strMate(ma), None)))
-    case Array(cp, ma, va) => Some(Info(ply, Eval(strCp(cp), strMate(ma), None), va.split(' ').toList))
+    case Array(cp, ma)     => Some(Info(ply, Eval(strCp(cp), strMate(ma, ply), None)))
+    case Array(cp, ma, va) => Some(Info(ply, Eval(strCp(cp), strMate(ma, ply), None), va.split(' ').toList))
     case Array(cp, ma, va, be) =>
-      Some(Info(ply, Eval(strCp(cp), strMate(ma), Uci.Move.fromChars(be)), va.split(' ').toList))
+      Some(Info(ply, Eval(strCp(cp), strMate(ma, ply), Uci.Move.fromChars(be)), va.split(' ').toList))
     case _ => None
 
   def decodeList(str: String, fromPly: Int): Option[List[Info]] = {
