@@ -3,11 +3,16 @@ const prettyBytes = require('pretty-bytes');
 const moment = require('moment');
 
 const sourceDir = process.argv[2];
+if (!sourceDir) {
+  console.error('Usage: node index.js <export-directory>');
+  process.exit(1);
+}
 const indexFile = 'index.html';
 const indexTpl = indexFile + '.tpl';
 const tableTpl = 'table.html.tpl';
 const broadcastTableTpl = 'broadcast-table.html.tpl';
 const styleFile = 'style.css';
+const themeDir = 'node_modules/lichess-web-theme';
 const listFile = 'list.txt';
 
 const clockSince = moment('2017-04');
@@ -181,6 +186,27 @@ function replaceDateUpdated(template) {
   return template.replace(/<!-- dateUpdated -->/g, today.toISOString().split('T')[0]);
 }
 
+function stripLightTheme(colors) {
+  const lightAt = colors.search(/\nhtml\.light\s*\{/);
+  return lightAt === -1 ? colors : colors.slice(0, lightAt);
+}
+
+function loadThemeCss() {
+  return Promise.all([
+    fs.readFile(themeDir + '/lichess.css', { encoding: 'utf8' }),
+    fs.readFile(themeDir + '/colors.css', { encoding: 'utf8' }),
+    fs.readFile(themeDir + '/components.css', { encoding: 'utf8' }),
+  ]).then(([entry, colors, components]) => {
+    const css = entry
+      .replace('@import "./colors.css";', stripLightTheme(colors))
+      .replace('@import "./components.css";', components);
+    if (css.includes('@import "./')) {
+      throw new Error('lichess-web-theme left an unresolved relative @import');
+    }
+    return css;
+  });
+}
+
 process.on('unhandledRejection', r => console.log(r));
 
 Promise.all([
@@ -188,7 +214,8 @@ Promise.all([
   fs.readFile(tableTpl, { encoding: 'utf8' }),
   fs.readFile(broadcastTableTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' }),
-]).then(([index, table, broadcastTable, style]) => {
+  loadThemeCss(),
+]).then(([index, table, broadcastTable, style, theme]) => {
   const rv = variant => replaceVariant(variant, table);
   return rv('standard')(index)
     .then(rv('antichess'))
@@ -204,6 +231,9 @@ Promise.all([
     .then(replaceNbEvals)
     .then(replaceDateUpdated)
     .then(rendered => {
-      return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, style));
+      return fs.writeFile(
+        sourceDir + '/' + indexFile,
+        rendered.replace(/<!-- style -->/, () => theme + '\n' + style),
+      );
     });
 });
