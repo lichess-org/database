@@ -1,6 +1,6 @@
 html {
   font-size: 16px;
-  color-scheme: dark;
+  color-scheme: dark light;
 }
 
 body {
@@ -33,6 +33,12 @@ header img {
   height: 160px;
   margin: 0 50px 0 -210px;
   opacity: 0.3;
+}
+
+@media (prefers-color-scheme: light) {
+  header img {
+    filter: invert(1);
+  }
 }
 
 header h1 {

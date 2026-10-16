@@ -186,11 +186,6 @@ function replaceDateUpdated(template) {
   return template.replace(/<!-- dateUpdated -->/g, today.toISOString().split('T')[0]);
 }
 
-function stripLightTheme(colors) {
-  const lightAt = colors.search(/\nhtml\.light\s*\{/);
-  return lightAt === -1 ? colors : colors.slice(0, lightAt);
-}
-
 function loadThemeCss() {
   return Promise.all([
     fs.readFile(themeDir + '/lichess.css', { encoding: 'utf8' }),
@@ -198,7 +193,7 @@ function loadThemeCss() {
     fs.readFile(themeDir + '/components.css', { encoding: 'utf8' }),
   ]).then(([entry, colors, components]) => {
     const css = entry
-      .replace('@import "./colors.css";', stripLightTheme(colors))
+      .replace('@import "./colors.css";', colors)
       .replace('@import "./components.css";', components);
     if (css.includes('@import "./')) {
       throw new Error('lichess-web-theme left an unresolved relative @import');
