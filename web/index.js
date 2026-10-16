@@ -186,21 +186,18 @@ function replaceDateUpdated(template) {
   return template.replace(/<!-- dateUpdated -->/g, today.toISOString().split('T')[0]);
 }
 
-function loadThemeCss() {
-  return Promise.all([
-    fs.readFile(themeDir + '/lichess.css', { encoding: 'utf8' }),
-    fs.readFile(themeDir + '/colors.css', { encoding: 'utf8' }),
-    fs.readFile(themeDir + '/components.css', { encoding: 'utf8' }),
-  ]).then(([entry, colors, components]) => {
-    const css = entry
-      .replace('@import "./colors.css";', colors)
-      .replace('@import "./components.css";', components);
-    if (css.includes('@import "./')) {
-      throw new Error('lichess-web-theme left an unresolved relative @import');
-    }
-    return css;
-  });
-}
+const loadThemeCss = () => Promise.all([
+  fs.readFile(themeDir + '/lichess.css', { encoding: 'utf8' }),
+  fs.readFile(themeDir + '/colors.css', { encoding: 'utf8' }),
+  fs.readFile(themeDir + '/components.css', { encoding: 'utf8' }),
+]).then(([entry, colors, components]) => {
+  const css = entry
+    .replace('@import "./colors.css";', colors)
+    .replace('@import "./components.css";', components);
+  if (css.includes('@import "./'))
+    throw new Error('lichess-web-theme left an unresolved relative @import');
+  return css;
+});
 
 process.on('unhandledRejection', r => console.log(r));
 
