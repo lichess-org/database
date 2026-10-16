@@ -180,7 +180,7 @@ nav {
   display: flex;
   flex-wrap: nowrap;
   align-items: baseline;
-  gap: 1.2rem;
+  gap: 0;
   min-width: 0;
   max-width: 100%;
   margin-top: -3.2em;
@@ -192,19 +192,22 @@ nav a {
   display: inline-block;
   flex: 0 0 auto;
   white-space: nowrap;
-  padding: 0.35em 0;
-  border-bottom: 0.2em solid transparent;
+  padding: 0.35em 0.6rem;
+  border-bottom: 2px solid transparent;
   color: var(--c-font-dim);
   font-size: 1.05rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 
-nav a:hover,
-nav a.on {
-  border-color: var(--c-primary);
-  color: var(--c-primary);
+nav a:hover {
+  border-bottom-color: hsl(from var(--c-accent) h s 30);;
+  color: var(--c-font-dim);
+}
+
+nav a.on,
+nav a.on:hover {
+  border-color: var(--c-accent);
+  color: var(--c-accent);
 }
 
 footer {
@@ -272,12 +275,12 @@ footer {
   }
 
   nav {
-    gap: 0.65rem;
     margin-top: 0.75rem;
   }
 
   nav a {
     font-size: 0.72rem;
-    letter-spacing: 0.02em;
+    padding-right: 0.4rem;
+    padding-left: 0.4rem;
   }
 }
