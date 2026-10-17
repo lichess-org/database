@@ -90,13 +90,13 @@ function renderBroadcastTable(files, dir) {
     .join('\n');
 }
 
-function renderTotal(files) {
+function renderTotal(files, columns) {
+  const blanks = Array(Math.max(0, columns - 3)).fill('<td></td>').join('');
   return `<tr class="total">
   <td>Total: ${files.length} files</td>
   <td class="right">${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b, 0))}</td>
   <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0))}</td>
-  <td></td>
-  <td></td>
+  ${blanks}
   </tr>`;
 }
 
@@ -114,7 +114,7 @@ function processVariantAndReturnTable(variant, template) {
         return template
           .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
           .replace(/<!-- files -->/, renderTable(files, variant))
-          .replace(/<!-- total -->/, renderTotal(files))
+          .replace(/<!-- total -->/, renderTotal(files, 4))
           .replace(/<!-- variant -->/g, variant);
       });
     });
@@ -157,7 +157,7 @@ function processBroadcasts(template) {
         return template
           .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
           .replace(/<!-- files -->/, renderBroadcastTable(files, 'broadcast'))
-          .replace(/<!-- total -->/, renderTotal(files));
+          .replace(/<!-- total -->/, renderTotal(files, 5));
       });
     });
 }
