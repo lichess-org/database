@@ -148,10 +148,6 @@ table th {
   color: var(--c-font-clear);
 }
 
-table td {
-  border-top: 1px solid var(--c-border);
-}
-
 table .center {
   text-align: center;
 }
@@ -172,7 +168,7 @@ table td a:hover {
   text-decoration: underline;
 }
 
-tbody tr:nth-child(even) {
+tbody tr:nth-child(odd) {
   background: var(--c-bg-zebra);
 }
 
