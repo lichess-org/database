@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "fs-extra": "^3.0.1",
-    "lichess-web-theme": "github:lichess-org/lichess-web-theme",
     "moment": "^2.31.0",
     "pretty-bytes": "^4.0.2"
   }

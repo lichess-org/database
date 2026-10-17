@@ -4,6 +4,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/lichess-org/lichess-web-theme@8b1346cb8ea223483657556ed6613012330223c5/lichess.css"
+    />
     <style><!-- style --></style>
     <title>lichess.org open database</title>
   </head>
