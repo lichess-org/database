@@ -23,10 +23,6 @@ jsonfile@^3.0.0:
   optionalDependencies:
     graceful-fs "^4.1.6"
 
-"lichess-web-theme@github:lichess-org/lichess-web-theme":
-  version "0.0.1"
-  resolved "git+ssh://git@github.com/lichess-org/lichess-web-theme.git#8b1346cb8ea223483657556ed6613012330223c5"
-
 moment@^2.31.0:
   version "2.31.0"
   resolved "https://registry.npmjs.org/moment/-/moment-2.31.0.tgz"

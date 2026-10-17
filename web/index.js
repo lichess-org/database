@@ -186,19 +186,6 @@ function replaceDateUpdated(template) {
   return template.replace(/<!-- dateUpdated -->/g, today.toISOString().split('T')[0]);
 }
 
-const loadThemeCss = () => Promise.all([
-  fs.readFile(themeDir + '/lichess.css', { encoding: 'utf8' }),
-  fs.readFile(themeDir + '/colors.css', { encoding: 'utf8' }),
-  fs.readFile(themeDir + '/components.css', { encoding: 'utf8' }),
-]).then(([entry, colors, components]) => {
-  const css = entry
-    .replace('@import "./colors.css";', colors)
-    .replace('@import "./components.css";', components);
-  if (css.includes('@import "./'))
-    throw new Error('lichess-web-theme left an unresolved relative @import');
-  return css;
-});
-
 process.on('unhandledRejection', r => console.log(r));
 
 Promise.all([
@@ -206,8 +193,7 @@ Promise.all([
   fs.readFile(tableTpl, { encoding: 'utf8' }),
   fs.readFile(broadcastTableTpl, { encoding: 'utf8' }),
   fs.readFile(styleFile, { encoding: 'utf8' }),
-  loadThemeCss(),
-]).then(([index, table, broadcastTable, style, theme]) => {
+]).then(([index, table, broadcastTable, style]) => {
   const rv = variant => replaceVariant(variant, table);
   return rv('standard')(index)
     .then(rv('antichess'))
@@ -225,7 +211,7 @@ Promise.all([
     .then(rendered => {
       return fs.writeFile(
         sourceDir + '/' + indexFile,
-        rendered.replace(/<!-- style -->/, () => theme + '\n' + style),
+        rendered.replace(/<!-- style -->/, () => style),
       );
     });
 });
