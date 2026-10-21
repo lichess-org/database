@@ -81,7 +81,7 @@ object Puzzles:
       gameUrl =
         val asWhite = fen.colorOrWhite.white
         val hash    = Fen.readPly(fen).map(_ + 1).fold("")(p => s"#$p")
-        s"https://lichess.org/${gameId}${if asWhite then "" else "/black"}$hash"
+        s"https://lichess.org/game/${gameId}${if asWhite then "" else "/black"}$hash"
       ,
       openings = openings.getOrElse(Nil),
       day = day

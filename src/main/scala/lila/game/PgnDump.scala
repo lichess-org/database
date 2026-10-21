@@ -24,7 +24,7 @@ object PgnDump:
     if game.finished then game.winnerColor.fold("1/2-1/2")(_.fold("1-0", "0-1"))
     else "*"
 
-  private def gameUrl(id: String) = s"https://lichess.org/$id"
+  private def gameUrl(id: String) = s"https://lichess.org/game/$id"
 
   private def elo(p: Player) = p.rating.fold("?")(_.toString)
 
