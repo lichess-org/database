@@ -57,8 +57,6 @@ object Eval:
 
     val CEILING = 1000
 
-    val initial = Cp(15)
-
   case class Mate(value: Int) extends AnyVal with Ordered[Mate]:
 
     def moves = value
@@ -73,6 +71,6 @@ object Eval:
     def positive = value > 0
     def negative = value < 0
 
-  val initial = Eval(Some(Cp.initial), None, None)
+  val legacyInitial = Eval(Some(Cp(15)), None, None)
 
   val empty = Eval(None, None, None)

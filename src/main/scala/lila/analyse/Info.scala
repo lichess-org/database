@@ -56,8 +56,6 @@ object Info:
   private val separator     = ","
   private val listSeparator = ";"
 
-  def start(ply: Int) = Info(ply, Eval.initial, Nil)
-
   private def strCp(s: String) = s.toIntOption.map(Cp.apply)
 
   // keep mate in +/-0 only when it has the standard meaning
@@ -83,6 +81,8 @@ object Info:
       decode(index + 1 + fromPly, infoStr)
     }
   }.sequence
+
+  def decodeEval(ply: Int, str: String): Option[Eval] = decode(ply, str).map(_.eval)
 
   def apply(cp: Option[Cp], mate: Option[Mate], variation: List[String]): Int => Info =
     ply => Info(ply, Eval(cp, mate, None), variation)

@@ -3,8 +3,11 @@ package analyse
 
 import chess.Color
 
+import lila.tree.Eval
+
 case class Analysis(
     id: String,
+    initialEval: Option[Eval], // missing in old analyses
     infos: List[Info],
     startPly: Int,
     uid: Option[String], // requester lichess ID
@@ -15,7 +18,7 @@ case class Analysis(
   type InfoAdvices = List[(Info, Option[Advice])]
 
   lazy val infoAdvices: InfoAdvices = {
-    (Info.start(startPly) :: infos).sliding(2).collect { case List(prev, info) =>
+    (Info(startPly, initialEval.getOrElse(Eval.legacyInitial)) :: infos).sliding(2).collect { case List(prev, info) =>
       info -> {
         if info.hasVariation then Advice(prev, info) else None
       }
@@ -57,6 +60,7 @@ object Analysis:
       val raw      = r.str("data")
       Analysis(
         id = r.str("_id"),
+        initialEval = r.strO("init").flatMap(Info.decodeEval(startPly, _)),
         infos = Info.decodeList(raw, startPly).getOrElse {
           sys.error(s"Invalid analysis data $raw")
         },
