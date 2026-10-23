@@ -18,10 +18,11 @@ case class Analysis(
   type InfoAdvices = List[(Info, Option[Advice])]
 
   lazy val infoAdvices: InfoAdvices = {
-    (Info(startPly, initialEval.getOrElse(Eval.legacyInitial)) :: infos).sliding(2).collect { case List(prev, info) =>
-      info -> {
-        if info.hasVariation then Advice(prev, info) else None
-      }
+    (Info(startPly, initialEval.getOrElse(Eval.legacyInitial)) :: infos).sliding(2).collect {
+      case List(prev, info) =>
+        info -> {
+          if info.hasVariation then Advice(prev, info) else None
+        }
     }
   }.toList
 
