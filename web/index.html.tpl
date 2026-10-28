@@ -568,6 +568,9 @@
                 <li>
                   <a href="https://garatc.github.io/blindfold-chess-trainer/">Blindfold puzzle training</a>
                 </li>
+                <li>
+                  <a href="https://coddy.tech/chess/puzzles">Coddy: free chess puzzle sets and a rated puzzle trainer</a>
+                </li>
               </ul>
             <li>Engines</li>
               <ul>
