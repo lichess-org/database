@@ -2,9 +2,12 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700|Roboto:300" rel="stylesheet">
-    <!-- <link href="/web/style.css" rel="stylesheet"></link> -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/lichess-org/lichess-web-theme@8b1346cb8ea223483657556ed6613012330223c5/lichess.css"
+    />
     <style><!-- style --></style>
     <title>lichess.org open database</title>
   </head>
@@ -44,7 +47,7 @@
             <a href="https://lichess.org/analysis">Produced by, and for, the Lichess analysis board</a>,
             running various flavours of Stockfish within user browsers.
           <p>
-            <a class="primary" href="lichess_db_eval.jsonl.zst">Download lichess_db_eval.jsonl.zst</a>
+            <a class="btn-primary" href="lichess_db_eval.jsonl.zst">Download lichess_db_eval.jsonl.zst</a>
           </p>
           <p>
             This file was last updated on <!-- dateUpdated -->.
@@ -142,7 +145,7 @@
             <strong><!-- nbPuzzles --></strong> chess puzzles, rated, and tagged.
             <a href="https://lichess.org/training/themes">See them in action on Lichess</a>.
           <p>
-            <a class="primary" href="lichess_db_puzzle.csv.zst">Download lichess_db_puzzle.csv.zst</a>
+            <a class="btn-primary" href="lichess_db_puzzle.csv.zst">Download lichess_db_puzzle.csv.zst</a>
           </p>
           <p>
             This file was last updated on <!-- dateUpdated -->.

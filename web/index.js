@@ -3,11 +3,16 @@ const prettyBytes = require('pretty-bytes');
 const moment = require('moment');
 
 const sourceDir = process.argv[2];
+if (!sourceDir) {
+  console.error('Usage: node index.js <export-directory>');
+  process.exit(1);
+}
 const indexFile = 'index.html';
 const indexTpl = indexFile + '.tpl';
 const tableTpl = 'table.html.tpl';
 const broadcastTableTpl = 'broadcast-table.html.tpl';
 const styleFile = 'style.css';
+const themeDir = 'node_modules/lichess-web-theme';
 const listFile = 'list.txt';
 
 const clockSince = moment('2017-04');
@@ -85,13 +90,13 @@ function renderBroadcastTable(files, dir) {
     .join('\n');
 }
 
-function renderTotal(files) {
+function renderTotal(files, columns) {
+  const blanks = Array(Math.max(0, columns - 3)).fill('<td></td>').join('');
   return `<tr class="total">
   <td>Total: ${files.length} files</td>
   <td class="right">${prettyBytes(files.map(f => f.size).reduce((a, b) => a + b, 0))}</td>
   <td class="right">${numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0))}</td>
-  <td></td>
-  <td></td>
+  ${blanks}
   </tr>`;
 }
 
@@ -109,7 +114,7 @@ function processVariantAndReturnTable(variant, template) {
         return template
           .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
           .replace(/<!-- files -->/, renderTable(files, variant))
-          .replace(/<!-- total -->/, renderTotal(files))
+          .replace(/<!-- total -->/, renderTotal(files, 4))
           .replace(/<!-- variant -->/g, variant);
       });
     });
@@ -152,7 +157,7 @@ function processBroadcasts(template) {
         return template
           .replace(/<!-- nbGames -->/, numberFormat(files.map(f => f.games).reduce((a, b) => a + b, 0)))
           .replace(/<!-- files -->/, renderBroadcastTable(files, 'broadcast'))
-          .replace(/<!-- total -->/, renderTotal(files));
+          .replace(/<!-- total -->/, renderTotal(files, 5));
       });
     });
 }
@@ -204,6 +209,9 @@ Promise.all([
     .then(replaceNbEvals)
     .then(replaceDateUpdated)
     .then(rendered => {
-      return fs.writeFile(sourceDir + '/' + indexFile, rendered.replace(/<!-- style -->/, style));
+      return fs.writeFile(
+        sourceDir + '/' + indexFile,
+        rendered.replace(/<!-- style -->/, () => style),
+      );
     });
 });
