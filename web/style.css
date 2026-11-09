@@ -196,14 +196,14 @@ nav a {
 }
 
 nav a:hover {
-  border-bottom-color: hsl(from var(--c-accent) h s 30);;
+  border-bottom-color: hsl(from var(--c-brag) h s 30);;
   color: var(--c-font-dim);
 }
 
 nav a.on,
 nav a.on:hover {
-  border-color: var(--c-accent);
-  color: var(--c-accent);
+  border-color: var(--c-brag);
+  color: var(--c-brag);
 }
 
 footer {
